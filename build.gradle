@@ -2,8 +2,10 @@ plugins {
     id 'java'
 }
 
-group = 'org.gora'
-version = '1.0-SNAPSHOT'
+group = 'org.gora.server'
+version = '1.0.0-SNAPSHOT'
+sourceCompatibility = JavaVersion.VERSION_18
+targetCompatibility = JavaVersion.VERSION_18
 
 repositories {
     mavenCentral()

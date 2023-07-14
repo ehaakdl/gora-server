@@ -1,16 +1,19 @@
-package org.gora.utils;
+package org.gora.server.common;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.gora.constant.eEnv;
+
+import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CommonUtils {
     public static String getEnv(eEnv key, String defaultValue) {
         String result = System.getenv(key.name());
         return result == null ? defaultValue : result;
+    }
+
+    public static String replaceUUID(){
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
     public static String getStackTraceElements(final Throwable e) {
