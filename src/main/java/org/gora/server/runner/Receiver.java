@@ -10,7 +10,7 @@ import java.util.List;
 
 @Slf4j
 public class Receiver {
-    private static final List<CommonData> receiveQue = new ArrayList<>(Integer.parseInt(CommonUtils.getEnv(eEnv.MAX_DEFAULT_QUE_SZ, String.valueOf(1000))));
+    private static final List<CommonData> receiveQue = new ArrayList<>(Integer.parseInt(CommonUtils.getEnv(eEnv.MAX_DEFAULT_QUE_SZ, eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ))));
 
     public static void push(CommonData data){
         receiveQue.add(data);

@@ -46,12 +46,9 @@ public class UdpServer {
                                 buf.readBytes(bytes);
 
                                 String clientIp = packet.sender().getHostString();
-                                CommonData commonData;
-                                try{
-                                    commonData = objectMapper.readValue(bytes, CommonData.class);
-                                }catch (Exception e){
+                                CommonData commonData = CommonData.deserialization(bytes);
+                                if(commonData == null){
                                     log.error("UDP 서버 수신 데이터 치환 실패");
-                                    log.error(CommonUtils.getStackTraceElements(e));
                                     return;
                                 }
 

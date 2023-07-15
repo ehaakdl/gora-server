@@ -1,8 +1,10 @@
+package example.netty;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
-import io.netty.util.CharsetUtil;
 import org.gora.server.model.CommonData;
 
 public class UdpServerHandler extends SimpleChannelInboundHandler<DatagramPacket> {
@@ -10,7 +12,12 @@ public class UdpServerHandler extends SimpleChannelInboundHandler<DatagramPacket
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
-        CommonData content = objectMapper.readValue(msg.content().array(), CommonData.class);
+        ByteBuf buf = msg.content();
+        byte[] bytes = new byte[buf.readableBytes()];
+        buf.readBytes(bytes);
+
+        CommonData content = CommonData.deserialization(bytes);
+
         System.out.println("Received: " + content);
     }
 }

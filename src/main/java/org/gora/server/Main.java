@@ -2,7 +2,6 @@ package org.gora.server;
 
 import lombok.extern.slf4j.Slf4j;
 import org.gora.server.common.eEnv;
-//import org.gora.server.pipe.MessagePipelineFactory;
 import org.gora.server.runner.UdpServer;
 import org.gora.server.runner.Receiver;
 import org.gora.server.runner.Sender;
@@ -47,7 +46,7 @@ public class Main {
     }
     private static Thread serverListener(){
         return new Thread(() -> {
-            int port = Integer.parseInt(CommonUtils.getEnv(eEnv.SERVER_PORT, "11111"));
+            int port = Integer.parseInt(CommonUtils.getEnv(eEnv.SERVER_PORT, eEnv.getDefaultStringTypeValue(eEnv.SERVER_PORT)));
             UdpServer udpServer = null;
             try {
                 udpServer = new UdpServer();
@@ -62,7 +61,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        log.info("start realtime");
+        log.info("start server");
 
 //        server listener
         List<Thread> threadList = new ArrayList<>(10);

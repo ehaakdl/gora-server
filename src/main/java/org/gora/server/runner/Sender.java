@@ -10,12 +10,22 @@ import org.gora.server.model.CommonData;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.service.UdpClientManager;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 public class Sender {
-    private static final List<CommonData> sendQue = new ArrayList<>(Integer.parseInt(CommonUtils.getEnv(eEnv.MAX_DEFAULT_QUE_SZ, String.valueOf(1000))));
+    private static final List<CommonData> sendQue = new ArrayList<>(
+            Integer.parseInt(
+                    CommonUtils.getEnv(
+                            eEnv.MAX_DEFAULT_QUE_SZ
+                            , eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ)
+                    )
+            )
+    );
 
     public static void push(CommonData data){
         sendQue.add(data);
@@ -27,17 +37,19 @@ public class Sender {
                 return;
             }
 
-            String json = "{"
-                    + "    \"message\":\"2ewqe\","
-                    + "    \"type\":\"test\""
-                    + "}";
-
             ChannelFuture channelFuture = UdpClientManager.getChannelFuture(commonData.getKey());
             if(channelFuture == null){
+                log.error("[sender 스레드] 전송 실패 = channelFuture not empty");
                 return;
             }
 
-            ByteBuf copyBuffer = Unpooled.copiedBuffer(json.getBytes());
+            byte[] sendBytes = CommonData.serialization(commonData);
+            if(sendBytes == null){
+                log.error("[sender 스레드] 전송 실패 = 객체 직렬화 실패");
+                return;
+            }
+
+            ByteBuf copyBuffer = Unpooled.copiedBuffer(sendBytes);
             channelFuture.channel()
                     .writeAndFlush(copyBuffer)
                     .addListener((ChannelFutureListener) future -> {

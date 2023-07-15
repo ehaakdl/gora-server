@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Slf4j
 public class UdpClientManager {
-    private static final Map<String, UdpClient> UDP_CLIENTS = new HashMap<>(Integer.parseInt(CommonUtils.getEnv(eEnv.MAX_DEFAULT_QUE_SZ, "100")));
+    private static final Map<String, UdpClient> UDP_CLIENTS = new HashMap<>(Integer.parseInt(CommonUtils.getEnv(eEnv.MAX_DEFAULT_QUE_SZ, eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ))));
 
     public static boolean contain(String key){
         if(key==null){
@@ -26,7 +26,7 @@ public class UdpClientManager {
         UdpClient udpClient;
 
         try {
-            udpClient = new UdpClient(clientIp, Integer.parseInt(CommonUtils.getEnv(eEnv.CLIENT_PORT, "11112")));
+            udpClient = new UdpClient(clientIp, Integer.parseInt(CommonUtils.getEnv(eEnv.CLIENT_PORT, eEnv.getDefaultStringTypeValue(eEnv.CLIENT_PORT))));
         } catch (InterruptedException e) {
             log.error("udp client connect fail");
             log.error(CommonUtils.getStackTraceElements(e));
