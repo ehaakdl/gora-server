@@ -17,15 +17,9 @@ import java.util.List;
 @Slf4j
 @Component
 public class PacketRouter {
-    private final List<CommonData> receiveQue;
-    private final PacketSender packetSender;
+    private static final List<CommonData> receiveQue = new ArrayList<>(Integer.parseInt(CommonUtils.getEnv(eEnv.MAX_DEFAULT_QUE_SZ, eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ))));;
 
-    public PacketRouter(PacketSender packetSender) {
-        this.packetSender = packetSender;
-        this.receiveQue = new ArrayList<>(Integer.parseInt(CommonUtils.getEnv(eEnv.MAX_DEFAULT_QUE_SZ, eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ))));
-    }
-
-    public void push(CommonData data){
+    public static void push(CommonData data){
         receiveQue.add(data);
     }
 
@@ -39,7 +33,7 @@ public class PacketRouter {
                 }
 
 //                todo 수신된 패킷에 type 보고 라우팅 하는 기능 추가 필요
-                packetSender.push(commonData);
+                PacketSender.push(commonData);
             });
         }
 

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ChannelHandler.Sharable
 @RequiredArgsConstructor
-public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
+public class UdpClientInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     private final PacketRouter packetRouter;
 
     @Override
@@ -23,7 +23,6 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
 
         CommonData content = CommonData.deserialization(bytes);
 
-//        todo 테스트 용도
-        packetRouter.push(content);
+        PacketRouter.push(content);
     }
 }

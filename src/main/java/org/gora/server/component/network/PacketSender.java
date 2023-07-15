@@ -18,22 +18,21 @@ import java.util.List;
 @Slf4j
 @Component
 public class PacketSender {
-    private final List<CommonData> sendQue;
+    private static final List<CommonData> sendQue = new ArrayList<>(
+            Integer.parseInt(
+                    CommonUtils.getEnv(
+                            eEnv.MAX_DEFAULT_QUE_SZ
+                            , eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ)
+                    )
+            )
+    );
     private final UdpClientManager udpClientManager;
 
     public PacketSender(UdpClientManager udpClientManager) {
         this.udpClientManager = udpClientManager;
-        this.sendQue = new ArrayList<>(
-                Integer.parseInt(
-                        CommonUtils.getEnv(
-                                eEnv.MAX_DEFAULT_QUE_SZ
-                                , eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ)
-                        )
-                )
-        );
     }
 
-    public void push(CommonData data){
+    public static void push(CommonData data){
         sendQue.add(data);
     }
 

@@ -1,7 +1,6 @@
 package org.gora.server.component.network;
 
 import io.netty.channel.ChannelFuture;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.eEnv;
@@ -14,11 +13,11 @@ import java.util.Map;
 @Component
 public class UdpClientManager {
     private final Map<String, UdpClient> UDP_CLIENTS;
-    private final UdpInboundHandler udpInboundHandler;
+    private final UdpClientInboundHandler udpClientInboundHandler;
 
-    public UdpClientManager(UdpInboundHandler udpInboundHandler) {
+    public UdpClientManager(UdpClientInboundHandler udpClientInboundHandler) {
         this.UDP_CLIENTS = new HashMap<>(Integer.parseInt(CommonUtils.getEnv(eEnv.MAX_DEFAULT_QUE_SZ, eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ))));
-        this.udpInboundHandler = udpInboundHandler;
+        this.udpClientInboundHandler = udpClientInboundHandler;
     }
 
     public boolean contain(String key){
@@ -34,7 +33,7 @@ public class UdpClientManager {
         UdpClient udpClient;
 
         try {
-            udpClient = new UdpClient(clientIp, Integer.parseInt(CommonUtils.getEnv(eEnv.CLIENT_PORT, eEnv.getDefaultStringTypeValue(eEnv.CLIENT_PORT))), udpInboundHandler);
+            udpClient = new UdpClient(clientIp, Integer.parseInt(CommonUtils.getEnv(eEnv.CLIENT_PORT, eEnv.getDefaultStringTypeValue(eEnv.CLIENT_PORT))), udpClientInboundHandler);
         } catch (InterruptedException e) {
             log.error("udp client connect fail");
             log.error(CommonUtils.getStackTraceElements(e));
