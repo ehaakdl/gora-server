@@ -1,6 +1,5 @@
 package example.netty;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -20,7 +19,6 @@ import java.net.InetSocketAddress;
 import java.util.Objects;
 
 public class UdpClient {
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     public static void main(String[] args) throws Exception {
         new UdpClient().run(eEnv.getDefaultIntTypeValue(eEnv.SERVER_PORT));

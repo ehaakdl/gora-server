@@ -1,7 +1,6 @@
-package org.gora.server.runner;
+package org.gora.server.component.network;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
@@ -11,24 +10,26 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.gora.server.common.CommonUtils;
 import org.gora.server.model.CommonData;
-import org.gora.server.model.Message;
-import org.gora.server.service.UdpClientManager;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@Component
 public class UdpServer {
-    private final EventLoopGroup bossLoopGroup;
-    private final ChannelGroup channelGroup;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private EventLoopGroup bossLoopGroup;
+    private ChannelGroup channelGroup;
 
-    public UdpServer() {
+    @PostConstruct
+    public void init(){
         this.bossLoopGroup = new NioEventLoopGroup();
         this.channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     }
 
-    public final void startup(int port) throws InterruptedException {
+    @Async
+    public void startup(int port) throws InterruptedException {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(bossLoopGroup)
                 .channel(NioDatagramChannel.class)
@@ -55,10 +56,15 @@ public class UdpServer {
 //                                클라이언트 연결여부 체크
                                 if(!UdpClientManager.contain(commonData.getKey())) {
                                     String key = UdpClientManager.connect(clientIp);
+                                    if(key == null){
+                                        log.error("UDP 클라이언트 연결실패했습니다.");
+                                        return;
+                                    }
                                     commonData.setKey(key);
                                 }
 
-                                Receiver.push(commonData);
+//                                todo 테스트 용도
+                                PacketSender.push(commonData);
                             }
                         });
                     }
@@ -68,7 +74,7 @@ public class UdpServer {
         channelGroup.add(channelFuture.channel());
     }
 
-    public final void shutdown() {
+    public void shutdown() {
         channelGroup.close();
         bossLoopGroup.shutdownGracefully();
     }
