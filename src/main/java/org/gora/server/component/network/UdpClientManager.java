@@ -4,6 +4,7 @@ import io.netty.channel.ChannelFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.eEnv;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -14,6 +15,8 @@ import java.util.Map;
 public class UdpClientManager {
     private final Map<String, UdpClient> UDP_CLIENTS;
     private final UdpClientInboundHandler udpClientInboundHandler;
+    @Value("${app.udp_client_port}")
+    private int udpClientPort;
 
     public UdpClientManager(UdpClientInboundHandler udpClientInboundHandler) {
         this.UDP_CLIENTS = new HashMap<>(Integer.parseInt(CommonUtils.getEnv(eEnv.MAX_DEFAULT_QUE_SZ, eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ))));
@@ -33,7 +36,7 @@ public class UdpClientManager {
         UdpClient udpClient;
 
         try {
-            udpClient = new UdpClient(clientIp, Integer.parseInt(CommonUtils.getEnv(eEnv.CLIENT_PORT, eEnv.getDefaultStringTypeValue(eEnv.CLIENT_PORT))), udpClientInboundHandler);
+            udpClient = new UdpClient(clientIp, udpClientPort, udpClientInboundHandler);
         } catch (InterruptedException e) {
             log.error("udp client connect fail");
             log.error(CommonUtils.getStackTraceElements(e));

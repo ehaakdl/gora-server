@@ -1,9 +1,12 @@
 package org.gora.server.component.network;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.eEnv;
@@ -14,11 +17,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class PacketSender {
-    private static final List<CommonData> sendQue = new ArrayList<>(
+
+    private static final BlockingQueue<CommonData> sendQue = new LinkedBlockingQueue<>(
             Integer.parseInt(
                     CommonUtils.getEnv(
                             eEnv.MAX_DEFAULT_QUE_SZ
@@ -26,11 +33,10 @@ public class PacketSender {
                     )
             )
     );
+
+    private final ObjectMapper objectMapper;
     private final UdpClientManager udpClientManager;
 
-    public PacketSender(UdpClientManager udpClientManager) {
-        this.udpClientManager = udpClientManager;
-    }
 
     public static void push(CommonData data){
         sendQue.add(data);
@@ -52,9 +58,12 @@ public class PacketSender {
                     return;
                 }
 
-                byte[] sendBytes = CommonData.serialization(commonData);
-                if(sendBytes == null){
-                    log.error("[sender 스레드] 전송 실패 = 객체 직렬화 실패");
+                byte[] sendBytes;
+                try {
+                    sendBytes = objectMapper.writeValueAsBytes(commonData);
+                } catch (JsonProcessingException e) {
+                    log.error("send 데이터 직렬화 실패");
+                    log.error(CommonUtils.getStackTraceElements(e));
                     return;
                 }
 

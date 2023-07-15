@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum eEnv {
     MAX_DEFAULT_QUE_SZ(1000)
-    , SERVER_PORT(11111)
-    , CLIENT_PORT(11112);
+    ;
 
     private Object value;
 

@@ -11,7 +11,7 @@ import org.gora.server.common.eEnv;
 public class UdpServer {
 
     public static void main(String[] args) throws Exception {
-        new UdpServer().run(eEnv.getDefaultIntTypeValue(eEnv.CLIENT_PORT));
+        new UdpServer().run(11112);
     }
 
     public void run(int port) throws Exception {

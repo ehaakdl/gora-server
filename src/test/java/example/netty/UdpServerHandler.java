@@ -1,5 +1,6 @@
 package example.netty;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -14,7 +15,8 @@ public class UdpServerHandler extends SimpleChannelInboundHandler<DatagramPacket
         byte[] bytes = new byte[buf.readableBytes()];
         buf.readBytes(bytes);
 
-        CommonData content = CommonData.deserialization(bytes);
+        ObjectMapper objectMapper = new ObjectMapper();
+        CommonData content = objectMapper.readValue(bytes, CommonData.class);
 
         System.out.println("Received: " + content);
     }

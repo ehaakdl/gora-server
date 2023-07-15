@@ -1,5 +1,7 @@
 package example.netty;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -11,6 +13,7 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
+import org.gora.server.common.CommonUtils;
 import org.gora.server.common.eEnv;
 import org.gora.server.model.CommonData;
 import org.gora.server.model.eCodeType;
@@ -21,7 +24,7 @@ import java.util.Objects;
 public class UdpClient {
 
     public static void main(String[] args) throws Exception {
-        new UdpClient().run(eEnv.getDefaultIntTypeValue(eEnv.SERVER_PORT));
+        new UdpClient().run(11111);
     }
 
     public void run(int port) throws Exception {
@@ -42,8 +45,11 @@ public class UdpClient {
 
             Channel ch = b.bind(0).sync().channel();
             CommonData commonData = new CommonData(null, eCodeType.test, null);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            byte[] sendBytes = objectMapper.writeValueAsBytes(commonData);
             ch.writeAndFlush(new DatagramPacket(
-                    Unpooled.copiedBuffer(Objects.requireNonNull(CommonData.serialization(commonData))),
+                    Unpooled.copiedBuffer(sendBytes),
                     new InetSocketAddress("localhost", port))).sync();
 
             if (!ch.closeFuture().await(15000)) {

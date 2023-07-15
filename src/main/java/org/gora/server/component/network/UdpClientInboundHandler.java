@@ -1,5 +1,6 @@
 package org.gora.server.component.network;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UdpClientInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     private final PacketRouter packetRouter;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
@@ -21,7 +23,7 @@ public class UdpClientInboundHandler extends SimpleChannelInboundHandler<Datagra
         byte[] bytes = new byte[buf.readableBytes()];
         buf.readBytes(bytes);
 
-        CommonData content = CommonData.deserialization(bytes);
+        CommonData content = objectMapper.readValue(bytes, CommonData.class);
 
         PacketRouter.push(content);
     }
