@@ -18,16 +18,22 @@ import java.util.List;
 @Slf4j
 @Component
 public class PacketSender {
-    private static final List<CommonData> sendQue = new ArrayList<>(
-            Integer.parseInt(
-                    CommonUtils.getEnv(
-                            eEnv.MAX_DEFAULT_QUE_SZ
-                            , eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ)
-                    )
-            )
-    );
+    private final List<CommonData> sendQue;
+    private final UdpClientManager udpClientManager;
 
-    public static void push(CommonData data){
+    public PacketSender(UdpClientManager udpClientManager) {
+        this.udpClientManager = udpClientManager;
+        this.sendQue = new ArrayList<>(
+                Integer.parseInt(
+                        CommonUtils.getEnv(
+                                eEnv.MAX_DEFAULT_QUE_SZ
+                                , eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ)
+                        )
+                )
+        );
+    }
+
+    public void push(CommonData data){
         sendQue.add(data);
     }
 
@@ -41,7 +47,7 @@ public class PacketSender {
                     return;
                 }
 
-                ChannelFuture channelFuture = UdpClientManager.getChannelFuture(commonData.getKey());
+                ChannelFuture channelFuture = udpClientManager.getChannelFuture(commonData.getKey());
                 if(channelFuture == null){
                     log.error("[sender 스레드] 전송 실패 = channelFuture not empty");
                     return;

@@ -1,0 +1,3 @@
+app:
+  udp_server_port: 11111
+  udp_client_port: 11112

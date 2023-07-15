@@ -1,10 +1,9 @@
 package org.gora.server.component.network;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.gora.server.common.CommonUtils;
 import org.gora.server.common.eEnv;
 import org.gora.server.model.CommonData;
-import org.gora.server.common.CommonUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -17,22 +16,19 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class PacketRouter {
-    private static final List<CommonData> receiveQue = new ArrayList<>(Integer.parseInt(CommonUtils.getEnv(eEnv.MAX_DEFAULT_QUE_SZ, eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ))));
+    private final List<CommonData> receiveQue;
+    private final PacketSender packetSender;
 
-    /**
-     * Push.
-     *
-     * @param data the data
-     */
-    public static void push(CommonData data){
+    public PacketRouter(PacketSender packetSender) {
+        this.packetSender = packetSender;
+        this.receiveQue = new ArrayList<>(Integer.parseInt(CommonUtils.getEnv(eEnv.MAX_DEFAULT_QUE_SZ, eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ))));
+    }
+
+    public void push(CommonData data){
         receiveQue.add(data);
     }
 
-    /**
-     * Run.
-     */
     @Async
     public void run() {
         while(true) {
@@ -43,7 +39,7 @@ public class PacketRouter {
                 }
 
 //                todo 수신된 패킷에 type 보고 라우팅 하는 기능 추가 필요
-                PacketSender.push(commonData);
+                packetSender.push(commonData);
             });
         }
 
