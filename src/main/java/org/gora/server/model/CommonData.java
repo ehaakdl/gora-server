@@ -17,8 +17,6 @@ public class CommonData implements Serializable{
     private Object data;
     private eCodeType type;
     private String key;
-    @JsonIgnore
-    private String senderIp;
 
     public static CommonData deserialization(byte[] target){
         try {

@@ -43,7 +43,7 @@ public class UdpClient {
                     });
 
             Channel ch = b.bind(0).sync().channel();
-            CommonData commonData = new CommonData(null, eCodeType.test, null, null);
+            CommonData commonData = new CommonData(null, eCodeType.test, null);
             ch.writeAndFlush(new DatagramPacket(
                     Unpooled.copiedBuffer(Objects.requireNonNull(CommonData.serialization(commonData))),
                     new InetSocketAddress("localhost", port))).sync();

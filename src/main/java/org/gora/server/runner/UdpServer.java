@@ -52,6 +52,7 @@ public class UdpServer {
                                     return;
                                 }
 
+//                                클라이언트 연결여부 체크
                                 if(!UdpClientManager.contain(commonData.getKey())) {
                                     String key = UdpClientManager.connect(clientIp);
                                     commonData.setKey(key);
