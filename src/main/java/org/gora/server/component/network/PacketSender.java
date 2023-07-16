@@ -12,6 +12,7 @@ import org.gora.server.common.CommonUtils;
 import org.gora.server.common.eEnv;
 import org.gora.server.component.network.UdpClientManager;
 import org.gora.server.model.CommonData;
+import org.gora.server.model.eCodeType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,7 @@ public class PacketSender {
 
     private final ObjectMapper objectMapper;
     private final UdpClientManager udpClientManager;
-
+    private final TcpClientManager tcpClientManager;
 
     public static void push(CommonData data){
         sendQue.add(data);
@@ -49,32 +50,20 @@ public class PacketSender {
             sendQue.stream().findFirst().ifPresent(commonData -> {
                 if(!sendQue.remove(commonData)){
                     log.error("[송신 큐] 큐에서 읽은 데이터 삭제 실패");
-                    return;
+
                 }
 
-                ChannelFuture channelFuture = udpClientManager.getChannelFuture(commonData.getKey());
-                if(channelFuture == null){
-                    log.error("[sender 스레드] 전송 실패 = channelFuture not empty");
-                    return;
-                }
-
-                byte[] sendBytes;
                 try {
-                    sendBytes = objectMapper.writeValueAsBytes(commonData);
-                } catch (JsonProcessingException e) {
-                    log.error("send 데이터 직렬화 실패");
-                    log.error(CommonUtils.getStackTraceElements(e));
-                    return;
-                }
+                    if(commonData.getType() == eCodeType.tcp){
+                        tcpClientManager.send(commonData);
+                    }else{
+                        udpClientManager.send(commonData);
+                    }
 
-                ByteBuf copyBuffer = Unpooled.copiedBuffer(sendBytes);
-                channelFuture.channel()
-                        .writeAndFlush(copyBuffer)
-                        .addListener((ChannelFutureListener) future -> {
-                            if(!future.isSuccess()){
-                                log.error("클라이언트로 송신 실패");
-                            }
-                        });
+                }catch (RuntimeException e){
+                    log.error("전송 실패");
+                    log.error(CommonUtils.getStackTraceElements(e));
+                }
             });
         }
     }

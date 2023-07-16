@@ -44,7 +44,7 @@ public class UdpClient {
                     });
 
             Channel ch = b.bind(0).sync().channel();
-            CommonData commonData = new CommonData(null, eCodeType.test, null);
+            CommonData commonData = new CommonData(null, eCodeType.udp, null);
 
             ObjectMapper objectMapper = new ObjectMapper();
             byte[] sendBytes = objectMapper.writeValueAsBytes(commonData);

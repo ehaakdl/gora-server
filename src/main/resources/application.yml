@@ -1,3 +1,5 @@
 app:
   udp_server_port: 11111
   udp_client_port: 11112
+  tcp_server_port: 11200
+  max_client: 1
