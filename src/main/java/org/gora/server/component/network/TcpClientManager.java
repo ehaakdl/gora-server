@@ -1,15 +1,15 @@
 package org.gora.server.component.network;
 
-import io.netty.channel.ChannelHandlerContext;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.eEnv;
 import org.gora.server.model.CommonData;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import io.netty.channel.ChannelHandlerContext;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
@@ -21,7 +21,9 @@ public class TcpClientManager {
         if(channelHandlerContext == null){
             return false;
         }
-
+        
+        // todo 임시코드
+        data.setData("send to client");
         channelHandlerContext.writeAndFlush(data);
         return true;
     }

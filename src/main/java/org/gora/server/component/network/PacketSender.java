@@ -1,30 +1,24 @@
 package org.gora.server.component.network;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.eEnv;
-import org.gora.server.component.network.UdpClientManager;
 import org.gora.server.model.CommonData;
 import org.gora.server.model.eCodeType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class PacketSender {
+    private final UdpClientManager udpClientManager;
+    private final TcpClientManager tcpClientManager;
 
     private static final BlockingQueue<CommonData> sendQue = new LinkedBlockingQueue<>(
             Integer.parseInt(
@@ -34,10 +28,6 @@ public class PacketSender {
                     )
             )
     );
-
-    private final ObjectMapper objectMapper;
-    private final UdpClientManager udpClientManager;
-    private final TcpClientManager tcpClientManager;
 
     public static void push(CommonData data){
         sendQue.add(data);

@@ -1,6 +1,10 @@
 package org.gora.server.component.network;
 
+import org.gora.server.model.CommonData;
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -8,15 +12,12 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.gora.server.model.CommonData;
-import org.springframework.stereotype.Component;
 
 @Component
 @ChannelHandler.Sharable
 @RequiredArgsConstructor
 @Slf4j
-public class UdpServerInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
-    private final UdpClientManager udpClientManager;
+public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     private final ObjectMapper objectMapper;
 
     @Override
@@ -30,16 +31,10 @@ public class UdpServerInboundHandler extends SimpleChannelInboundHandler<Datagra
             log.error("수신된 패킷 역직렬화 실패");
             return;
         }
-
-        if(!udpClientManager.contain(content.getKey())){
-            String key = udpClientManager.connect(msg.sender().getHostString());
-            if(key == null){
-                log.error("UDP 클라이언트 연결 실패");
-                return;
-            }
-            content.setKey(key);
-        }
-
+        
+        // 클라이언트 저장소에 무조건 아이피 저장
+        content.setKey(msg.sender().getHostName());
+        ClientManager.put(msg.sender().getHostName());
         PacketRouter.push(content);
     }
 }

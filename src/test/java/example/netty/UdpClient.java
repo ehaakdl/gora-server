@@ -1,7 +1,12 @@
 package example.netty;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import java.net.InetSocketAddress;
+
+import org.gora.server.model.CommonData;
+import org.gora.server.model.eCodeType;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -13,13 +18,6 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
-import org.gora.server.common.CommonUtils;
-import org.gora.server.common.eEnv;
-import org.gora.server.model.CommonData;
-import org.gora.server.model.eCodeType;
-
-import java.net.InetSocketAddress;
-import java.util.Objects;
 
 public class UdpClient {
 
@@ -43,18 +41,21 @@ public class UdpClient {
                         }
                     });
 
-            Channel ch = b.bind(0).sync().channel();
-            CommonData commonData = new CommonData(null, eCodeType.udp, null);
+            // 서버에서 클라이언트에게 보내야할때 bind해놓음 
+            Channel ch = b.bind(11112).sync().channel();
+            
+
+            for (int i = 0; i < 5; i++) {
+            CommonData commonData = new CommonData(i+": send to udp server", eCodeType.udp, null);
 
             ObjectMapper objectMapper = new ObjectMapper();
             byte[] sendBytes = objectMapper.writeValueAsBytes(commonData);
             ch.writeAndFlush(new DatagramPacket(
                     Unpooled.copiedBuffer(sendBytes),
                     new InetSocketAddress("localhost", port))).sync();
-
-            if (!ch.closeFuture().await(15000)) {
-                System.err.println("Request timed out.");
             }
+            
+            ch.closeFuture().await(1000 * 20);
         } finally {
             group.shutdownGracefully();
         }

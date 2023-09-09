@@ -1,18 +1,28 @@
 package org.gora.server.component.network;
 
 
+import java.net.InetSocketAddress;
+
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -20,8 +30,8 @@ import org.springframework.stereotype.Component;
 public class UdpServer {
     private EventLoopGroup bossLoopGroup;
     private ChannelGroup channelGroup;
-    private final UdpServerInboundHandler udpServerInboundHandler;
-
+    private final UdpInboundHandler udpServerInboundHandler;
+    
     @PostConstruct
     public void init(){
         this.bossLoopGroup = new NioEventLoopGroup();
@@ -45,6 +55,14 @@ public class UdpServer {
         ;
         ChannelFuture channelFuture = bootstrap.bind(port).sync();
         channelGroup.add(channelFuture.channel());
+    }
+
+    public boolean send(String ip, int port, byte[] data){
+        channelGroup.writeAndFlush(new DatagramPacket(
+                    Unpooled.copiedBuffer(data),
+                    new InetSocketAddress(ip, port)));
+        
+                    return true;
     }
 
     public void shutdown() {
