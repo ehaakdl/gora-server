@@ -1,6 +1,7 @@
 package org.gora.server.component.network;
 
 import org.gora.server.common.CommonUtils;
+import org.gora.server.model.ClientConnection;
 import org.gora.server.model.CommonData;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -30,11 +31,11 @@ public class UdpClientManager {
             throw new RuntimeException();
         }
 
-        String clientIp = ClientManager.get(commonData.getKey());
-        if(clientIp == null){
+        ClientConnection clientConnection = ClientManager.get(commonData.getKey());
+        if(clientConnection == null){
             throw new RuntimeException("client Ip를 찾을수가 없다.");
         }
         
-        udpServer.send(clientIp, udpClientPort, sendBytes);
+        udpServer.send(clientConnection.getClientIp(), udpClientPort, sendBytes);
     }
 }

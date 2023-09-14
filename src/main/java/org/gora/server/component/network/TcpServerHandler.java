@@ -1,5 +1,8 @@
 package org.gora.server.component.network;
 
+import java.util.UUID;
+
+import org.gora.server.model.ClientConnection;
 import org.gora.server.model.CommonData;
 import org.springframework.stereotype.Component;
 
@@ -29,9 +32,9 @@ public class TcpServerHandler extends ChannelInboundHandlerAdapter {
         CommonData commonData = objectMapper.readValue(receiveByte, CommonData.class);
 
 //        첫 연결인 경우 클라이언트 맵에 추가
-        String key;
-        if (!tcpClientManager.contain(commonData.getKey())) {
-            key = tcpClientManager.put(ctx);
+        String key = UUID.randomUUID().toString().replace("-", "");
+        if (!ClientManager.contain(commonData.getKey())) {
+            ClientManager.put(key, ClientConnection.createTcp(key, ctx));
             commonData.setKey(key);
         }
     

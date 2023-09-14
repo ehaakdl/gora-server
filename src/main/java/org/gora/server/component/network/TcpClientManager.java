@@ -1,39 +1,41 @@
 package org.gora.server.component.network;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.gora.server.common.CommonUtils;
-import org.gora.server.common.eEnv;
+import org.gora.server.model.ClientConnection;
 import org.gora.server.model.CommonData;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class TcpClientManager {
-    @Autowired
-    private ObjectMapper objectMapper;
-    private final Map<String, ChannelHandlerContext> clients = new ConcurrentHashMap<>(Integer.parseInt(CommonUtils.getEnv(eEnv.MAX_DEFAULT_QUE_SZ, eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ))));
+    private final ObjectMapper objectMapper;
 
     public boolean send(CommonData data){
-        ChannelHandlerContext channelHandlerContext = clients.get(data.getKey());
-        if(channelHandlerContext == null){
+        ClientConnection clientConnection = ClientManager.get(data.getKey());
+        if(clientConnection == null){
+            log.error("클라이언트 존재 안함");
             return false;
         }
 
-        ByteBuf sendBuf= CommonData.converByteBuf(data, objectMapper);
+        ByteBuf sendBuf= CommonData.convertByteBuf(data, objectMapper);
         if(sendBuf == null){
+            log.error("송신 데이터 파싱 실패");
             return false;
         }
         
-        channelHandlerContext.writeAndFlush(sendBuf).addListener(future -> {
+        if(!clientConnection.isConnectionTcp()){
+            log.error("클라이언트와 TCP 연결 안됨");
+            return false;
+        }
+        
+        clientConnection.getTcpChannel().writeAndFlush(sendBuf).addListener(future -> {
             if(!future.isSuccess()){
                 log.error("송신 실패");
                 log.error(CommonUtils.getStackTraceElements(future.cause()));
@@ -44,25 +46,15 @@ public class TcpClientManager {
     }
 
     public boolean close(String key){
-        ChannelHandlerContext channelHandlerContext = clients.get(key);
-        if(channelHandlerContext == null){
+        ClientConnection clientConnection = ClientManager.get(key);
+        if(clientConnection == null){
+            log.error("클라이언트 존재 안함");
             return false;
         }
-
-        channelHandlerContext.close();
+        if(clientConnection.isConnectionTcp()){
+            clientConnection.getTcpChannel().close();
+        }
+        
         return true;
-    }
-
-    public String  put(ChannelHandlerContext channelHandlerContext){
-        String key = CommonUtils.replaceUUID();
-        clients.put(key, channelHandlerContext);
-        return key;
-    }
-
-    public boolean contain(String key){
-        if(key == null){
-            return false;
-        }
-        return clients.containsKey(key);
     }
 }

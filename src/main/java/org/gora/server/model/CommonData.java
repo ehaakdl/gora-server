@@ -31,7 +31,7 @@ public class CommonData implements Serializable{
         return objectMapper.readValue(receiveByte, CommonData.class);
     }
 
-    public static ByteBuf converByteBuf(CommonData data, ObjectMapper objectMapper){
+    public static ByteBuf convertByteBuf(CommonData data, ObjectMapper objectMapper){
         byte[] message;
         try {
             message = objectMapper.writeValueAsString(data).getBytes();

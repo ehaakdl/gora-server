@@ -1,5 +1,8 @@
 package org.gora.server.component.network;
 
+import java.util.UUID;
+
+import org.gora.server.model.ClientConnection;
 import org.gora.server.model.CommonData;
 import org.springframework.stereotype.Component;
 
@@ -32,9 +35,15 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
             return;
         }
         
-        // 클라이언트 저장소에 무조건 아이피 저장
-        content.setKey(msg.sender().getHostName());
-        ClientManager.put(msg.sender().getHostName());
+        // 데이터에 key가 없으면 첫 송신이라고 생각, 디비나 캐시에 아이피 관리하는 방식으로 해야할듯
+        if (!ClientManager.contain(content.getKey())) {
+            content.setKey(msg.sender().getHostName());
+            ClientConnection clientConnection = ClientConnection.createUdp(msg.sender().getHostName());
+            String key = UUID.randomUUID().toString().replace("-", "");
+            ClientManager.put(key ,clientConnection);
+            content.setKey(key);
+        }
+
         PacketRouter.push(content);
     }
 }
