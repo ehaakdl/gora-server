@@ -1,58 +1,92 @@
 package example.netty;
 
+
+
+import java.net.InetSocketAddress;
+import java.util.Scanner;
+
 import org.gora.server.model.CommonData;
 import org.gora.server.model.eCodeType;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.DefaultThreadFactory;
 
-public final class TcpClient {
-    static final String HOST = "127.0.0.1";
-    static final int PORT = 11200;
+public class TcpClient {
+    private static final int SERVER_PORT = 11200;
+    private final String host;
+    private final int port;
+
+    private Channel serverChannel;
+    private EventLoopGroup eventLoopGroup;
+
+    public TcpClient(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
+    public void connect() throws InterruptedException {
+        eventLoopGroup = new NioEventLoopGroup(1, new DefaultThreadFactory("client"));
+
+        Bootstrap bootstrap = new Bootstrap().group(eventLoopGroup);
+
+        bootstrap.channel(NioSocketChannel.class);
+        bootstrap.remoteAddress(new InetSocketAddress(host, port));
+        bootstrap.handler(new TcpClientInitializer());
+
+        serverChannel = bootstrap.connect().sync().channel();
+    }
+
+    private void start() throws InterruptedException, JsonProcessingException {
+        Scanner scanner = new Scanner(System.in);
+
+        String message;
+        ChannelFuture future;
+
+        while(true) {
+            // 사용자 입력
+            message = scanner.nextLine();
+
+            // Server로 전송
+            CommonData commonData = new CommonData(message, eCodeType.tcp, null);
+            ObjectMapper objectMapper = new ObjectMapper();
+            byte[] messageByte = objectMapper.writeValueAsString(commonData).getBytes();
+            ByteBuf buffer = Unpooled.wrappedBuffer(messageByte);
+            future = serverChannel.writeAndFlush(buffer);
+
+            if("quit".equals(message)){
+                serverChannel.closeFuture().sync();
+                break;
+            }
+        }
+
+        // 종료되기 전 모든 메시지가 flush 될때까지 기다림
+        if(future != null){
+            future.sync();
+        }
+    }
+
+    public void close() {
+        eventLoopGroup.shutdownGracefully();
+    }
 
     public static void main(String[] args) throws Exception {
-
-        EventLoopGroup group = new NioEventLoopGroup();
+        TcpClient client = new TcpClient("127.0.0.1", SERVER_PORT);
 
         try {
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(group)
-                    .channel(NioSocketChannel.class)
-                    .option(ChannelOption.TCP_NODELAY, true)
-                    .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new TcpClientHandler());
-                        }
-                    });
-
-            ChannelFuture future = bootstrap.connect(HOST, PORT).sync();
-
-
-            // Write a message
-            for (int i = 0; i < 5; i++) {
-            
-            CommonData commonData = new CommonData(i+": sned to tcp server", eCodeType.tcp, null);
-            ObjectMapper objectMapper = new ObjectMapper();
-            byte[] message = objectMapper.writeValueAsString(commonData).getBytes();
-            ByteBuf buffer = Unpooled.wrappedBuffer(message);
-            future.channel().writeAndFlush(buffer).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
-            }
-            
-            future.channel().closeFuture().await(1000*20);
+            client.connect();
+            client.start();
         } finally {
-            group.shutdownGracefully();
+            client.close();
         }
     }
 

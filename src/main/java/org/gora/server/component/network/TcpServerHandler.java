@@ -1,6 +1,10 @@
 package org.gora.server.component.network;
 
+import org.gora.server.model.CommonData;
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
@@ -8,8 +12,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.gora.server.model.CommonData;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -32,7 +34,7 @@ public class TcpServerHandler extends ChannelInboundHandlerAdapter {
             key = tcpClientManager.put(ctx);
             commonData.setKey(key);
         }
-
+    
         PacketRouter.push(commonData);
     }
 

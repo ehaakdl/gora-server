@@ -8,6 +8,11 @@ import org.gora.server.common.eEnv;
 import org.gora.server.model.CommonData;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,9 +27,22 @@ public class TcpClientManager {
             return false;
         }
         
-        // todo 임시코드
-        data.setData("send to client");
-        channelHandlerContext.writeAndFlush(data);
+        ObjectMapper objectMapper = new ObjectMapper();
+        byte[] message;
+        try {
+            message = objectMapper.writeValueAsString(data).getBytes();
+        } catch (JsonProcessingException e) {
+            log.error("송신 데이터 파싱실패");
+            log.error(CommonUtils.getStackTraceElements(e));
+            return false;
+        }
+        ByteBuf buffer = Unpooled.wrappedBuffer(message);
+        channelHandlerContext.writeAndFlush(buffer).addListener(future -> {
+            if(!future.isSuccess()){
+                log.error("송신 실패");
+                log.error(CommonUtils.getStackTraceElements(future.cause()));
+            }
+        });
         return true;
     }
 

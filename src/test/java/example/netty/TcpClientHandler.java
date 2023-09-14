@@ -1,19 +1,31 @@
 package example.netty;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import java.io.IOException;
 
-//todo fix:서버에서 보낸 데이터를 읽지 못함
-public class TcpClientHandler extends ChannelInboundHandlerAdapter {
+import org.gora.server.model.CommonData;
+
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+
+public class TcpClientHandler extends SimpleChannelInboundHandler {
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        System.out.println("Client received: " + msg);
+    protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws StreamReadException, DatabindException, IOException {
+        ByteBuf byteBuf = (ByteBuf) msg;
+        byte[] receiveByte = new byte[byteBuf.readableBytes()];
+        byteBuf.getBytes(byteBuf.readerIndex(), receiveByte);
+        ObjectMapper objectMapper = new ObjectMapper();
+        CommonData commonData = objectMapper.readValue(receiveByte, CommonData.class);
+        System.out.println("수신: " +commonData.getData());
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        // Close the connection when an exception is raised.
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause){
         cause.printStackTrace();
         ctx.close();
     }
