@@ -1,13 +1,18 @@
 package org.gora.server.common;
 
+import java.io.IOException;
+import java.util.UUID;
+
+import org.gora.server.model.CommonData;
+
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.netty.buffer.ByteBuf;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.UUID;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -19,6 +24,7 @@ public final class CommonUtils {
         return result == null ? defaultValue : result;
     }
 
+    
     public static String replaceUUID(){
         return UUID.randomUUID().toString().replace("-", "");
     }

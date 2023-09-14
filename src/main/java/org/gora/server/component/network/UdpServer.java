@@ -3,16 +3,14 @@ package org.gora.server.component.network;
 
 import java.net.InetSocketAddress;
 
+import org.gora.server.component.network.pipline.UdpPiplineInitializer;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
@@ -30,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UdpServer {
     private EventLoopGroup bossLoopGroup;
     private ChannelGroup channelGroup;
-    private final UdpInboundHandler udpServerInboundHandler;
+    private final UdpPiplineInitializer piplineInitializer;
     
     @PostConstruct
     public void init(){
@@ -45,13 +43,7 @@ public class UdpServer {
                 .channel(NioDatagramChannel.class)
                 .option(ChannelOption.AUTO_CLOSE, true)
                 .option(ChannelOption.SO_BROADCAST, true)
-                .handler(new ChannelInitializer<Channel>() {
-                    @Override
-                    public void initChannel(final Channel ch) throws Exception {
-                        ChannelPipeline p = ch.pipeline();
-                        p.addLast(udpServerInboundHandler);
-                    }
-                });
+                .handler(piplineInitializer);
         ;
         ChannelFuture channelFuture = bootstrap.bind(port).sync();
         channelGroup.add(channelFuture.channel());
