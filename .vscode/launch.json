@@ -24,6 +24,9 @@
             "mainClass": "org.gora.server.ServerApplication",
             "projectName": "server",
             "env": {
+                "TCP_SERVER_PORT": 11200,
+                "UDP_SERVER_PORT": 11111,
+                "UDP_CLIENT_PORT": 11112,
                 "MAX_DEFAULT_QUE_SZ": 1000
             }
         },

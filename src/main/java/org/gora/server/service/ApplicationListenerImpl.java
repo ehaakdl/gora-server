@@ -1,17 +1,17 @@
 package org.gora.server.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.gora.server.common.CommonUtils;
-import org.gora.server.common.eEnv;
 import org.gora.server.component.network.PacketRouter;
 import org.gora.server.component.network.PacketSender;
 import org.gora.server.component.network.TcpServer;
 import org.gora.server.component.network.UdpServer;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
@@ -21,9 +21,9 @@ public class ApplicationListenerImpl implements ApplicationListener<ContextRefre
     private final PacketSender packetSender;
     private final UdpServer udpServer;
     private final TcpServer tcpServer;
-    @Value("${app.udp_server_port:11111}")
+    @Value("${app.udp_server_port}")
     private int udpServerPort;
-    @Value("${app.tcp_server_port:11200}")
+    @Value("${app.tcp_server_port}")
     private int tcpServerPort;
 
     @Override
