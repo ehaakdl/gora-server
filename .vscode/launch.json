@@ -6,17 +6,10 @@
     "configurations": [
         {
             "type": "java",
-            "name": "TcpServer2",
+            "name": "ServerApplication",
             "request": "launch",
-            "mainClass": "example.netty.TcpServer2",
-            "projectName": "server"
-        },
-        {
-            "type": "java",
-            "name": "TcpClient2",
-            "request": "launch",
-            "mainClass": "example.netty.TcpClient2",
-            "projectName": "server"
+            "mainClass": "org.gora.server.ServerApplication",
+            "projectName": "RealTime"
         },
         {
             "type": "java",
@@ -31,7 +24,6 @@
             "mainClass": "org.gora.server.ServerApplication",
             "projectName": "server",
             "env": {
-                "PORT": 11111,
                 "MAX_DEFAULT_QUE_SZ": 1000
             }
         },
