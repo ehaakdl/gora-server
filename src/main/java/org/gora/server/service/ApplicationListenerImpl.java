@@ -5,12 +5,12 @@ import org.gora.server.component.network.PacketRouter;
 import org.gora.server.component.network.PacketSender;
 import org.gora.server.component.network.TcpServer;
 import org.gora.server.component.network.UdpServer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
