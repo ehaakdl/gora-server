@@ -6,7 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.eEnv;
 import org.gora.server.model.CommonData;
-import org.gora.server.model.eCodeType;
+import org.gora.server.model.eProtocol;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -44,10 +44,12 @@ public class PacketSender {
                 }
 
                 try {
-                    if(commonData.getType() == eCodeType.tcp){
+                    if(commonData.getProtocol() == eProtocol.tcp){
                         tcpClientManager.send(commonData);
-                    }else{
+                    }else if(commonData.getProtocol() == eProtocol.udp){
                         udpClientManager.send(commonData);
+                    }else{
+                        log.error("지원하지 않는 프로토콜입니다.");
                     }
 
                 }catch (RuntimeException e){

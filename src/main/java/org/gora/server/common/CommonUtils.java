@@ -1,15 +1,7 @@
 package org.gora.server.common;
 
-import java.io.IOException;
 import java.util.UUID;
 
-import org.gora.server.model.CommonData;
-
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.netty.buffer.ByteBuf;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

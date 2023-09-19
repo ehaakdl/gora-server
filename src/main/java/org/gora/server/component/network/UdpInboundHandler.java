@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.CommonData;
+import org.gora.server.model.eProtocol;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +35,7 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
             log.error("수신된 패킷 역직렬화 실패");
             return;
         }
+        content.setProtocol(eProtocol.udp);
         
         // 데이터에 key가 없으면 첫 송신이라고 생각, 디비나 캐시에 아이피 관리하는 방식으로 해야할듯
         if (!ClientManager.contain(content.getKey())) {
@@ -43,7 +45,7 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
             ClientManager.put(key ,clientConnection);
             content.setKey(key);
         }
-
+        
         PacketRouter.push(content);
     }
 }

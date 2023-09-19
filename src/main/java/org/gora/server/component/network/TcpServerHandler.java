@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.CommonData;
+import org.gora.server.model.eProtocol;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,14 +23,21 @@ import lombok.extern.slf4j.Slf4j;
 @ChannelHandler.Sharable
 public class TcpServerHandler extends ChannelInboundHandlerAdapter {
     private final ObjectMapper objectMapper;
-    private final TcpClientManager tcpClientManager;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf byteBuf = (ByteBuf) msg;
         byte[] receiveByte = new byte[byteBuf.readableBytes()];
         byteBuf.getBytes(byteBuf.readerIndex(), receiveByte);
-        CommonData commonData = objectMapper.readValue(receiveByte, CommonData.class);
+
+        CommonData commonData;
+        try{
+            commonData = objectMapper.readValue(receiveByte, CommonData.class);
+        }catch(Exception e){
+            log.info("[TCP] 잘못된 수신 패킷 왔습니다.", e);
+            return;
+        }
+        commonData.setProtocol(eProtocol.tcp);
 
 //        첫 연결인 경우 클라이언트 맵에 추가
         String key = UUID.randomUUID().toString().replace("-", "");

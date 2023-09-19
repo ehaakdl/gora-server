@@ -1,7 +1,8 @@
 package org.gora.server.config;
 
-import jakarta.annotation.Resource;
-import lombok.extern.slf4j.Slf4j;
+import java.lang.reflect.Method;
+import java.util.concurrent.Executor;
+
 import org.gora.server.common.CommonUtils;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
@@ -10,8 +11,7 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.lang.reflect.Method;
-import java.util.concurrent.Executor;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableAsync

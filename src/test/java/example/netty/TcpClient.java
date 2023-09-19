@@ -6,7 +6,7 @@ import java.net.InetSocketAddress;
 import java.util.Scanner;
 
 import org.gora.server.model.CommonData;
-import org.gora.server.model.eCodeType;
+import org.gora.server.model.eServiceRouteType;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,31 +47,31 @@ public class TcpClient {
     }
 
     private void start() throws InterruptedException, JsonProcessingException {
-        Scanner scanner = new Scanner(System.in);
+        try (Scanner scanner = new Scanner(System.in)) {
+            String message;
+            ChannelFuture future;
 
-        String message;
-        ChannelFuture future;
+            while(true) {
+                // 사용자 입력
+                message = scanner.nextLine();
 
-        while(true) {
-            // 사용자 입력
-            message = scanner.nextLine();
+                // Server로 전송
+                CommonData commonData = new CommonData(message, eServiceRouteType.test, null);
+                ObjectMapper objectMapper = new ObjectMapper();
+                byte[] messageByte = objectMapper.writeValueAsString(commonData).getBytes();
+                ByteBuf buffer = Unpooled.wrappedBuffer(messageByte);
+                future = serverChannel.writeAndFlush(buffer);
 
-            // Server로 전송
-            CommonData commonData = new CommonData(message, eCodeType.tcp, null);
-            ObjectMapper objectMapper = new ObjectMapper();
-            byte[] messageByte = objectMapper.writeValueAsString(commonData).getBytes();
-            ByteBuf buffer = Unpooled.wrappedBuffer(messageByte);
-            future = serverChannel.writeAndFlush(buffer);
-
-            if("quit".equals(message)){
-                serverChannel.closeFuture().sync();
-                break;
+                if("quit".equals(message)){
+                    serverChannel.closeFuture().sync();
+                    break;
+                }
             }
-        }
 
-        // 종료되기 전 모든 메시지가 flush 될때까지 기다림
-        if(future != null){
-            future.sync();
+            // 종료되기 전 모든 메시지가 flush 될때까지 기다림
+            if(future != null){
+                future.sync();
+            }
         }
     }
 

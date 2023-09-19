@@ -1,7 +1,5 @@
 package org.gora.server.model;
 
-import java.util.UUID;
-
 import io.netty.channel.ChannelHandlerContext;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
