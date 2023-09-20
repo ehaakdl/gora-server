@@ -11,29 +11,32 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
-
 /**
  * 수신된 패킷을 라우트
  */
 @Slf4j
 @Component
 public class PacketRouter {
-    private static final BlockingQueue<CommonData> receiveQue = new LinkedBlockingQueue<>(Integer.parseInt(CommonUtils.getEnv(eEnv.MAX_DEFAULT_QUE_SZ, eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ))));
+    private static final BlockingQueue<CommonData> receiveQue = new LinkedBlockingQueue<>(Integer.parseInt(
+            CommonUtils.getEnv(eEnv.MAX_DEFAULT_QUE_SZ, eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ))));
 
-    public static void push(CommonData data){
+    // todo queue full 경우 체크하기
+    // 클라이언트에게 대기 메시지 송신
+    // 클라이언트는 일정시간 이후 다시 보냄
+    public static void push(CommonData data) {
         receiveQue.add(data);
     }
 
     @Async
     public void run() {
-        while(true) {
+        while (true) {
             CommonUtils.sleep();
             receiveQue.stream().findFirst().ifPresent(commonData -> {
-                if(!receiveQue.remove(commonData)){
+                if (!receiveQue.remove(commonData)) {
                     log.error("[수신 큐] 큐에서 읽은 데이터 삭제 실패");
                 }
 
-//                todo 수신된 패킷에 type 보고 라우팅 하는 기능 추가 필요
+                // todo 수신된 패킷에 type 보고 라우팅 하는 기능 추가 필요
                 PacketSender.push(commonData);
             });
         }

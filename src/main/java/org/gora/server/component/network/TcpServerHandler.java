@@ -7,38 +7,22 @@ import org.gora.server.model.CommonData;
 import org.gora.server.model.eProtocol;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 @ChannelHandler.Sharable
 public class TcpServerHandler extends ChannelInboundHandlerAdapter {
-    private final ObjectMapper objectMapper;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf byteBuf = (ByteBuf) msg;
-        byte[] receiveByte = new byte[byteBuf.readableBytes()];
-        byteBuf.getBytes(byteBuf.readerIndex(), receiveByte);
-
-        CommonData commonData;
-        try{
-            commonData = objectMapper.readValue(receiveByte, CommonData.class);
-        }catch(Exception e){
-            log.info("[TCP] 잘못된 수신 패킷 왔습니다.", e);
-            return;
-        }
+        CommonData commonData = (CommonData) msg;
         commonData.setProtocol(eProtocol.tcp);
-
+        
 //        첫 연결인 경우 클라이언트 맵에 추가
         String key = UUID.randomUUID().toString().replace("-", "");
         if (!ClientManager.contain(commonData.getKey())) {

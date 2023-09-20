@@ -23,36 +23,35 @@ public class PacketSender {
     private static final BlockingQueue<CommonData> sendQue = new LinkedBlockingQueue<>(
             Integer.parseInt(
                     CommonUtils.getEnv(
-                            eEnv.MAX_DEFAULT_QUE_SZ
-                            , eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ)
-                    )
-            )
-    );
+                            eEnv.MAX_DEFAULT_QUE_SZ, eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ))));
 
-    public static void push(CommonData data){
+    // todo queue full 경우 체크하기
+    // 클라이언트에게 대기 메시지 송신
+    // 클라이언트는 일정시간 이후 다시 보냄
+    public static void push(CommonData data) {
         sendQue.add(data);
     }
 
     @Async
     public void run() {
-        while (true){
+        while (true) {
             CommonUtils.sleep();
             sendQue.stream().findFirst().ifPresent(commonData -> {
-                if(!sendQue.remove(commonData)){
+                if (!sendQue.remove(commonData)) {
                     log.error("[송신 큐] 큐에서 읽은 데이터 삭제 실패");
 
                 }
 
                 try {
-                    if(commonData.getProtocol() == eProtocol.tcp){
+                    if (commonData.getProtocol() == eProtocol.tcp) {
                         tcpClientManager.send(commonData);
-                    }else if(commonData.getProtocol() == eProtocol.udp){
+                    } else if (commonData.getProtocol() == eProtocol.udp) {
                         udpClientManager.send(commonData);
-                    }else{
+                    } else {
                         log.error("지원하지 않는 프로토콜입니다.");
                     }
 
-                }catch (RuntimeException e){
+                } catch (RuntimeException e) {
                     log.error("전송 실패");
                     log.error(CommonUtils.getStackTraceElements(e));
                 }
