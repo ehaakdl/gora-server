@@ -32,6 +32,10 @@ public class PacketSender {
         sendQue.add(data);
     }
 
+    public static int size() {
+        return sendQue.size();
+    }
+
     @Async
     public void run() {
         while (true) {
@@ -41,7 +45,7 @@ public class PacketSender {
                     log.error("[송신 큐] 큐에서 읽은 데이터 삭제 실패");
 
                 }
-
+                log.info("send que size {}", sendQue.size());
                 try {
                     if (commonData.getProtocol() == eProtocol.tcp) {
                         tcpClientManager.send(commonData);

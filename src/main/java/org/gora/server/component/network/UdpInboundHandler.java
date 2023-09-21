@@ -46,6 +46,10 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
             content.setKey(key);
         }
         
-        PacketRouter.push(content);
+        try{
+            PacketRouter.push(content);
+        }catch(IllegalStateException e){
+            log.error("송싱 큐가 꽉 찼습니다. {}", e);
+        }
     }
 }

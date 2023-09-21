@@ -12,25 +12,32 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
 @ChannelHandler.Sharable
+@Slf4j
 public class TcpServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         CommonData commonData = (CommonData) msg;
         commonData.setProtocol(eProtocol.tcp);
-        
-//        첫 연결인 경우 클라이언트 맵에 추가
+
+        // 첫 연결인 경우 클라이언트 맵에 추가
         String key = UUID.randomUUID().toString().replace("-", "");
         if (!ClientManager.contain(commonData.getKey())) {
             ClientManager.put(key, ClientConnection.createTcp(key, ctx));
             commonData.setKey(key);
         }
-    
-        PacketRouter.push(commonData);
+
+        try {
+            PacketRouter.push(commonData);
+        } catch (IllegalStateException e) {
+            log.error("패킷 라우터 큐가 꽉 찼습니다. {}", PacketRouter.size());
+        }
+
     }
 
     @Override
@@ -44,7 +51,7 @@ public class TcpServerHandler extends ChannelInboundHandlerAdapter {
         ctx.close();
     }
 
-    //종료 이벤트
+    // 종료 이벤트
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         super.channelUnregistered(ctx);
