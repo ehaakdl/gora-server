@@ -49,7 +49,7 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
         try{
             PacketRouter.push(content);
         }catch(IllegalStateException e){
-            log.error("송싱 큐가 꽉 찼습니다. {}", e);
+            log.error("라우터 큐가 꽉 찼습니다. {}", e);
         }
     }
 }

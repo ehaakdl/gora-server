@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class ServerMessageDecoder extends ByteToMessageDecoder {
+public class ServerTcpMessageDecoder extends ByteToMessageDecoder {
     private final ObjectMapper objectMapper;
     private static StringBuilder assemble = new StringBuilder();
     private static final String EOF_STRING = "@@@";

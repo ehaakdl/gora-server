@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TcpPiplineInitializer extends ChannelInitializer<SocketChannel>{
     private final TcpServerHandler handler;
-    private final ServerMessageDecoder decoder;
+    private final ServerTcpMessageDecoder decoder;
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline().addLast(decoder);
