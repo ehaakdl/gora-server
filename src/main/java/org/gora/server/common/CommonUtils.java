@@ -10,13 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CommonUtils {
     private static final long SLEEP_MILLIS = 10;
-
-    public static String getEnv(eEnv key, String defaultValue) {
-        String result = System.getenv(key.name());
-        return result == null ? defaultValue : result;
-    }
-
-    
+ 
     public static String replaceUUID(){
         return UUID.randomUUID().toString().replace("-", "");
     }

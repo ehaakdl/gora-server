@@ -36,13 +36,13 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
 
             String contentJson = new String(contentByte);
             assemble.append(contentJson);
-            int index = assemble.indexOf(NetworkUtils.EOF_STRING);
+            int index = assemble.indexOf(NetworkUtils.EOF);
             if (index < 0) {
                 return;
             }
 
             String targetSerialize = assemble.substring(0, index);
-            assemble.delete(0, index + NetworkUtils.EOF_STRING.length());
+            assemble.delete(0, index + NetworkUtils.EOF.length());
 
             commonData = objectMapper.readValue(targetSerialize, CommonData.class);
         } catch (Exception e) {

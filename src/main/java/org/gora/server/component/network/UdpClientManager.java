@@ -27,7 +27,7 @@ public class UdpClientManager {
     public void send(CommonData commonData) {
         byte[] sendBytes;
         try {
-            String jsonToString = objectMapper.writeValueAsString(commonData) + NetworkUtils.EOF_STRING;
+            String jsonToString = objectMapper.writeValueAsString(commonData) + NetworkUtils.EOF;
             sendBytes = jsonToString.getBytes(StandardCharsets.UTF_8);
         } catch (JsonProcessingException e) {
             log.error("send 데이터 직렬화 실패");

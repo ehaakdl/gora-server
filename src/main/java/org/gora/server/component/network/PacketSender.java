@@ -4,7 +4,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.gora.server.common.CommonUtils;
-import org.gora.server.common.eEnv;
+import org.gora.server.common.Env;
 import org.gora.server.model.CommonData;
 import org.gora.server.model.eProtocol;
 import org.springframework.scheduling.annotation.Async;
@@ -22,8 +22,7 @@ public class PacketSender {
 
     private static final BlockingQueue<CommonData> sendQue = new LinkedBlockingQueue<>(
             Integer.parseInt(
-                    CommonUtils.getEnv(
-                            eEnv.MAX_DEFAULT_QUE_SZ, eEnv.getDefaultStringTypeValue(eEnv.MAX_DEFAULT_QUE_SZ))));
+                    System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
 
     // todo queue full 경우 체크하기
     // 클라이언트에게 대기 메시지 송신

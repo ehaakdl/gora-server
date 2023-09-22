@@ -50,7 +50,7 @@ public class CommonData implements Serializable{
     public static ByteBuf convertByteBuf(CommonData data, ObjectMapper objectMapper){
         byte[] message;
         try {
-            String json = objectMapper.writeValueAsString(data) + NetworkUtils.EOF_STRING;
+            String json = objectMapper.writeValueAsString(data) + NetworkUtils.EOF;
             message = json.getBytes();
         } catch (JsonProcessingException e) {
             return null;
