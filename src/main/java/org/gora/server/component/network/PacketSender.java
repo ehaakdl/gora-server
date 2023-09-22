@@ -6,7 +6,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.Env;
 import org.gora.server.model.CommonData;
-import org.gora.server.model.eProtocol;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class PacketSender {
-    private final UdpClientManager udpClientManager;
-    private final TcpClientManager tcpClientManager;
+    private final ClientManager clientManager;
 
     private static final BlockingQueue<CommonData> sendQue = new LinkedBlockingQueue<>(
             Integer.parseInt(
@@ -45,20 +43,8 @@ public class PacketSender {
                     log.error("[송신 큐] 큐에서 읽은 데이터 삭제 실패");
 
                 }
-                
-                try {
-                    if (commonData.getProtocol() == eProtocol.tcp) {
-                        tcpClientManager.send(commonData);
-                    } else if (commonData.getProtocol() == eProtocol.udp) {
-                        udpClientManager.send(commonData);
-                    } else {
-                        log.error("지원하지 않는 프로토콜입니다.");
-                    }
 
-                } catch (RuntimeException e) {
-                    log.error("전송 실패");
-                    log.error(CommonUtils.getStackTraceElements(e));
-                }
+                clientManager.send(commonData);
             });
         }
     }
