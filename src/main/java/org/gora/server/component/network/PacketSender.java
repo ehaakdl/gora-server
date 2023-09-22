@@ -41,11 +41,12 @@ public class PacketSender {
         while (true) {
             CommonUtils.sleep();
             sendQue.stream().findFirst().ifPresent(commonData -> {
+                log.info("send que size {}", sendQue.size());
                 if (!sendQue.remove(commonData)) {
                     log.error("[송신 큐] 큐에서 읽은 데이터 삭제 실패");
 
                 }
-                log.info("send que size {}", sendQue.size());
+                
                 try {
                     if (commonData.getProtocol() == eProtocol.tcp) {
                         tcpClientManager.send(commonData);

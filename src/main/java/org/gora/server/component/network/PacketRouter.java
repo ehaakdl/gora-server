@@ -35,11 +35,11 @@ public class PacketRouter {
         while (true) {
             CommonUtils.sleep();
             routerQue.stream().findFirst().ifPresent(commonData -> {
+                log.info("router que size {}", routerQue.size());
                 if (!routerQue.remove(commonData)) {
                     log.error("[수신 큐] 큐에서 읽은 데이터 삭제 실패");
                 }
-                log.info("router que size {}", routerQue.size());
-                
+
                 // todo 수신된 패킷에 type 보고 라우팅 하는 기능 추가 필요
                 try{
                     PacketSender.push(commonData);
