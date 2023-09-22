@@ -1,6 +1,9 @@
 package org.gora.server.component.network;
 
+import java.nio.charset.StandardCharsets;
+
 import org.gora.server.common.CommonUtils;
+import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.CommonData;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +27,8 @@ public class UdpClientManager {
     public void send(CommonData commonData) {
         byte[] sendBytes;
         try {
-            sendBytes = objectMapper.writeValueAsBytes(commonData);
+            String jsonToString = objectMapper.writeValueAsString(commonData) + NetworkUtils.EOF_STRING;
+            sendBytes = jsonToString.getBytes(StandardCharsets.UTF_8);
         } catch (JsonProcessingException e) {
             log.error("send 데이터 직렬화 실패");
             log.error(CommonUtils.getStackTraceElements(e));

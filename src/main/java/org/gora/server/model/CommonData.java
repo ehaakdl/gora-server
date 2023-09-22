@@ -3,6 +3,8 @@ package org.gora.server.model;
 import java.io.IOException;
 import java.io.Serializable;
 
+import org.gora.server.common.NetworkUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
@@ -48,7 +50,8 @@ public class CommonData implements Serializable{
     public static ByteBuf convertByteBuf(CommonData data, ObjectMapper objectMapper){
         byte[] message;
         try {
-            message = objectMapper.writeValueAsString(data).getBytes();
+            String json = objectMapper.writeValueAsString(data) + NetworkUtils.EOF_STRING;
+            message = json.getBytes();
         } catch (JsonProcessingException e) {
             return null;
         }
