@@ -3,3 +3,8 @@ app:
   udp_client_port: ${UDP_CLIENT_PORT:11112}
   tcp_server_port: ${TCP_SERVER_PORT:11200}
   max_client: 1
+
+spring:
+  output:
+    ansi:
+      enabled: always
