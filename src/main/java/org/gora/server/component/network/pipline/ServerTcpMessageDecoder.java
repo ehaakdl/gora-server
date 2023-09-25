@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ServerTcpMessageDecoder extends ByteToMessageDecoder {
     private final ObjectMapper objectMapper;
-    private static StringBuilder assemble = new StringBuilder();
+    private static final StringBuilder assemble = new StringBuilder();
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf recvMsg, List<Object> outMsg) throws Exception {
