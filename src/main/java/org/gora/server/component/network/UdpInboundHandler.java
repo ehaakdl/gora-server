@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 // decoder 역할은 임시로 handler에서 담당
 public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     private final ObjectMapper objectMapper;
-    private static StringBuilder assemble = new StringBuilder();
+    private static final StringBuilder assemble = new StringBuilder();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
