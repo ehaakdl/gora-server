@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.CommonData;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -14,7 +13,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Component
+
 @RequiredArgsConstructor
 @Slf4j
 public class ServerTcpMessageDecoder extends ByteToMessageDecoder {
