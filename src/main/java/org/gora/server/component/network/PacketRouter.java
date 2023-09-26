@@ -6,9 +6,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.Env;
 import org.gora.server.model.CommonData;
+import org.gora.server.model.eServiceRouteType;
+import org.gora.server.model.network.PlayerCoordinate;
+import org.gora.server.service.PlayerCoordinateService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -16,10 +22,13 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class PacketRouter {
+    private final PlayerCoordinateService playerCoordinateService;
     private static final BlockingQueue<CommonData> routerQue = new LinkedBlockingQueue<>(Integer.parseInt(
             System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
-
+    private final ObjectMapper objectMapper;
+    
     // todo queue full 경우 체크하기
     // 클라이언트에게 대기 메시지 송신
     // 클라이언트는 일정시간 이후 다시 보냄
@@ -37,16 +46,34 @@ public class PacketRouter {
             routerQue.stream().findFirst().ifPresent(commonData -> {
                 log.info("router que size {}", routerQue.size());
                 if (!routerQue.remove(commonData)) {
-                    log.error("[수신 큐] 큐에서 읽은 데이터 삭제 실패");
+                    log.error("[router 큐] 큐에서 읽은 데이터 삭제 실패");
+                    return;
                 }
 
-                // todo 수신된 패킷에 type 보고 라우팅 하는 기능 추가 필요
-                try{
-                    PacketSender.push(commonData);
-                }catch(IllegalStateException e){
-                    log.error("송신 큐가 꽉 찼습니다. {}", PacketSender.size());
+                eServiceRouteType routeType = commonData.getType();
+                if (routeType == null){
+                    if (!routerQue.remove(commonData)) {
+                        log.error("[router 큐] 큐에서 읽은 데이터 삭제 실패");
+                        return;
+                    }
+                    return;
                 }
-                
+
+                switch(routeType){
+                    case player_coordinate:
+                        PlayerCoordinate playerCoordinate = PlayerCoordinate.convertFromString((String) commonData.getData(), objectMapper);
+                        if(playerCoordinate == null){
+                            log.error("[router] convert fail");
+                            return;
+                        }
+                        playerCoordinateService.broadcasePlayerCoordinate(commonData.getKey(), commonData.getData());
+                        break;
+                    default:
+                        if (!routerQue.remove(commonData)) {
+                            log.error("[router 큐] 큐에서 읽은 데이터 삭제 실패");
+                            return;
+                        }
+                }
             });
         }
 

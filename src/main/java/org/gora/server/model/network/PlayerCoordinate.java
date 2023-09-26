@@ -23,6 +23,14 @@ public class PlayerCoordinate implements Serializable{
     private float x;
     private float y;
     
+    public static PlayerCoordinate convertFromString(String data, ObjectMapper objectMapper){
+        try{
+            return objectMapper.readValue(data, PlayerCoordinate.class);
+        }catch(Exception e){
+            return null;
+        }
+    }
+
     public static PlayerCoordinate convert(ByteBuf buf, ObjectMapper objectMapper) throws StreamReadException, DatabindException, IOException{
         ByteBuf byteBuf = buf;
         byte[] receiveByte = new byte[byteBuf.readableBytes()];
