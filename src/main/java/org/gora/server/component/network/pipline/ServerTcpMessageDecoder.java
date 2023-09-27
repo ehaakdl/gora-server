@@ -3,7 +3,7 @@ package org.gora.server.component.network.pipline;
 import java.util.List;
 
 import org.gora.server.common.NetworkUtils;
-import org.gora.server.model.NetworkPacket;
+import org.gora.server.model.network.NetworkPacket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
