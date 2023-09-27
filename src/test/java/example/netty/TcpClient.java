@@ -5,7 +5,7 @@ package example.netty;
 import java.net.InetSocketAddress;
 import java.util.Scanner;
 
-import org.gora.server.model.CommonData;
+import org.gora.server.model.NetworkPacket;
 import org.gora.server.model.eServiceRouteType;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -56,9 +56,9 @@ public class TcpClient {
                 message = scanner.nextLine();
 
                 // Server로 전송
-                CommonData commonData = new CommonData(message, eServiceRouteType.player_coordinate, null);
+                NetworkPacket NetworkPacket = new NetworkPacket(message, eServiceRouteType.player_coordinate, null);
                 ObjectMapper objectMapper = new ObjectMapper();
-                byte[] messageByte = objectMapper.writeValueAsString(commonData).getBytes();
+                byte[] messageByte = objectMapper.writeValueAsString(NetworkPacket).getBytes();
                 ByteBuf buffer = Unpooled.wrappedBuffer(messageByte);
                 future = serverChannel.writeAndFlush(buffer);
 

@@ -2,7 +2,7 @@ package example.netty;
 
 import java.net.InetSocketAddress;
 
-import org.gora.server.model.CommonData;
+import org.gora.server.model.NetworkPacket;
 import org.gora.server.model.eServiceRouteType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,10 +46,10 @@ public class UdpClient {
             
 
             for (int i = 0; i < 5; i++) {
-            CommonData commonData = new CommonData(i+": send to udp server", eServiceRouteType.player_coordinate);
+            NetworkPacket NetworkPacket = new NetworkPacket(i+": send to udp server", eServiceRouteType.player_coordinate);
 
             ObjectMapper objectMapper = new ObjectMapper();
-            byte[] sendBytes = objectMapper.writeValueAsBytes(commonData);
+            byte[] sendBytes = objectMapper.writeValueAsBytes(NetworkPacket);
             ch.writeAndFlush(new DatagramPacket(
                     Unpooled.copiedBuffer(sendBytes),
                     new InetSocketAddress("localhost", port))).sync();

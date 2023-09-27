@@ -3,7 +3,7 @@ package org.gora.server.component.network.pipline;
 import java.util.List;
 
 import org.gora.server.common.NetworkUtils;
-import org.gora.server.model.CommonData;
+import org.gora.server.model.NetworkPacket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,16 +38,16 @@ public class ServerTcpMessageDecoder extends ByteToMessageDecoder {
         String targetSerialize = assemble.substring(0, index);
         assemble.delete(0, index + NetworkUtils.EOF.length());
 
-        CommonData commonData;
+        NetworkPacket NetworkPacket;
         try {
-            commonData = objectMapper.readValue(targetSerialize, CommonData.class);
+            NetworkPacket = objectMapper.readValue(targetSerialize, NetworkPacket.class);
         } catch (Exception e) {
             log.info("[TCP] 잘못된 수신 패킷 왔습니다.", e);
             log.error("[TCP] 잘못된 수신 패킷 왔습니다.", e);
             throw new UnsupportedOperationException(e);
         }
 
-        outMsg.add(commonData);
+        outMsg.add(NetworkPacket);
     }
 
 }

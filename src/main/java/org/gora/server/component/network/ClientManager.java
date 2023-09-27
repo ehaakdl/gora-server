@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.Env;
 import org.gora.server.model.ClientConnection;
-import org.gora.server.model.CommonData;
+import org.gora.server.model.NetworkPacket;
 import org.gora.server.model.eProtocol;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -52,14 +52,14 @@ public class ClientManager {
         return true;
     }
 
-    public boolean send(CommonData data) {
+    public boolean send(NetworkPacket data) {
         ClientConnection clientConnection = ClientManager.get(data.getKey());
         if (clientConnection == null) {
             log.error("클라이언트 존재 안함");
             return false;
         }
 
-        ByteBuf sendBuf = CommonData.convertByteBuf(data, objectMapper);
+        ByteBuf sendBuf = NetworkPacket.convertByteBuf(data, objectMapper);
         if (sendBuf == null) {
             log.error("송신 데이터 파싱 실패");
             return false;

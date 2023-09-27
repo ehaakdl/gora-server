@@ -2,7 +2,7 @@ package org.gora.server.component;
 
 import java.io.IOException;
 
-import org.gora.server.model.CommonData;
+import org.gora.server.model.NetworkPacket;
 import org.gora.server.model.eServiceRouteType;
 import org.gora.server.model.network.PlayerCoordinate;
 
@@ -14,10 +14,10 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonCommonDataDeserialize extends JsonDeserializer<CommonData> {
+public class JsonNetworkPacketDeserialize extends JsonDeserializer<NetworkPacket> {
 
     @Override
-    public CommonData deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+    public NetworkPacket deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode root = p.getCodec().readTree(p);
@@ -26,9 +26,9 @@ public class JsonCommonDataDeserialize extends JsonDeserializer<CommonData> {
                 throw new JsonParseException("is not null service route type");
             }
 
-            CommonData commonData = new CommonData();
-            commonData.setType(serviceRouteType);
-            commonData.setKey(root.get("key").asText());
+            NetworkPacket NetworkPacket = new NetworkPacket();
+            NetworkPacket.setType(serviceRouteType);
+            NetworkPacket.setKey(root.get("key").asText());
 
             switch (serviceRouteType) {
                 case player_coordinate:
@@ -37,14 +37,14 @@ public class JsonCommonDataDeserialize extends JsonDeserializer<CommonData> {
                     if (playerCoordinate == null) {
                         throw new RuntimeException();
                     }
-                    commonData.setData(playerCoordinate);
+                    NetworkPacket.setData(playerCoordinate);
                     break;
 
                 default:
                     throw new RuntimeException();
             }
 
-            return commonData;
+            return NetworkPacket;
         } catch (Exception e) {
             throw new JsonParseException(p, "json parser fail", e);
         }

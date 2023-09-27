@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import org.gora.server.common.NetworkUtils;
-import org.gora.server.component.JsonCommonDataDeserialize;
+import org.gora.server.component.JsonNetworkPacketDeserialize;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,33 +24,33 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@JsonDeserialize(using = JsonCommonDataDeserialize.class)
-public class CommonData implements Serializable{
+@JsonDeserialize(using = JsonNetworkPacketDeserialize.class)
+public class NetworkPacket implements Serializable{
     private Object data;
     private eServiceRouteType type;
     @JsonIgnore
     private eProtocol protocol;
     private String key;
 
-    public CommonData(Object data, eServiceRouteType type, String key){
+    public NetworkPacket(Object data, eServiceRouteType type, String key){
         this.type = type;
         this.data = data;
         this.key = key;
     }
 
-    public CommonData(Object data, eServiceRouteType type){
+    public NetworkPacket(Object data, eServiceRouteType type){
         this.type = type;
         this.data = data;
     }
     
-    public static CommonData convert(ByteBuf buf, ObjectMapper objectMapper) throws StreamReadException, DatabindException, IOException{
+    public static NetworkPacket convertFromNetworkPacket(ByteBuf buf, ObjectMapper objectMapper) throws StreamReadException, DatabindException, IOException{
         ByteBuf byteBuf = buf;
         byte[] receiveByte = new byte[byteBuf.readableBytes()];
         byteBuf.getBytes(byteBuf.readerIndex(), receiveByte);
-        return objectMapper.readValue(receiveByte, CommonData.class);
+        return objectMapper.readValue(receiveByte, NetworkPacket.class);
     }
 
-    public static ByteBuf convertByteBuf(CommonData data, ObjectMapper objectMapper){
+    public static ByteBuf convertByteBuf(NetworkPacket data, ObjectMapper objectMapper){
         byte[] message;
         try {
             String json = objectMapper.writeValueAsString(data) + NetworkUtils.EOF;

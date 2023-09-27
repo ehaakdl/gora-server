@@ -3,7 +3,7 @@ package org.gora.server.component.network;
 import java.util.UUID;
 
 import org.gora.server.model.ClientConnection;
-import org.gora.server.model.CommonData;
+import org.gora.server.model.NetworkPacket;
 import org.gora.server.model.eProtocol;
 import org.springframework.stereotype.Component;
 
@@ -22,18 +22,18 @@ public class TcpServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        CommonData commonData = (CommonData) msg;
-        commonData.setProtocol(eProtocol.tcp);
+        NetworkPacket NetworkPacket = (NetworkPacket) msg;
+        NetworkPacket.setProtocol(eProtocol.tcp);
 
         // 첫 연결인 경우 클라이언트 맵에 추가
         String key = UUID.randomUUID().toString().replace("-", "");
-        if (!ClientManager.contain(commonData.getKey())) {
+        if (!ClientManager.contain(NetworkPacket.getKey())) {
             ClientManager.put(key, ClientConnection.createTcp(key, ctx));
-            commonData.setKey(key);
+            NetworkPacket.setKey(key);
         }
 
         try {
-            PacketRouter.push(commonData);
+            PacketRouter.push(NetworkPacket);
         } catch (IllegalStateException e) {
             log.error("패킷 라우터 큐가 꽉 찼습니다. {}", PacketRouter.size());
         }

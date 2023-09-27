@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.ClientConnection;
-import org.gora.server.model.CommonData;
+import org.gora.server.model.NetworkPacket;
 import org.gora.server.model.eProtocol;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +29,7 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
-        CommonData commonData;
+        NetworkPacket NetworkPacket;
         
         try {
             // 바이트 수신 데이터 읽기
@@ -49,25 +49,25 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
             String targetSerialize = assemble.substring(0, index);
             assemble.delete(0, index + NetworkUtils.EOF.length());
             // 이때 어떤 유형에 클래스가 적합한지 알 수 있어야함 하지만 정보없음
-            commonData = objectMapper.readValue(targetSerialize, CommonData.class);
+            NetworkPacket = objectMapper.readValue(targetSerialize, NetworkPacket.class);
         } catch (Exception e) {
             log.error("[UDP] 잘못된 수신 패킷 왔습니다.", e);
             return;
         }
      
-        commonData.setProtocol(eProtocol.udp);
+        NetworkPacket.setProtocol(eProtocol.udp);
 
         // 데이터에 key가 없으면 첫 송신이라고 생각, 디비나 캐시에 아이피 관리하는 방식으로 해야할듯
-        if (!ClientManager.contain(commonData.getKey())) {
-            commonData.setKey(msg.sender().getHostName());
+        if (!ClientManager.contain(NetworkPacket.getKey())) {
+            NetworkPacket.setKey(msg.sender().getHostName());
             ClientConnection clientConnection = ClientConnection.createUdp(msg.sender().getHostName());
             String key = UUID.randomUUID().toString().replace("-", "");
             ClientManager.put(key, clientConnection);
-            commonData.setKey(key);
+            NetworkPacket.setKey(key);
         }
 
         try {
-            PacketRouter.push(commonData);
+            PacketRouter.push(NetworkPacket);
         } catch (IllegalStateException e) {
             log.error("라우터 큐가 꽉 찼습니다. {}", e);
         }

@@ -2,7 +2,7 @@ package example.netty;
 
 import java.io.IOException;
 
-import org.gora.server.model.CommonData;
+import org.gora.server.model.NetworkPacket;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -20,8 +20,8 @@ public class TcpClientHandler extends SimpleChannelInboundHandler<Object> {
         byte[] receiveByte = new byte[byteBuf.readableBytes()];
         byteBuf.getBytes(byteBuf.readerIndex(), receiveByte);
         ObjectMapper objectMapper = new ObjectMapper();
-        CommonData commonData = objectMapper.readValue(receiveByte, CommonData.class);
-        System.out.println("수신: " +commonData.getData());
+        NetworkPacket NetworkPacket = objectMapper.readValue(receiveByte, NetworkPacket.class);
+        System.out.println("수신: " +NetworkPacket.getData());
     }
 
     @Override
