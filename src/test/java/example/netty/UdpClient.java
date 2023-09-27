@@ -46,7 +46,7 @@ public class UdpClient {
             
 
             for (int i = 0; i < 5; i++) {
-            CommonData commonData = new CommonData(i+": send to udp server", eServiceRouteType.test);
+            CommonData commonData = new CommonData(i+": send to udp server", eServiceRouteType.player_coordinate);
 
             ObjectMapper objectMapper = new ObjectMapper();
             byte[] sendBytes = objectMapper.writeValueAsBytes(commonData);

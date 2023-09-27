@@ -12,4 +12,14 @@ public enum eServiceRouteType {
     player_coordinate(1);
     @JsonValue
     private final int type;
+
+    public static eServiceRouteType convert(int serviceRouteTypetype){
+        for (eServiceRouteType values : eServiceRouteType.values()) {
+            if(serviceRouteTypetype == values.type){
+                return values;
+            }
+        }
+        
+        return null;
+    }
 }

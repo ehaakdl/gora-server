@@ -56,7 +56,7 @@ public class TcpClient {
                 message = scanner.nextLine();
 
                 // Server로 전송
-                CommonData commonData = new CommonData(message, eServiceRouteType.test, null);
+                CommonData commonData = new CommonData(message, eServiceRouteType.player_coordinate, null);
                 ObjectMapper objectMapper = new ObjectMapper();
                 byte[] messageByte = objectMapper.writeValueAsString(commonData).getBytes();
                 ByteBuf buffer = Unpooled.wrappedBuffer(messageByte);

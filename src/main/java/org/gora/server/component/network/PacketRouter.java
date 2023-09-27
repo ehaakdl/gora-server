@@ -61,12 +61,12 @@ public class PacketRouter {
 
                 switch(routeType){
                     case player_coordinate:
-                        PlayerCoordinate playerCoordinate = PlayerCoordinate.convertFromString((String) commonData.getData(), objectMapper);
+                        PlayerCoordinate playerCoordinate = (PlayerCoordinate) commonData.getData();
                         if(playerCoordinate == null){
                             log.error("[router] convert fail");
                             return;
                         }
-                        playerCoordinateService.broadcasePlayerCoordinate(commonData.getKey(), commonData.getData());
+                        playerCoordinateService.broadcasePlayerCoordinate(commonData.getKey(), playerCoordinate);
                         break;
                     default:
                         if (!routerQue.remove(commonData)) {

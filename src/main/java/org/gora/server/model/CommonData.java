@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import org.gora.server.common.NetworkUtils;
+import org.gora.server.component.JsonCommonDataDeserialize;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -22,6 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@JsonDeserialize(using = JsonCommonDataDeserialize.class)
 public class CommonData implements Serializable{
     private Object data;
     private eServiceRouteType type;

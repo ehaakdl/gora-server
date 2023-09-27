@@ -30,20 +30,25 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
         CommonData commonData;
+        
         try {
+            // 바이트 수신 데이터 읽기
             byte[] contentByte = new byte[msg.content().readableBytes()];
             msg.content().readBytes(contentByte);
 
+            // json 변환
             String contentJson = new String(contentByte);
             assemble.append(contentJson);
+            // 패킷 끝까지 다 왔는지 확인
             int index = assemble.indexOf(NetworkUtils.EOF);
             if (index < 0) {
                 return;
             }
 
+            // 문자열 조립 후 클래스로 역렬화
             String targetSerialize = assemble.substring(0, index);
             assemble.delete(0, index + NetworkUtils.EOF.length());
-
+            // 이때 어떤 유형에 클래스가 적합한지 알 수 있어야함 하지만 정보없음
             commonData = objectMapper.readValue(targetSerialize, CommonData.class);
         } catch (Exception e) {
             log.error("[UDP] 잘못된 수신 패킷 왔습니다.", e);
