@@ -3,8 +3,8 @@ package org.gora.server.component.network;
 import java.util.UUID;
 
 import org.gora.server.model.ClientConnection;
-import org.gora.server.model.NetworkPacket;
 import org.gora.server.model.eProtocol;
+import org.gora.server.model.network.NetworkPacket;
 import org.springframework.stereotype.Component;
 
 import io.netty.buffer.Unpooled;

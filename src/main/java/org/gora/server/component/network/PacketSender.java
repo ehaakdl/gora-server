@@ -5,7 +5,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.Env;
-import org.gora.server.model.NetworkPacket;
+import org.gora.server.model.network.NetworkPacket;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 

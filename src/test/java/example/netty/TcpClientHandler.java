@@ -2,7 +2,7 @@ package example.netty;
 
 import java.io.IOException;
 
-import org.gora.server.model.NetworkPacket;
+import org.gora.server.model.network.NetworkPacket;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;

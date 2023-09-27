@@ -2,8 +2,8 @@ package org.gora.server.component;
 
 import java.io.IOException;
 
-import org.gora.server.model.NetworkPacket;
 import org.gora.server.model.eServiceRouteType;
+import org.gora.server.model.network.NetworkPacket;
 import org.gora.server.model.network.PlayerCoordinate;
 
 import com.fasterxml.jackson.core.JacksonException;

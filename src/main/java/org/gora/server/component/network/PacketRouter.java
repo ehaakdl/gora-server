@@ -5,8 +5,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.Env;
-import org.gora.server.model.NetworkPacket;
 import org.gora.server.model.eServiceRouteType;
+import org.gora.server.model.network.NetworkPacket;
 import org.gora.server.model.network.PlayerCoordinate;
 import org.gora.server.service.PlayerCoordinateService;
 import org.springframework.scheduling.annotation.Async;

@@ -5,8 +5,8 @@ package example.netty;
 import java.net.InetSocketAddress;
 import java.util.Scanner;
 
-import org.gora.server.model.NetworkPacket;
 import org.gora.server.model.eServiceRouteType;
+import org.gora.server.model.network.NetworkPacket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

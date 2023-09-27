@@ -6,8 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.Env;
 import org.gora.server.model.ClientConnection;
-import org.gora.server.model.NetworkPacket;
 import org.gora.server.model.eProtocol;
+import org.gora.server.model.network.NetworkPacket;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
