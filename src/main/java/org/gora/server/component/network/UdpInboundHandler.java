@@ -1,11 +1,15 @@
 package org.gora.server.component.network;
 
+import java.util.Date;
 import java.util.UUID;
 
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.eProtocol;
+import org.gora.server.model.entity.TokenEntity;
+import org.gora.server.model.entity.eTokenUseDBType;
 import org.gora.server.model.network.NetworkPacket;
+import org.gora.server.repository.TokenRepository;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 // decoder 역할은 임시로 handler에서 담당
 public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     private final ObjectMapper objectMapper;
+    private final TokenRepository tokenRepository;
     private static final StringBuilder assemble = new StringBuilder();
 
     @Override
@@ -59,11 +64,8 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
 
         // 데이터에 key가 없으면 첫 송신이라고 생각, 디비나 캐시에 아이피 관리하는 방식으로 해야할듯
         if (!ClientManager.contain(NetworkPacket.getKey())) {
-            NetworkPacket.setKey(msg.sender().getHostName());
             ClientConnection clientConnection = ClientConnection.createUdp(msg.sender().getHostName());
-            String key = UUID.randomUUID().toString().replace("-", "");
-            ClientManager.put(key, clientConnection);
-            NetworkPacket.setKey(key);
+            ClientManager.put(NetworkPacket.getKey(), clientConnection);
         }
 
         try {
@@ -71,5 +73,14 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
         } catch (IllegalStateException e) {
             log.error("라우터 큐가 꽉 찼습니다. {}", e);
         }
+    }
+
+    private boolean validToken(String accessToken){
+       TokenEntity tokenEntity = tokenRepository.findByAccessAndTypeAndAccessExpireAtAfter(accessToken, eTokenUseDBType.login, new Date()).orElse(null);
+       if(tokenEntity == null){
+            return false;
+       }
+       
+       return true;
     }
 }
