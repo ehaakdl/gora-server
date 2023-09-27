@@ -1,4 +1,4 @@
-package org.gora.server.service;
+package org.gora.server.component;
 
 import org.gora.server.common.CommonUtils;
 import org.gora.server.component.network.PacketRouter;
