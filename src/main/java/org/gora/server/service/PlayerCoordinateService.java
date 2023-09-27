@@ -1,5 +1,6 @@
 package org.gora.server.service;
 
+import org.gora.server.model.network.PlayerCoordinate;
 import org.gora.server.repository.TokenRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,7 @@ public class PlayerCoordinateService {
     private final TokenRepository tokenRepository;
 
     @Transactional
-    public void broadcasePlayerCoordinate(String accessToken, Object data){
+    public void broadcasePlayerCoordinate(PlayerCoordinate target){
         
     }
 }
