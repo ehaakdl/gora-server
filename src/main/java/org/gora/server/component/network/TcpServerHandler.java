@@ -1,7 +1,6 @@
 package org.gora.server.component.network;
 
-import java.util.UUID;
-
+import org.gora.server.component.TokenProvider;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.eProtocol;
 import org.gora.server.model.network.NetworkPacket;
@@ -19,23 +18,30 @@ import lombok.extern.slf4j.Slf4j;
 @ChannelHandler.Sharable
 @Slf4j
 public class TcpServerHandler extends ChannelInboundHandlerAdapter {
+    private final TokenProvider tokenProvider;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        NetworkPacket NetworkPacket = (NetworkPacket) msg;
-        NetworkPacket.setProtocol(eProtocol.tcp);
+        NetworkPacket networkPacket = (NetworkPacket) msg;
+        networkPacket.setProtocol(eProtocol.tcp);
+
+        String key = networkPacket.getKey();
+        if(!tokenProvider.validToken(key)){
+            log.warn("not valid token {}", key);
+            ctx.close();
+            return;
+        }
 
         // 첫 연결인 경우 클라이언트 맵에 추가
-        String key = UUID.randomUUID().toString().replace("-", "");
-        if (!ClientManager.contain(NetworkPacket.getKey())) {
+        if (!ClientManager.contain(key)) {
             ClientManager.put(key, ClientConnection.createTcp(key, ctx));
-            NetworkPacket.setKey(key);
+            networkPacket.setKey(key);
         }
 
         try {
-            PacketRouter.push(NetworkPacket);
+            PacketRouter.push(networkPacket);
         } catch (IllegalStateException e) {
-            log.error("패킷 라우터 큐가 꽉 찼습니다. {}", PacketRouter.size());
+            log.warn("패킷 라우터 큐가 꽉 찼습니다. {}", PacketRouter.size());
         }
 
     }

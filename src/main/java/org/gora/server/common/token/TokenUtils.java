@@ -4,7 +4,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 
-import org.gora.server.model.TokenInfo;
+import org.gora.server.model.TokenInfoDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class TokenUtils {
-    //    32글자 필요
+    // 32글자 필요
     @Value("${app.secret-key:a89e2da3-704d-4ff0-a803-c8d8dc57cbf1}")
     private String SECRET_KEY;
 
@@ -34,14 +34,28 @@ public class TokenUtils {
                 .compact();
     }
 
-    public TokenInfo createToken(Map<String, Object> claimsMap, eTokenType type){
+    public TokenInfoDto createToken(Map<String, Object> claimsMap, eTokenType type) {
         Date nowAt = new Date();
         Date expiredAt = new Date(nowAt.getTime() + type.getExpirePeriod());
         String token = createToken(claimsMap, type.getSubject(), expiredAt);
-        return new TokenInfo("Bearer "+ token, expiredAt);
+        return new TokenInfoDto("Bearer " + token, expiredAt);
     }
 
-    public boolean validToken(String token){
+    public String extractToken(String token) {
+        return token.substring("Bearer ".length());
+    }
+
+    public boolean validToken(String token) {
+        token = extractToken(token);
         
+        try {
+            Jwts.parser()
+                    .setSigningKey(getSecretKey())
+                    .parseClaimsJws(token)
+                    .getBody();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
