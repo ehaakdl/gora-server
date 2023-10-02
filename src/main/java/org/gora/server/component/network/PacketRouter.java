@@ -27,7 +27,6 @@ public class PacketRouter {
     private final PlayerCoordinateService playerCoordinateService;
     private static final BlockingQueue<NetworkPacket> routerQue = new LinkedBlockingQueue<>(Integer.parseInt(
             System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
-    private final ObjectMapper objectMapper;
     
     // todo queue full 경우 체크하기
     // 클라이언트에게 대기 메시지 송신
@@ -69,10 +68,8 @@ public class PacketRouter {
                         playerCoordinateService.broadcasePlayerCoordinate(NetworkPacket.getKey(), playerCoordinate);
                         break;
                     default:
-                        if (!routerQue.remove(NetworkPacket)) {
-                            log.error("[router 큐] 큐에서 읽은 데이터 삭제 실패");
-                            return;
-                        }
+                        log.error("[router 큐] 처리할 수 없는 유형에 패킷이 왔습니다.");
+                        return;
                 }
             });
         }
