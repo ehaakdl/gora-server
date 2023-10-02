@@ -4,7 +4,13 @@ app:
   tcp_server_port: ${TCP_SERVER_PORT:11200}
   max_client: 1
   secret-key: ${JWT_SECRET_KEY}
-  
+
+# spy db log
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+        
 spring:
   output:
     ansi:
@@ -16,10 +22,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
+    show_sql: false
     database: mysql
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-        show_sql: true
-        format_sql: true
-        use_sql_comments: true

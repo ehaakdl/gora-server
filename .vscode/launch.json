@@ -35,6 +35,9 @@
             "request": "launch",
             "mainClass": "org.gora.server.ServerApplication",
             "projectName": "server",
+            "vmArgs": [
+                "-Duser.timezone=GMT"
+            ],
             "env": {
                 "DB_USERNAME": "gora",
                 "DB_PASSWORD": 1234,
@@ -45,7 +48,7 @@
                 "UDP_SERVER_PORT": 11111,
                 "UDP_CLIENT_PORT": 11112,
                 "MAX_DEFAULT_QUE_SZ": 1000,
-                "JWT_SECRET_KEY": "a89e2da3-704d-4ff0-a803-c8d8dc57cbf1",
+                "JWT_SECRET_KEY": "a89e2da3-704d-4ff0-a803-c8d8dc57cbf1"
             }
         },
         {
