@@ -65,7 +65,7 @@ public class PacketRouter {
                             log.error("[router] convert fail");
                             return;
                         }
-                        playerCoordinateService.broadcasePlayerCoordinate(NetworkPacket.getKey(), playerCoordinate);
+                        playerCoordinateService.broadcastPlayerCoordinate(NetworkPacket.getKey(), playerCoordinate);
                         break;
                     default:
                         log.error("[router 큐] 처리할 수 없는 유형에 패킷이 왔습니다.");

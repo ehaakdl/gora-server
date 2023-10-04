@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TokenUtils {
     // 32글자 필요
-    @Value("${app.secret-key:a89e2da3-704d-4ff0-a803-c8d8dc57cbf1}")
+    @Value("${app.secret-key}")
     private String SECRET_KEY;
 
     private Key getSecretKey() {

@@ -13,7 +13,7 @@ public class PlayerCoordinateService {
     private final TokenRepository tokenRepository;
 
     @Transactional
-    public void broadcasePlayerCoordinate(String loginToken, PlayerCoordinate target){
+    public void broadcastPlayerCoordinate(String loginToken, PlayerCoordinate target){
         
     }
 }
