@@ -41,12 +41,8 @@ public class TokenUtils {
         return new TokenInfoDto("Bearer " + token, expiredAt);
     }
 
-    public String extractToken(String token) {
-        return token.substring("Bearer ".length());
-    }
-
     public boolean validToken(String token) {
-        token = extractToken(token);
+        token = token.replace("Bearer ", "");
         
         try {
             Jwts.parser()
