@@ -2,7 +2,7 @@
 
 # 장르: mmorpg 게임
 # 스펙
-- java(18)
+- java(17)
 - Spring boot(3.1.4)
 
 # 설명
