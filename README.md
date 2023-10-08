@@ -17,7 +17,7 @@ gradlew jibDockerBuild
 
 # runtime
 ```.docker/env.example 파일에 담긴 환경변수를 실행할때 추가해준다.(vscode 사용시 기본으로 셋팅되어있다.)```
-<img width="631" alt="image" src="https://github.com/ehaakdl/gora-backend/assets/6407466/7c2860cb-e365-499d-b78d-d4043d91df73">
+<img width="728" alt="image" src="https://github.com/ehaakdl/gora-server/assets/6407466/45153458-3a8d-482d-b0ab-0e75c62a1c7c">
 
 
 # 설명
