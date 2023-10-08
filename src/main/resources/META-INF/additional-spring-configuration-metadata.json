@@ -8,5 +8,20 @@
     "name": "app.max_client",
     "type": "java.lang.String",
     "description": "A description for 'app.max_client'"
+  },
+  {
+    "name": "app.tcp_server_port",
+    "type": "java.lang.String",
+    "description": "A description for 'app.tcp_server_port'"
+  },
+  {
+    "name": "app.udp_client_port",
+    "type": "java.lang.String",
+    "description": "A description for 'app.udp_client_port'"
+  },
+  {
+    "name": "app.secret-key",
+    "type": "java.lang.String",
+    "description": "A description for 'app.secret-key'"
   }
 ]}

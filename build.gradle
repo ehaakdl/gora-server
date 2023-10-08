@@ -1,12 +1,34 @@
+import org.yaml.snakeyaml.Yaml
+
+// import org.yaml.snakeyaml.Yaml 이것만 추가한다고해서 build.gradle 파일에서 사용못함
+// 아래 코드가 추가되어야함
+buildscript{
+    dependencies{
+        classpath("org.yaml:snakeyaml:2.2")
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.4'
     id 'io.spring.dependency-management' version '1.1.0'
+    id 'com.google.cloud.tools.jib' version '3.4.0'
 }
 
 group = 'org.gora'
-version = '1.0.0-SNAPSHOT'
+version = '1.0.0'
 
+def yaml = new Yaml()
+def applicationYaml = yaml.load(new FileReader(project.rootProject.file('src/main/resources/application.yml')))
+def udpServerPort = applicationYaml['app']['udp_server_port'].toString()
+def udpClientPort = applicationYaml['app']['udp_client_port'].toString()
+def tcpServerPort = applicationYaml['app']['tcp_server_port'].toString()
+
+bootJar{
+    archivesBaseName = rootProject.name
+    archiveFileName = rootProject.name + '-' + version + '.jar'
+    archiveVersion = version
+}
 java{
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -25,11 +47,11 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 
 
 //  utils
+	implementation 'org.yaml:snakeyaml:2.2'
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
 	implementation 'io.jsonwebtoken:jjwt-api:0.10.7'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.10.7'
@@ -51,6 +73,42 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+jib{
+	from {
+		image='openjdk:17-ea-slim-buster'
+	}
+	to {
+		image=rootProject.name
+		tags=[version]
+	}
+
+	def envProp = new Properties()
+	file("/.docker/.env").withInputStream { envProp .load(it) }
+	
+	def envMap = envProp.entrySet().collectEntries { entry ->
+    [(entry.key): entry.value]
+	}
+	def cmdEnvArgs = envProp.collect { key, value ->
+    	"-D${key}=${value}"
+	}.join(' ')
+	
+	container {
+		creationTime='USE_CURRENT_TIMESTAMP'
+		environment=envMap
+		jvmFlags = ['-Duser.timezone=GMT']
+		ports = [udpServerPort, udpServerPort, tcpServerPort]
+		entrypoint=['java', cmdEnvArgs, '-jar', rootProject.name + '-' + version + '.jar']
+	}
+
+	extraDirectories {
+        paths { 
+            path {
+                from = file('build/libs') 
+            }
+        }
+    }
 }
 
 tasks.named('test') {
