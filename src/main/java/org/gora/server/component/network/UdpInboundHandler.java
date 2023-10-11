@@ -46,9 +46,9 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
             }
 
             // 문자열 조립 후 클래스로 역렬화
-            String targetSerialize = assemble.substring(0, index);
+            String responseJson = assemble.substring(0, index);
             assemble.delete(0, index + NetworkUtils.EOF.length());
-            networkPacket = objectMapper.readValue(targetSerialize, NetworkPacket.class);
+            networkPacket = objectMapper.readValue(responseJson, NetworkPacket.class);
         } catch (Exception e) {
             log.error("[UDP] 잘못된 수신 패킷 왔습니다.", e);
             return;

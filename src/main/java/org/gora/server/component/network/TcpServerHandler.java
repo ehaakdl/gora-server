@@ -27,7 +27,7 @@ public class TcpServerHandler extends ChannelInboundHandlerAdapter {
 
         String key = networkPacket.getKey();
         if(!loginTokenProvider.validToken(key)){
-            log.warn("not valid token {}", key);
+            log.warn("잘못된 토큰입니다. {}", key);
             ctx.close();
             return;
         }
@@ -53,7 +53,7 @@ public class TcpServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
+        log.error("tcp handler error detail: {}",cause.getCause());
         ctx.close();
     }
 
