@@ -51,6 +51,7 @@ dependencies {
 
 
 //  utils
+    implementation 'net.jodah:expiringmap:0.5.11'
 	implementation 'org.yaml:snakeyaml:2.2'
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
 	implementation 'io.jsonwebtoken:jjwt-api:0.10.7'

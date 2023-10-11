@@ -44,6 +44,14 @@ public class NetworkPacket implements Serializable{
         this.type = type;
         this.data = data;
     }
+
+
+    public NetworkPacket(Object data, eServiceRouteType type, String key, eProtocol protocol){
+        this.type = type;
+        this.data = data;
+        this.key = key;
+        this.protocol = protocol;
+    }
     
     public static NetworkPacket convertFromNetworkPacket(ByteBuf buf, ObjectMapper objectMapper) throws StreamReadException, DatabindException, IOException{
         ByteBuf byteBuf = buf;

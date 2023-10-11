@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TcpServerHandler extends ChannelInboundHandlerAdapter {
     private final LoginTokenProvider loginTokenProvider;
-
+    private final ClientManager clientManager;
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         NetworkPacket networkPacket = (NetworkPacket) msg;
@@ -33,9 +33,9 @@ public class TcpServerHandler extends ChannelInboundHandlerAdapter {
         }
 
         // 첫 연결인 경우 클라이언트 맵에 추가
-        if (!ClientManager.contain(key)) {
-            ClientManager.put(key, ClientConnection.createTcp(key, ctx));
-            networkPacket.setKey(key);
+        if (!clientManager.contain(key)) {
+            String clientIp = ctx.channel().remoteAddress().toString();
+            clientManager.put(clientIp, ClientConnection.createTcp(key, ctx));
         }
 
         try {

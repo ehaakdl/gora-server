@@ -9,7 +9,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum eServiceRouteType {
-    player_coordinate(1);
+    player_coordinate(1),
+    health_check(2);
     @JsonValue
     private final int type;
 

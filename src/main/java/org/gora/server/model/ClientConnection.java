@@ -19,12 +19,7 @@ public class ClientConnection{
     public static ClientConnection createUdp(String clientIp){
         return new ClientConnection(null, clientIp);
     }
-
-    public void setTcpChannel(String clientIp, ChannelHandlerContext channel){
-        this.tcpChannel = channel;
-        this.clientIp = clientIp;
-    }
-
+    
     public boolean isConnectionTcp(){
         if(tcpChannel == null){
             return false;

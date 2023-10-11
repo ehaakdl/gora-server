@@ -1,5 +1,7 @@
 package org.gora.server.component.network;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -8,6 +10,7 @@ import org.gora.server.common.Env;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.eProtocol;
 import org.gora.server.model.network.NetworkPacket;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -24,11 +27,11 @@ public class ClientManager {
     @Value("${app.udp_client_port}")
     private int udpClientPort;
     private final ObjectMapper objectMapper;
-    private final UdpServer udpServer;
+    private UdpServer udpServer;
     private final static Map<String, ClientConnection> clients = new ConcurrentHashMap<>(
             Integer.parseInt(System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
 
-    public static boolean contain(String key) {
+    public boolean contain(String key) {
         if (key == null) {
             return false;
         }
@@ -36,24 +39,28 @@ public class ClientManager {
         return clients.containsKey(key);
     }
 
-    public static void put(String key, ClientConnection value) {
+    public void put(String key, ClientConnection value) {
         clients.put(key, value);
     }
 
-    public static ClientConnection get(String key) {
+    public ClientConnection get(String key) {
         return clients.get(key);
     }
 
-    public static boolean remove(String key) {
+    public boolean remove(String key) {
         if (!contain(key)) {
             return false;
         }
         clients.remove(key);
         return true;
     }
+    
+    public List<String> getAllKeys(){
+       return new ArrayList<>((clients.keySet()));
+    }
 
     public boolean send(NetworkPacket data) {
-        ClientConnection clientConnection = ClientManager.get(data.getKey());
+        ClientConnection clientConnection = clients.get(data.getKey());
         if (clientConnection == null) {
             log.error("클라이언트 존재 안함");
             return false;
@@ -85,7 +92,7 @@ public class ClientManager {
     }
 
     public boolean close(String key) {
-        ClientConnection clientConnection = ClientManager.get(key);
+        ClientConnection clientConnection = clients.get(key);
         if (clientConnection == null) {
             log.error("클라이언트 존재 안함");
             return false;

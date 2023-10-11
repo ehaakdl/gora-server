@@ -5,6 +5,7 @@ import org.gora.server.component.LoginTokenProvider;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.eProtocol;
 import org.gora.server.model.network.NetworkPacket;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,8 +26,15 @@ import lombok.extern.slf4j.Slf4j;
 public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     private final ObjectMapper objectMapper;
     private final LoginTokenProvider loginTokenProvider;
+    private ClientManager clientManager;
     private static final StringBuilder assemble = new StringBuilder();
-
+    
+    // 순환참조로 clientManager 부분은 객체 생성이후에 주입받는다.
+    @Autowired
+    public void setClientManager(ClientManager clientManager) {
+        this.clientManager = clientManager;
+    }
+    
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
         NetworkPacket networkPacket;
@@ -62,9 +70,9 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
         }
 
         // 데이터에 key가 없으면 첫 송신이라고 생각하고 클라이언트 정보 저장
-        if (!ClientManager.contain(networkPacket.getKey())) {
+        if (!clientManager.contain(networkPacket.getKey())) {
             ClientConnection clientConnection = ClientConnection.createUdp(msg.sender().getHostName());
-            ClientManager.put(networkPacket.getKey(), clientConnection);
+            clientManager.put(networkPacket.getKey(), clientConnection);
         }
 
         try {
