@@ -1,7 +1,7 @@
 package org.gora.server.component.network;
 
 import org.gora.server.common.NetworkUtils;
-import org.gora.server.component.TokenProvider;
+import org.gora.server.component.LoginTokenProvider;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.eProtocol;
 import org.gora.server.model.network.NetworkPacket;
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 // decoder 역할은 임시로 handler에서 담당
 public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     private final ObjectMapper objectMapper;
-    private final TokenProvider tokenProvider;
+    private final LoginTokenProvider loginTokenProvider;
     private static final StringBuilder assemble = new StringBuilder();
 
     @Override
@@ -56,7 +56,7 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
      
         networkPacket.setProtocol(eProtocol.udp);
 
-        if(!tokenProvider.validToken(networkPacket.getKey())){
+        if(!loginTokenProvider.validToken(networkPacket.getKey())){
             log.warn("not valid token. {}", networkPacket.getKey());
             return;
         }

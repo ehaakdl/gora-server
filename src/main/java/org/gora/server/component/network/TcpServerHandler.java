@@ -1,6 +1,6 @@
 package org.gora.server.component.network;
 
-import org.gora.server.component.TokenProvider;
+import org.gora.server.component.LoginTokenProvider;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.eProtocol;
 import org.gora.server.model.network.NetworkPacket;
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @ChannelHandler.Sharable
 @Slf4j
 public class TcpServerHandler extends ChannelInboundHandlerAdapter {
-    private final TokenProvider tokenProvider;
+    private final LoginTokenProvider loginTokenProvider;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -26,7 +26,7 @@ public class TcpServerHandler extends ChannelInboundHandlerAdapter {
         networkPacket.setProtocol(eProtocol.tcp);
 
         String key = networkPacket.getKey();
-        if(!tokenProvider.validToken(key)){
+        if(!loginTokenProvider.validToken(key)){
             log.warn("not valid token {}", key);
             ctx.close();
             return;

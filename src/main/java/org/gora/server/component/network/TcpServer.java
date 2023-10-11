@@ -15,12 +15,10 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 //todo 클라이언트 세션을 중복 보관하지 않는 방법 생각해보기
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class TcpServer {
     private EventLoopGroup bossLoopGroup;
     private EventLoopGroup workerGroup;

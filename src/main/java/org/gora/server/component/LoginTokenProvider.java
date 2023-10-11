@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class TokenProvider {
+public class LoginTokenProvider {
     private final TokenRepository tokenRepository;
     private final TokenUtils tokenUtils;
 
