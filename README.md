@@ -21,7 +21,5 @@ gradlew jibDockerBuild
 <img width="728" alt="image" src="https://github.com/ehaakdl/gora-server/assets/6407466/45153458-3a8d-482d-b0ab-0e75c62a1c7c">
 
 
-##### 스레드 목록
-- Listen TCP 소켓
-- 이벤트 처리 Router
-- 네트워크 sender
+##### 구조
+![Server Architecture](https://github.com/ehaakdl/gora-server/assets/6407466/51e55d46-7e3a-43a2-b165-320af1c7971e)
