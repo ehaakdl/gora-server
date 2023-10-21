@@ -52,6 +52,7 @@ dependencies {
 
 
 //  utils
+    implementation 'com.google.protobuf:protobuf-java:3.24.4'
     implementation 'net.jodah:expiringmap:0.5.11'
 	implementation 'org.yaml:snakeyaml:2.2'
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
