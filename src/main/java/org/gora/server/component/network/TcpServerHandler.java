@@ -1,6 +1,6 @@
 package org.gora.server.component.network;
 
-import org.gora.server.component.TokenProvider;
+import org.gora.server.component.LoginTokenProvider;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.eProtocol;
 import org.gora.server.model.network.NetworkPacket;
@@ -18,24 +18,24 @@ import lombok.extern.slf4j.Slf4j;
 @ChannelHandler.Sharable
 @Slf4j
 public class TcpServerHandler extends ChannelInboundHandlerAdapter {
-    private final TokenProvider tokenProvider;
-
+    private final LoginTokenProvider loginTokenProvider;
+    private final ClientManager clientManager;
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         NetworkPacket networkPacket = (NetworkPacket) msg;
         networkPacket.setProtocol(eProtocol.tcp);
 
         String key = networkPacket.getKey();
-        if(!tokenProvider.validToken(key)){
-            log.warn("not valid token {}", key);
+        if(!loginTokenProvider.validToken(key)){
+            log.warn("잘못된 토큰입니다. {}", key);
             ctx.close();
             return;
         }
 
         // 첫 연결인 경우 클라이언트 맵에 추가
-        if (!ClientManager.contain(key)) {
-            ClientManager.put(key, ClientConnection.createTcp(key, ctx));
-            networkPacket.setKey(key);
+        if (!clientManager.contain(key)) {
+            String clientIp = ctx.channel().remoteAddress().toString();
+            clientManager.put(clientIp, ClientConnection.createTcp(key, ctx));
         }
 
         try {
@@ -53,7 +53,7 @@ public class TcpServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
+        log.error("tcp handler error detail: {}",cause.getCause());
         ctx.close();
     }
 

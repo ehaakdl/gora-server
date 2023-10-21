@@ -1,10 +1,11 @@
 package org.gora.server.component.network;
 
 import org.gora.server.common.NetworkUtils;
-import org.gora.server.component.TokenProvider;
+import org.gora.server.component.LoginTokenProvider;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.eProtocol;
 import org.gora.server.model.network.NetworkPacket;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,9 +25,16 @@ import lombok.extern.slf4j.Slf4j;
 // decoder 역할은 임시로 handler에서 담당
 public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     private final ObjectMapper objectMapper;
-    private final TokenProvider tokenProvider;
+    private final LoginTokenProvider loginTokenProvider;
+    private ClientManager clientManager;
     private static final StringBuilder assemble = new StringBuilder();
-
+    
+    // 순환참조로 clientManager 부분은 객체 생성이후에 주입받는다.
+    @Autowired
+    public void setClientManager(ClientManager clientManager) {
+        this.clientManager = clientManager;
+    }
+    
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
         NetworkPacket networkPacket;
@@ -46,9 +54,9 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
             }
 
             // 문자열 조립 후 클래스로 역렬화
-            String targetSerialize = assemble.substring(0, index);
+            String responseJson = assemble.substring(0, index);
             assemble.delete(0, index + NetworkUtils.EOF.length());
-            networkPacket = objectMapper.readValue(targetSerialize, NetworkPacket.class);
+            networkPacket = objectMapper.readValue(responseJson, NetworkPacket.class);
         } catch (Exception e) {
             log.error("[UDP] 잘못된 수신 패킷 왔습니다.", e);
             return;
@@ -56,15 +64,15 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
      
         networkPacket.setProtocol(eProtocol.udp);
 
-        if(!tokenProvider.validToken(networkPacket.getKey())){
+        if(!loginTokenProvider.validToken(networkPacket.getKey())){
             log.warn("not valid token. {}", networkPacket.getKey());
             return;
         }
 
         // 데이터에 key가 없으면 첫 송신이라고 생각하고 클라이언트 정보 저장
-        if (!ClientManager.contain(networkPacket.getKey())) {
+        if (!clientManager.contain(networkPacket.getKey())) {
             ClientConnection clientConnection = ClientConnection.createUdp(msg.sender().getHostName());
-            ClientManager.put(networkPacket.getKey(), clientConnection);
+            clientManager.put(networkPacket.getKey(), clientConnection);
         }
 
         try {
