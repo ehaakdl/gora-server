@@ -1,0 +1,9 @@
+package protobuf;
+
+option java_package = "org.gora.server.model.network";
+option java_outer_classname = "PlayerCoordinateProtoBuf";
+
+message PlayerCoordinate {
+  required float x = 1;
+  required float y = 2;
+}

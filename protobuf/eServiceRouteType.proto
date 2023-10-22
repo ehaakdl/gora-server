@@ -1,0 +1,9 @@
+package protobuf;
+
+option java_package = "org.gora.server.model.network";
+option java_outer_classname = "eServiceRouteTypeProtoBuf";
+
+enum eServiceRouteType {
+  player_coordinate = 1;
+  health_check = 2;
+}

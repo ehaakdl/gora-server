@@ -1,15 +1,21 @@
 package org.gora.server.component.network;
 
-import org.gora.server.common.NetworkUtils;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
+
 import org.gora.server.component.LoginTokenProvider;
-import org.gora.server.model.ClientConnection;
-import org.gora.server.model.eProtocol;
 import org.gora.server.model.network.NetworkPacket;
+import org.gora.server.model.network.NetworkPacketProtoBuf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.jsonwebtoken.io.IOException;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -34,52 +40,31 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
     public void setClientManager(ClientManager clientManager) {
         this.clientManager = clientManager;
     }
-    
+    public static Object bytesToObject(byte[] bytes) throws IOException, ClassNotFoundException, java.io.IOException {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+             ObjectInputStream ois = new ObjectInputStream(bis)) {
+            return ois.readObject();
+        }
+    }
+    public static byte[] objectToBytes(Object obj) throws IOException, java.io.IOException {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+            oos.writeObject(obj);
+            oos.flush();
+            return bos.toByteArray();
+        }
+    }
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
-        NetworkPacket networkPacket;
-        
-        try {
-            // 바이트 수신 데이터 읽기
-            byte[] contentByte = new byte[msg.content().readableBytes()];
+        byte[] contentByte = new byte[msg.content().readableBytes()];
             msg.content().readBytes(contentByte);
+        NetworkPacketProtoBuf.NetworkPacket test = (org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket) bytesToObject(contentByte);
 
-            // json 변환
-            String contentJson = new String(contentByte);
-            assemble.append(contentJson);
-            // 패킷 끝까지 다 왔는지 확인
-            int index = assemble.indexOf(NetworkUtils.EOF);
-            if (index < 0) {
-                return;
-            }
+        contentByte = objectToBytes(test);
+                    ctx.channel().writeAndFlush(new DatagramPacket(
+                    Unpooled.copiedBuffer(contentByte),
+                    new InetSocketAddress("localhost", 11112))).sync();
 
-            // 문자열 조립 후 클래스로 역렬화
-            String responseJson = assemble.substring(0, index);
-            assemble.delete(0, index + NetworkUtils.EOF.length());
-            networkPacket = objectMapper.readValue(responseJson, NetworkPacket.class);
-        } catch (Exception e) {
-            log.error("[UDP] 잘못된 수신 패킷 왔습니다.", e);
-            return;
-        }
-     
-        networkPacket.setProtocol(eProtocol.udp);
-
-        if(!loginTokenProvider.validToken(networkPacket.getKey())){
-            log.warn("not valid token. {}", networkPacket.getKey());
-            return;
-        }
-
-        // 데이터에 key가 없으면 첫 송신이라고 생각하고 클라이언트 정보 저장
-        if (!clientManager.contain(networkPacket.getKey())) {
-            ClientConnection clientConnection = ClientConnection.createUdp(msg.sender().getHostName());
-            clientManager.put(networkPacket.getKey(), clientConnection);
-        }
-
-        try {
-            PacketRouter.push(networkPacket);
-        } catch (IllegalStateException e) {
-            log.warn("라우터 큐가 꽉 찼습니다. {}", e);
-        }
     }
 
     
