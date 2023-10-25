@@ -64,16 +64,18 @@ public class UdpClient {
             Channel ch = b.bind(11112).sync().channel();
             
 
-            for (int i = 0; i < 5; i++) {
-                PlayerCoordinateProtoBuf.PlayerCoordinate playerCoordinateProtoBuf = PlayerCoordinateProtoBuf.PlayerCoordinate.newBuilder().setX(1).setY(2).build();
+            for (int i = 0; i < 100000; i++) {
+                PlayerCoordinateProtoBuf.PlayerCoordinate playerCoordinateProtoBuf = PlayerCoordinateProtoBuf.PlayerCoordinate.newBuilder().setX(i).setY(i+1).build();
                 byte[] playerCoordinateBytes= objectToBytes(playerCoordinateProtoBuf);
 
                 eServiceRouteTypeProtoBuf.eServiceRouteType routeType = eServiceRouteTypeProtoBuf.eServiceRouteType.player_coordinate;
                 NetworkPacketProtoBuf.NetworkPacket networkPacket = NetworkPacketProtoBuf.NetworkPacket.newBuilder().setData(ByteString.copyFrom(playerCoordinateBytes)).setTotalSize(11111).setType(routeType).build();
             
-            ch.writeAndFlush(new DatagramPacket(
+                ch.writeAndFlush(new DatagramPacket(
                     Unpooled.copiedBuffer(objectToBytes(networkPacket)),
                     new InetSocketAddress("localhost", port))).sync();
+
+                // Thread.sleep(5);
             }
             
             ch.closeFuture().await(1000 * 20);

@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetSocketAddress;
 
 import org.gora.server.component.LoginTokenProvider;
 import org.gora.server.model.network.NetworkPacketProtoBuf;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.io.IOException;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -61,11 +59,11 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
             msg.content().readBytes(contentByte);
         NetworkPacketProtoBuf.NetworkPacket test = (org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket) bytesToObject(contentByte);
         PlayerCoordinateProtoBuf.PlayerCoordinate dd =  (PlayerCoordinate) bytesToObject(test.getData().toByteArray());
-        
-        contentByte = objectToBytes(test);
-                    ctx.channel().writeAndFlush(new DatagramPacket(
-                    Unpooled.copiedBuffer(contentByte),
-                    new InetSocketAddress("localhost", 11112))).sync();
+        log.info(String.valueOf(dd.getX()));
+        // contentByte = objectToBytes(test);
+        //             ctx.channel().writeAndFlush(new DatagramPacket(
+        //             Unpooled.copiedBuffer(contentByte),
+        //             new InetSocketAddress("localhost", 11112))).sync();
 
     }
 
