@@ -7,8 +7,9 @@ import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 
 import org.gora.server.component.LoginTokenProvider;
-import org.gora.server.model.network.NetworkPacket;
 import org.gora.server.model.network.NetworkPacketProtoBuf;
+import org.gora.server.model.network.PlayerCoordinateProtoBuf;
+import org.gora.server.model.network.PlayerCoordinateProtoBuf.PlayerCoordinate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -59,7 +60,8 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
         byte[] contentByte = new byte[msg.content().readableBytes()];
             msg.content().readBytes(contentByte);
         NetworkPacketProtoBuf.NetworkPacket test = (org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket) bytesToObject(contentByte);
-
+        PlayerCoordinateProtoBuf.PlayerCoordinate dd =  (PlayerCoordinate) bytesToObject(test.getData().toByteArray());
+        
         contentByte = objectToBytes(test);
                     ctx.channel().writeAndFlush(new DatagramPacket(
                     Unpooled.copiedBuffer(contentByte),

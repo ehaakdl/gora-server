@@ -69,7 +69,7 @@ public class UdpClient {
                 byte[] playerCoordinateBytes= objectToBytes(playerCoordinateProtoBuf);
 
                 eServiceRouteTypeProtoBuf.eServiceRouteType routeType = eServiceRouteTypeProtoBuf.eServiceRouteType.player_coordinate;
-                NetworkPacketProtoBuf.NetworkPacket networkPacket = NetworkPacketProtoBuf.NetworkPacket.newBuilder().setData(1, ByteString.copyFrom(playerCoordinateBytes)).setTotalSize(11111).setType(routeType).build();
+                NetworkPacketProtoBuf.NetworkPacket networkPacket = NetworkPacketProtoBuf.NetworkPacket.newBuilder().setData(ByteString.copyFrom(playerCoordinateBytes)).setTotalSize(11111).setType(routeType).build();
             
             ch.writeAndFlush(new DatagramPacket(
                     Unpooled.copiedBuffer(objectToBytes(networkPacket)),
