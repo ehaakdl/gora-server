@@ -2,15 +2,19 @@ package example.netty;
 
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.util.Scanner;
+import java.util.UUID;
 
-import org.gora.server.model.eServiceRouteType;
-import org.gora.server.model.network.NetworkPacket;
+import org.gora.server.model.network.NetworkPacketProtoBuf;
+import org.gora.server.model.network.NetworkTestProtoBuf;
+import org.gora.server.model.network.eServiceRouteTypeProtoBuf;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import io.jsonwebtoken.io.IOException;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -46,32 +50,54 @@ public class TcpClient {
         serverChannel = bootstrap.connect().sync().channel();
     }
 
-    private void start() throws InterruptedException, JsonProcessingException {
+        public static Object bytesToObject(byte[] bytes) throws IOException, ClassNotFoundException, java.io.IOException {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+             ObjectInputStream ois = new ObjectInputStream(bis)) {
+            return ois.readObject();
+        }
+    }
+    public static byte[] objectToBytes(Object obj) throws IOException, java.io.IOException {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+            oos.writeObject(obj);
+            oos.flush();
+            return bos.toByteArray();
+        }
+    }
+
+    private void start() throws InterruptedException, IOException, java.io.IOException {
         try (Scanner scanner = new Scanner(System.in)) {
             String message;
             ChannelFuture future;
 
-            while(true) {
+            // while(true) {
                 // 사용자 입력
-                message = scanner.nextLine();
+                // message = scanner.nextLine();
 
                 // Server로 전송
-                NetworkPacket NetworkPacket = new NetworkPacket(message, eServiceRouteType.player_coordinate, null);
-                ObjectMapper objectMapper = new ObjectMapper();
-                byte[] messageByte = objectMapper.writeValueAsString(NetworkPacket).getBytes();
-                ByteBuf buffer = Unpooled.wrappedBuffer(messageByte);
-                future = serverChannel.writeAndFlush(buffer);
-
-                if("quit".equals(message)){
-                    serverChannel.closeFuture().sync();
-                    break;
+                StringBuilder test = new StringBuilder(UUID.randomUUID().randomUUID().toString());
+                for (int i = 0; i < 30; i++) {
+                    test.append(UUID.randomUUID().randomUUID().toString());
                 }
-            }
+                for (int i = 0; i < 2; i++) {
+                    NetworkTestProtoBuf.NetworkTest playerCoordinateProtoBuf = NetworkTestProtoBuf.NetworkTest.newBuilder().setA(test.toString()).setB(test.toString()).build();
+                    byte[] playerCoordinateBytes= objectToBytes(playerCoordinateProtoBuf);
 
-            // 종료되기 전 모든 메시지가 flush 될때까지 기다림
-            if(future != null){
-                future.sync();
-            }
+                    eServiceRouteTypeProtoBuf.eServiceRouteType routeType = eServiceRouteTypeProtoBuf.eServiceRouteType.health_check;
+                    NetworkPacketProtoBuf.NetworkPacket networkPacket = NetworkPacketProtoBuf.NetworkPacket.newBuilder().setTotalSize(1234).setType(routeType).build();
+                
+                    byte[] networkPacketBytes = objectToBytes(networkPacket);
+                    System.out.println(networkPacketBytes.length);
+                
+                    ByteBuf buffer = Unpooled.wrappedBuffer(networkPacketBytes);
+                    future = serverChannel.writeAndFlush(buffer);
+
+                    // if("quit".equals(message)){
+                    //     serverChannel.closeFuture().sync();
+                    //     break;
+                    // }
+                }
+            // }
         }
     }
 

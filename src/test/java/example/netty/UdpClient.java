@@ -5,9 +5,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+import java.util.UUID;
 
 import org.gora.server.model.network.NetworkPacketProtoBuf;
-import org.gora.server.model.network.PlayerCoordinateProtoBuf;
+import org.gora.server.model.network.NetworkTestProtoBuf;
 import org.gora.server.model.network.eServiceRouteTypeProtoBuf;
 
 import com.google.protobuf.ByteString;
@@ -63,16 +64,22 @@ public class UdpClient {
             // 서버에서 클라이언트에게 보내야할때 bind해놓음 
             Channel ch = b.bind(11112).sync().channel();
             
-
-            for (int i = 0; i < 100000; i++) {
-                PlayerCoordinateProtoBuf.PlayerCoordinate playerCoordinateProtoBuf = PlayerCoordinateProtoBuf.PlayerCoordinate.newBuilder().setX(i).setY(i+1).build();
+            
+            StringBuilder test = new StringBuilder(UUID.randomUUID().randomUUID().toString());
+            for (int i = 0; i < 30; i++) {
+                test.append(UUID.randomUUID().randomUUID().toString());
+            }
+            for (int i = 0; i < 2; i++) {
+                NetworkTestProtoBuf.NetworkTest playerCoordinateProtoBuf = NetworkTestProtoBuf.NetworkTest.newBuilder().setA(test.toString()).setB(test.toString()).build();
                 byte[] playerCoordinateBytes= objectToBytes(playerCoordinateProtoBuf);
 
                 eServiceRouteTypeProtoBuf.eServiceRouteType routeType = eServiceRouteTypeProtoBuf.eServiceRouteType.player_coordinate;
-                NetworkPacketProtoBuf.NetworkPacket networkPacket = NetworkPacketProtoBuf.NetworkPacket.newBuilder().setData(ByteString.copyFrom(playerCoordinateBytes)).setTotalSize(11111).setType(routeType).build();
-            
+                NetworkPacketProtoBuf.NetworkPacket networkPacket = NetworkPacketProtoBuf.NetworkPacket.newBuilder().setData(ByteString.copyFrom(playerCoordinateBytes)).setTotalSize(playerCoordinateBytes.length).setType(routeType).build();
+                
+                byte[] networkPacketBytes = objectToBytes(networkPacket);
+                System.out.println(networkPacketBytes.length);
                 ch.writeAndFlush(new DatagramPacket(
-                    Unpooled.copiedBuffer(objectToBytes(networkPacket)),
+                    Unpooled.copiedBuffer(networkPacketBytes),
                     new InetSocketAddress("localhost", port))).sync();
 
                 // Thread.sleep(5);

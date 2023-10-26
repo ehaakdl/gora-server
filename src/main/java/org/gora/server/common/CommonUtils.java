@@ -1,7 +1,12 @@
 package org.gora.server.common;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.UUID;
 
+import io.jsonwebtoken.io.IOException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +16,21 @@ import lombok.extern.slf4j.Slf4j;
 public final class CommonUtils {
     private static final long SLEEP_MILLIS = 10;
  
+    public static Object bytesToObject(byte[] bytes) throws IOException, ClassNotFoundException, java.io.IOException {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+             ObjectInputStream ois = new ObjectInputStream(bis)) {
+            return ois.readObject();
+        }
+    }
+    public static byte[] objectToBytes(Object obj) throws IOException, java.io.IOException {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+            oos.writeObject(obj);
+            oos.flush();
+            return bos.toByteArray();
+        }
+    }
+    
     public static String replaceUUID(){
         return UUID.randomUUID().toString().replace("-", "");
     }
