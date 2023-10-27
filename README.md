@@ -15,6 +15,10 @@
 gradlew build --exclude-task test
 gradlew jibDockerBuild
 ```
+##### protobuf
+```
+protoc -I=./protobuf --java_out=./protobuf/out ./protobuf/*.proto
+```
 
 ##### 실행방법
 ```.docker/env.example 파일에 담긴 환경변수를 실행할때 추가해준다.(vscode 사용시 기본으로 셋팅되어있다.)```
