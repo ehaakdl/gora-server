@@ -9,4 +9,6 @@ message NetworkPacket {
   optional bytes data = 1;
   required eServiceRouteType type = 2;
   required int32 dataSize = 3;
+  required string identify = 4;
+  required int32 index = 5;
 }

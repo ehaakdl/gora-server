@@ -1,0 +1,8 @@
+package protobuf;
+
+option java_package = "org.gora.server.model.network";
+option java_outer_classname = "TestProtoBuf";
+
+message Test {
+  required string msg = 1;
+}

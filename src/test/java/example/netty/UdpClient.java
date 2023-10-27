@@ -4,23 +4,14 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetSocketAddress;
 import java.util.UUID;
-
-import org.gora.server.model.network.NetworkPacketProtoBuf;
-import org.gora.server.model.network.NetworkTestProtoBuf;
-import org.gora.server.model.network.eServiceRouteTypeProtoBuf;
-
-import com.google.protobuf.ByteString;
 
 import io.jsonwebtoken.io.IOException;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
@@ -70,17 +61,17 @@ public class UdpClient {
                 test.append(UUID.randomUUID().randomUUID().toString());
             }
             for (int i = 0; i < 2; i++) {
-                NetworkTestProtoBuf.NetworkTest playerCoordinateProtoBuf = NetworkTestProtoBuf.NetworkTest.newBuilder().setA(test.toString()).setB(test.toString()).build();
-                byte[] playerCoordinateBytes= objectToBytes(playerCoordinateProtoBuf);
+                // NetworkTestProtoBuf.NetworkTest playerCoordinateProtoBuf = NetworkTestProtoBuf.NetworkTest.newBuilder().setA(test.toString()).setB(test.toString()).build();
+                // byte[] playerCoordinateBytes= objectToBytes(playerCoordinateProtoBuf);
 
-                eServiceRouteTypeProtoBuf.eServiceRouteType routeType = eServiceRouteTypeProtoBuf.eServiceRouteType.player_coordinate;
-                NetworkPacketProtoBuf.NetworkPacket networkPacket = NetworkPacketProtoBuf.NetworkPacket.newBuilder().setData(ByteString.copyFrom(playerCoordinateBytes)).setTotalSize(playerCoordinateBytes.length).setType(routeType).build();
+                // eServiceRouteTypeProtoBuf.eServiceRouteType routeType = eServiceRouteTypeProtoBuf.eServiceRouteType.player_coordinate;
+                // NetworkPacketProtoBuf.NetworkPacket networkPacket = NetworkPacketProtoBuf.NetworkPacket.newBuilder().setData(ByteString.copyFrom(playerCoordinateBytes)).setTotalSize(playerCoordinateBytes.length).setType(routeType).build();
                 
-                byte[] networkPacketBytes = objectToBytes(networkPacket);
-                System.out.println(networkPacketBytes.length);
-                ch.writeAndFlush(new DatagramPacket(
-                    Unpooled.copiedBuffer(networkPacketBytes),
-                    new InetSocketAddress("localhost", port))).sync();
+                // byte[] networkPacketBytes = objectToBytes(networkPacket);
+                // System.out.println(networkPacketBytes.length);
+                // ch.writeAndFlush(new DatagramPacket(
+                //     Unpooled.copiedBuffer(networkPacketBytes),
+                //     new InetSocketAddress("localhost", port))).sync();
 
                 // Thread.sleep(5);
             }

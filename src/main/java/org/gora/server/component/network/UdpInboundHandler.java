@@ -6,8 +6,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.gora.server.component.LoginTokenProvider;
-import org.gora.server.model.network.NetworkPacketProtoBuf;
-import org.gora.server.model.network.NetworkTestProtoBuf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -54,14 +52,14 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
     }
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
-        byte[] contentByte = new byte[msg.content().readableBytes()];
-            msg.content().readBytes(contentByte);
-        NetworkPacketProtoBuf.NetworkPacket test = (org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket) bytesToObject(contentByte);
-        NetworkTestProtoBuf.NetworkTest dd =  (NetworkTestProtoBuf.NetworkTest) bytesToObject(test.getData().toByteArray());
-        log.info("사이즈 : {}, {}", test.getTotalSize(), test.getData().size());
-        if(test.getTotalSize() != test.getData().size()){
-            log.error("사이즈 다름: {}, {}", test.getTotalSize(), test.getData().size());
-        }
+        // byte[] contentByte = new byte[msg.content().readableBytes()];
+        //     msg.content().readBytes(contentByte);
+        // NetworkPakcetProtoBuf.NetworkPacket test = (org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket) bytesToObject(contentByte);
+        // TestProtoBuf.Test dd =  (NetworkTestProtoBuf.NetworkTest) bytesToObject(test.getData().toByteArray());
+        // log.info("사이즈 : {}, {}", test.getTotalSize(), test.getData().size());
+        // if(test.getTotalSize() != test.getData().size()){
+        //     log.error("사이즈 다름: {}, {}", test.getTotalSize(), test.getData().size());
+        // }
         
         // contentByte = objectToBytes(test);
         //             ctx.channel().writeAndFlush(new DatagramPacket(

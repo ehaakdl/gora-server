@@ -1,11 +1,8 @@
 package org.gora.server.component.network.pipline;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
 import java.util.List;
 
-import org.gora.server.common.CommonUtils;
-import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 
 import io.netty.buffer.ByteBuf;
@@ -19,7 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ServerTcpMessageDecoder extends ByteToMessageDecoder {
     private ByteArrayOutputStream bufferStream = new ByteArrayOutputStream();
-    
+    private long expireTime;
+
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf recvMsg, List<Object> outMsg) throws Exception {
         ByteBuf recvByteBuf = (ByteBuf) recvMsg;
@@ -28,35 +26,17 @@ public class ServerTcpMessageDecoder extends ByteToMessageDecoder {
         recvMsg.readBytes(recvBytes);
         
         NetworkPacket packet;
-        if(recvBytes.length < NetworkUtils.TAIL.length){
-            bufferStream.write(recvBytes);
-        }else if(recvBytes.length > NetworkUtils.TAIL.length){
-            bufferStream.write(recvBytes);
-        }else{
-            bufferStream.write(recvBytes);
-
-            // 꼬리인지 체크
-            byte[] buffer = bufferStream.toByteArray();
-            bufferStream.reset();
-            int totalBufferSize = buffer.length;
-            int startTailIndex = buffer[totalBufferSize - NetworkUtils.TAIL.length];
-            int endTailIndex = buffer[totalBufferSize];
-            boolean isTail = true;
-            for (int index = startTailIndex; index < endTailIndex; index++) {
-                if(buffer[index] != NetworkUtils.TAIL[index]){
-                    isTail = false;
-                    break;
-                }
-            }
-            if(!isTail){
-                return;
-            }
+        
+        // if(recvBytes.length < NetworkUtils.TAIL.length){
+        //     bufferStream.write(recvBytes);
+        // }else {
+        //     bufferStream.write(recvBytes);
+           
             
-            // 꼬리 제거 후 역직렬화
-            byte[] newBuffer = Arrays.copyOf(buffer, totalBufferSize - NetworkUtils.TAIL.length);
-            packet = (NetworkPacket) CommonUtils.bytesToObject(newBuffer);
-            outMsg.add(packet);
-        }
+            
+        //     packet = (NetworkPacket) CommonUtils.bytesToObject(newBuffer);
+        //     outMsg.add(packet);
+        // }
 
         
 

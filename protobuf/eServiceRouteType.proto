@@ -6,4 +6,5 @@ option java_outer_classname = "eServiceRouteTypeProtoBuf";
 enum eServiceRouteType {
   player_coordinate = 1;
   health_check = 2;
+  test = 3;
 }
