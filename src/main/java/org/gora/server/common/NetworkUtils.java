@@ -16,7 +16,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NetworkUtils {
     public static final int DATA_MAX_SIZE = 1024;
-    public static final int TOTAL_MAX_SIZE = 1024;
+    public static final int TOTAL_MAX_SIZE = 1673;
+    public static final int HEADER_SIZE = 649;
     public static final int PAD = 0;
 
     public static byte[] removePadding(byte[] target, int paddingSize) {
@@ -66,12 +67,12 @@ public class NetworkUtils {
                 .setDataSize(0)
                 .setType(type)
                 .setIdentify(identify)
-                .setIndex(0)
+                .setAssembleOrderIndex(0)
                 .build();
     }
 
     public static List<NetworkPakcetProtoBuf.NetworkPacket> getSegment(byte[] target, eServiceRouteType type,
-            String identify, int startIndex) {
+            String identify, int startIndex, String key) {
         List<NetworkPakcetProtoBuf.NetworkPacket> result = new ArrayList<>();
         byte[] newBytes;
         if (target == null) {
@@ -107,13 +108,17 @@ public class NetworkUtils {
             }
             newBytes = new byte[NetworkUtils.DATA_MAX_SIZE];
             System.arraycopy(target, srcPos, newBytes, 0, NetworkUtils.DATA_MAX_SIZE);
-            NetworkPakcetProtoBuf.NetworkPacket packet = NetworkPakcetProtoBuf.NetworkPacket.newBuilder()
+            NetworkPakcetProtoBuf.NetworkPacket.Builder packetBuilder = NetworkPakcetProtoBuf.NetworkPacket.newBuilder()
                     .setData(ByteString.copyFrom(newBytes))
                     .setDataSize(dataSize)
                     .setType(type)
                     .setIdentify(identify)
-                    .setIndex(startIndex + index + 1)
-                    .build();
+                    .setAssembleOrderIndex(startIndex + index + 1);
+            if(key != null){
+                packetBuilder.setKey(key);
+            }
+            NetworkPakcetProtoBuf.NetworkPacket packet = packetBuilder.build();
+            
             result.add(packet);
             srcPos = srcPos + NetworkUtils.DATA_MAX_SIZE;
         }

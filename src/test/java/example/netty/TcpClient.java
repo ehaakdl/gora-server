@@ -1,21 +1,14 @@
 package example.netty;
 
-import static org.mockito.ArgumentMatchers.*;
-
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.network.NetworkPakcetProtoBuf;
-import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
-import org.gora.server.model.network.eServiceRouteTypeProtoBuf.eServiceRouteType;
 import org.gora.server.model.network.TestProtoBuf;
-import org.gora.server.model.network.eServiceRouteTypeProtoBuf;
-
-import com.google.protobuf.ByteString;
+import org.gora.server.model.network.eServiceRouteTypeProtoBuf.eServiceRouteType;
 
 import io.jsonwebtoken.io.IOException;
 import io.netty.bootstrap.Bootstrap;
@@ -53,31 +46,31 @@ public class TcpClient {
     }
 
     private void start() throws InterruptedException, IOException, java.io.IOException {
-            String uuid = UUID.randomUUID().randomUUID().toString();
-            StringBuilder tempMsg = new StringBuilder(uuid);
-            for (int i = 0; i < 30; i++) {
-                tempMsg.append(uuid);
-            }
-            
-            for (int i = 0; i < 2; i++) {
-                TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
-                        .setMsg(tempMsg.toString()).build();
-                byte[] testBytes = CommonUtils.objectToBytes(test);
-                List<NetworkPakcetProtoBuf.NetworkPacket> packets = NetworkUtils.getSegment(testBytes, eServiceRouteType.test, NetworkUtils.getSeq());
-                if(packets == null){
-                    System.out.println("에러발생");
-                    return;
-                }
-
-                for (int index = 0; index < packets.size(); index++) {
-                    ByteBuf buffer = Unpooled.wrappedBuffer(CommonUtils.objectToBytes(packets.get(index)));
-                    serverChannel.writeAndFlush(buffer).sync();
-                }
-                
+        String uuid = UUID.randomUUID().randomUUID().toString();
+        StringBuilder tempMsg = new StringBuilder(uuid);
+        for (int i = 0; i < 30; i++) {
+            tempMsg.append(uuid);
+        }
+        
+        int MAX_SEND_PACKET_COUNT = 2;
+        for (int i = 0; i < MAX_SEND_PACKET_COUNT; i++) {
+            TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
+                    .setMsg(tempMsg.toString()).build();
+            byte[] testBytes = CommonUtils.objectToBytes(test);
+            List<NetworkPakcetProtoBuf.NetworkPacket> packets = NetworkUtils.getSegment(testBytes,
+                    eServiceRouteType.test, NetworkUtils.getSeq(), 0, null);
+            if (packets == null) {
+                System.out.println("에러발생");
+                return;
             }
 
+            for (int index = 0; index < packets.size(); index++) {
+                ByteBuf buffer = Unpooled.wrappedBuffer(CommonUtils.objectToBytes(packets.get(index)));
+                serverChannel.writeAndFlush(buffer).sync();
+            }
         }
 
+    }
 
     public void close() {
         eventLoopGroup.shutdownGracefully();

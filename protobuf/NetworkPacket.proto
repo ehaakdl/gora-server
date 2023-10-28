@@ -8,7 +8,8 @@ option java_outer_classname = "NetworkPakcetProtoBuf";
 message NetworkPacket {
   optional bytes data = 1;
   required eServiceRouteType type = 2;
-  required int32 dataSize = 3;
+  required fixed32 dataSize = 3;
   required string identify = 4;
-  required int32 index = 5;
+  required fixed32 assembleOrderIndex = 5;
+  optional string key = 6;
 }

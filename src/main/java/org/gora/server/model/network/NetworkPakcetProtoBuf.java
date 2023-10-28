@@ -42,12 +42,12 @@ public final class NetworkPakcetProtoBuf {
     org.gora.server.model.network.eServiceRouteTypeProtoBuf.eServiceRouteType getType();
 
     /**
-     * <code>required int32 dataSize = 3;</code>
+     * <code>required fixed32 dataSize = 3;</code>
      * @return Whether the dataSize field is set.
      */
     boolean hasDataSize();
     /**
-     * <code>required int32 dataSize = 3;</code>
+     * <code>required fixed32 dataSize = 3;</code>
      * @return The dataSize.
      */
     int getDataSize();
@@ -70,15 +70,32 @@ public final class NetworkPakcetProtoBuf {
         getIdentifyBytes();
 
     /**
-     * <code>required int32 index = 5;</code>
-     * @return Whether the index field is set.
+     * <code>required fixed32 assembleOrderIndex = 5;</code>
+     * @return Whether the assembleOrderIndex field is set.
      */
-    boolean hasIndex();
+    boolean hasAssembleOrderIndex();
     /**
-     * <code>required int32 index = 5;</code>
-     * @return The index.
+     * <code>required fixed32 assembleOrderIndex = 5;</code>
+     * @return The assembleOrderIndex.
      */
-    int getIndex();
+    int getAssembleOrderIndex();
+
+    /**
+     * <code>optional string key = 6;</code>
+     * @return Whether the key field is set.
+     */
+    boolean hasKey();
+    /**
+     * <code>optional string key = 6;</code>
+     * @return The key.
+     */
+    java.lang.String getKey();
+    /**
+     * <code>optional string key = 6;</code>
+     * @return The bytes for key.
+     */
+    com.google.protobuf.ByteString
+        getKeyBytes();
   }
   /**
    * Protobuf type {@code protobuf.NetworkPacket}
@@ -96,6 +113,7 @@ public final class NetworkPakcetProtoBuf {
       data_ = com.google.protobuf.ByteString.EMPTY;
       type_ = 1;
       identify_ = "";
+      key_ = "";
     }
 
     @java.lang.Override
@@ -159,7 +177,7 @@ public final class NetworkPakcetProtoBuf {
     public static final int DATASIZE_FIELD_NUMBER = 3;
     private int dataSize_ = 0;
     /**
-     * <code>required int32 dataSize = 3;</code>
+     * <code>required fixed32 dataSize = 3;</code>
      * @return Whether the dataSize field is set.
      */
     @java.lang.Override
@@ -167,7 +185,7 @@ public final class NetworkPakcetProtoBuf {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>required int32 dataSize = 3;</code>
+     * <code>required fixed32 dataSize = 3;</code>
      * @return The dataSize.
      */
     @java.lang.Override
@@ -224,23 +242,72 @@ public final class NetworkPakcetProtoBuf {
       }
     }
 
-    public static final int INDEX_FIELD_NUMBER = 5;
-    private int index_ = 0;
+    public static final int ASSEMBLEORDERINDEX_FIELD_NUMBER = 5;
+    private int assembleOrderIndex_ = 0;
     /**
-     * <code>required int32 index = 5;</code>
-     * @return Whether the index field is set.
+     * <code>required fixed32 assembleOrderIndex = 5;</code>
+     * @return Whether the assembleOrderIndex field is set.
      */
     @java.lang.Override
-    public boolean hasIndex() {
+    public boolean hasAssembleOrderIndex() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <code>required int32 index = 5;</code>
-     * @return The index.
+     * <code>required fixed32 assembleOrderIndex = 5;</code>
+     * @return The assembleOrderIndex.
      */
     @java.lang.Override
-    public int getIndex() {
-      return index_;
+    public int getAssembleOrderIndex() {
+      return assembleOrderIndex_;
+    }
+
+    public static final int KEY_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object key_ = "";
+    /**
+     * <code>optional string key = 6;</code>
+     * @return Whether the key field is set.
+     */
+    @java.lang.Override
+    public boolean hasKey() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <code>optional string key = 6;</code>
+     * @return The key.
+     */
+    @java.lang.Override
+    public java.lang.String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          key_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string key = 6;</code>
+     * @return The bytes for key.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -262,7 +329,7 @@ public final class NetworkPakcetProtoBuf {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasIndex()) {
+      if (!hasAssembleOrderIndex()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -280,13 +347,16 @@ public final class NetworkPakcetProtoBuf {
         output.writeEnum(2, type_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        output.writeInt32(3, dataSize_);
+        output.writeFixed32(3, dataSize_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 4, identify_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
-        output.writeInt32(5, index_);
+        output.writeFixed32(5, assembleOrderIndex_);
+      }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, key_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -307,14 +377,17 @@ public final class NetworkPakcetProtoBuf {
       }
       if (((bitField0_ & 0x00000004) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, dataSize_);
+          .computeFixed32Size(3, dataSize_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, identify_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, index_);
+          .computeFixed32Size(5, assembleOrderIndex_);
+      }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, key_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -350,10 +423,15 @@ public final class NetworkPakcetProtoBuf {
         if (!getIdentify()
             .equals(other.getIdentify())) return false;
       }
-      if (hasIndex() != other.hasIndex()) return false;
-      if (hasIndex()) {
-        if (getIndex()
-            != other.getIndex()) return false;
+      if (hasAssembleOrderIndex() != other.hasAssembleOrderIndex()) return false;
+      if (hasAssembleOrderIndex()) {
+        if (getAssembleOrderIndex()
+            != other.getAssembleOrderIndex()) return false;
+      }
+      if (hasKey() != other.hasKey()) return false;
+      if (hasKey()) {
+        if (!getKey()
+            .equals(other.getKey())) return false;
       }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -382,9 +460,13 @@ public final class NetworkPakcetProtoBuf {
         hash = (37 * hash) + IDENTIFY_FIELD_NUMBER;
         hash = (53 * hash) + getIdentify().hashCode();
       }
-      if (hasIndex()) {
-        hash = (37 * hash) + INDEX_FIELD_NUMBER;
-        hash = (53 * hash) + getIndex();
+      if (hasAssembleOrderIndex()) {
+        hash = (37 * hash) + ASSEMBLEORDERINDEX_FIELD_NUMBER;
+        hash = (53 * hash) + getAssembleOrderIndex();
+      }
+      if (hasKey()) {
+        hash = (37 * hash) + KEY_FIELD_NUMBER;
+        hash = (53 * hash) + getKey().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -521,7 +603,8 @@ public final class NetworkPakcetProtoBuf {
         type_ = 1;
         dataSize_ = 0;
         identify_ = "";
-        index_ = 0;
+        assembleOrderIndex_ = 0;
+        key_ = "";
         return this;
       }
 
@@ -573,8 +656,12 @@ public final class NetworkPakcetProtoBuf {
           to_bitField0_ |= 0x00000008;
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
-          result.index_ = index_;
+          result.assembleOrderIndex_ = assembleOrderIndex_;
           to_bitField0_ |= 0x00000010;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.key_ = key_;
+          to_bitField0_ |= 0x00000020;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -637,8 +724,13 @@ public final class NetworkPakcetProtoBuf {
           bitField0_ |= 0x00000008;
           onChanged();
         }
-        if (other.hasIndex()) {
-          setIndex(other.getIndex());
+        if (other.hasAssembleOrderIndex()) {
+          setAssembleOrderIndex(other.getAssembleOrderIndex());
+        }
+        if (other.hasKey()) {
+          key_ = other.key_;
+          bitField0_ |= 0x00000020;
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -656,7 +748,7 @@ public final class NetworkPakcetProtoBuf {
         if (!hasIdentify()) {
           return false;
         }
-        if (!hasIndex()) {
+        if (!hasAssembleOrderIndex()) {
           return false;
         }
         return true;
@@ -695,21 +787,26 @@ public final class NetworkPakcetProtoBuf {
                 }
                 break;
               } // case 16
-              case 24: {
-                dataSize_ = input.readInt32();
+              case 29: {
+                dataSize_ = input.readFixed32();
                 bitField0_ |= 0x00000004;
                 break;
-              } // case 24
+              } // case 29
               case 34: {
                 identify_ = input.readBytes();
                 bitField0_ |= 0x00000008;
                 break;
               } // case 34
-              case 40: {
-                index_ = input.readInt32();
+              case 45: {
+                assembleOrderIndex_ = input.readFixed32();
                 bitField0_ |= 0x00000010;
                 break;
-              } // case 40
+              } // case 45
+              case 50: {
+                key_ = input.readBytes();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -811,7 +908,7 @@ public final class NetworkPakcetProtoBuf {
 
       private int dataSize_ ;
       /**
-       * <code>required int32 dataSize = 3;</code>
+       * <code>required fixed32 dataSize = 3;</code>
        * @return Whether the dataSize field is set.
        */
       @java.lang.Override
@@ -819,7 +916,7 @@ public final class NetworkPakcetProtoBuf {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
-       * <code>required int32 dataSize = 3;</code>
+       * <code>required fixed32 dataSize = 3;</code>
        * @return The dataSize.
        */
       @java.lang.Override
@@ -827,7 +924,7 @@ public final class NetworkPakcetProtoBuf {
         return dataSize_;
       }
       /**
-       * <code>required int32 dataSize = 3;</code>
+       * <code>required fixed32 dataSize = 3;</code>
        * @param value The dataSize to set.
        * @return This builder for chaining.
        */
@@ -839,7 +936,7 @@ public final class NetworkPakcetProtoBuf {
         return this;
       }
       /**
-       * <code>required int32 dataSize = 3;</code>
+       * <code>required fixed32 dataSize = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearDataSize() {
@@ -929,42 +1026,122 @@ public final class NetworkPakcetProtoBuf {
         return this;
       }
 
-      private int index_ ;
+      private int assembleOrderIndex_ ;
       /**
-       * <code>required int32 index = 5;</code>
-       * @return Whether the index field is set.
+       * <code>required fixed32 assembleOrderIndex = 5;</code>
+       * @return Whether the assembleOrderIndex field is set.
        */
       @java.lang.Override
-      public boolean hasIndex() {
+      public boolean hasAssembleOrderIndex() {
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
-       * <code>required int32 index = 5;</code>
-       * @return The index.
+       * <code>required fixed32 assembleOrderIndex = 5;</code>
+       * @return The assembleOrderIndex.
        */
       @java.lang.Override
-      public int getIndex() {
-        return index_;
+      public int getAssembleOrderIndex() {
+        return assembleOrderIndex_;
       }
       /**
-       * <code>required int32 index = 5;</code>
-       * @param value The index to set.
+       * <code>required fixed32 assembleOrderIndex = 5;</code>
+       * @param value The assembleOrderIndex to set.
        * @return This builder for chaining.
        */
-      public Builder setIndex(int value) {
+      public Builder setAssembleOrderIndex(int value) {
 
-        index_ = value;
+        assembleOrderIndex_ = value;
         bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
       /**
-       * <code>required int32 index = 5;</code>
+       * <code>required fixed32 assembleOrderIndex = 5;</code>
        * @return This builder for chaining.
        */
-      public Builder clearIndex() {
+      public Builder clearAssembleOrderIndex() {
         bitField0_ = (bitField0_ & ~0x00000010);
-        index_ = 0;
+        assembleOrderIndex_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object key_ = "";
+      /**
+       * <code>optional string key = 6;</code>
+       * @return Whether the key field is set.
+       */
+      public boolean hasKey() {
+        return ((bitField0_ & 0x00000020) != 0);
+      }
+      /**
+       * <code>optional string key = 6;</code>
+       * @return The key.
+       */
+      public java.lang.String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            key_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string key = 6;</code>
+       * @return The bytes for key.
+       */
+      public com.google.protobuf.ByteString
+          getKeyBytes() {
+        java.lang.Object ref = key_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          key_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string key = 6;</code>
+       * @param value The key to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKey(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        key_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string key = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearKey() {
+        key_ = getDefaultInstance().getKey();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string key = 6;</code>
+       * @param value The bytes for key to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKeyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        key_ = value;
+        bitField0_ |= 0x00000020;
         onChanged();
         return this;
       }
@@ -1047,11 +1224,12 @@ public final class NetworkPakcetProtoBuf {
   static {
     java.lang.String[] descriptorData = {
       "\n\023NetworkPacket.proto\022\010protobuf\032\027eServic" +
-      "eRouteType.proto\"{\n\rNetworkPacket\022\014\n\004dat" +
-      "a\030\001 \001(\014\022)\n\004type\030\002 \002(\0162\033.protobuf.eServic" +
-      "eRouteType\022\020\n\010dataSize\030\003 \002(\005\022\020\n\010identify" +
-      "\030\004 \002(\t\022\r\n\005index\030\005 \002(\005B6\n\035org.gora.server" +
-      ".model.networkB\025NetworkPakcetProtoBuf"
+      "eRouteType.proto\"\225\001\n\rNetworkPacket\022\014\n\004da" +
+      "ta\030\001 \001(\014\022)\n\004type\030\002 \002(\0162\033.protobuf.eServi" +
+      "ceRouteType\022\020\n\010dataSize\030\003 \002(\007\022\020\n\010identif" +
+      "y\030\004 \002(\t\022\032\n\022assembleOrderIndex\030\005 \002(\007\022\013\n\003k" +
+      "ey\030\006 \001(\tB6\n\035org.gora.server.model.networ" +
+      "kB\025NetworkPakcetProtoBuf"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1063,7 +1241,7 @@ public final class NetworkPakcetProtoBuf {
     internal_static_protobuf_NetworkPacket_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_protobuf_NetworkPacket_descriptor,
-        new java.lang.String[] { "Data", "Type", "DataSize", "Identify", "Index", });
+        new java.lang.String[] { "Data", "Type", "DataSize", "Identify", "AssembleOrderIndex", "Key", });
     org.gora.server.model.network.eServiceRouteTypeProtoBuf.getDescriptor();
   }
 
