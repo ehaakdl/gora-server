@@ -1,4 +1,4 @@
-package org.gora.server.component.network;
+package org.gora.server.model.network;
 
 import lombok.Getter;
 
