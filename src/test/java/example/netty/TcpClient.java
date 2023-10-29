@@ -10,6 +10,8 @@ import org.gora.server.model.network.NetworkPakcetProtoBuf;
 import org.gora.server.model.network.TestProtoBuf;
 import org.gora.server.model.network.eServiceRouteTypeProtoBuf.eServiceRouteType;
 
+import com.google.protobuf.ByteString;
+
 import io.jsonwebtoken.io.IOException;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -58,7 +60,7 @@ public class TcpClient {
                     .setMsg(tempMsg.toString()).build();
             byte[] testBytes = CommonUtils.objectToBytes(test);
             List<NetworkPakcetProtoBuf.NetworkPacket> packets = NetworkUtils.getSegment(testBytes,
-                    eServiceRouteType.test, NetworkUtils.getSeq(), 0, null);
+                    eServiceRouteType.test, NetworkUtils.getIdentify(), 0, null);
             if (packets == null) {
                 System.out.println("에러발생");
                 return;

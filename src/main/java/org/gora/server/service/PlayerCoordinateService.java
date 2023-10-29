@@ -5,7 +5,7 @@ import java.util.Date;
 import org.gora.server.model.entity.TokenEntity;
 import org.gora.server.model.entity.UserEntity;
 import org.gora.server.model.entity.eTokenUseDBType;
-import org.gora.server.model.network.PlayerCoordinate;
+import org.gora.server.model.network.PlayerCoordinateProtoBuf;
 import org.gora.server.repository.TokenRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +20,7 @@ public class PlayerCoordinateService {
     private final TokenRepository tokenRepository;
 
     @Transactional
-    public void broadcastPlayerCoordinate(String loginToken, PlayerCoordinate target){
+    public void broadcastPlayerCoordinate(String loginToken, PlayerCoordinateProtoBuf.PlayerCoordinate target){
         Date nowAt = new Date();
         TokenEntity tokenEntity = tokenRepository.findByAccessAndTypeAndAccessExpireAtAfter(loginToken, eTokenUseDBType.login, nowAt).orElse(null);
         if(tokenEntity == null){

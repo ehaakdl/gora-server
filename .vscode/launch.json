@@ -9,7 +9,7 @@
             "name": "ServerApplication",
             "request": "launch",
             "mainClass": "org.gora.server.ServerApplication",
-            "projectName": "RealTime",
+            "projectName": "server",
             "vmArgs": [
                 "-Duser.timezone=GMT"
             ],

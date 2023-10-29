@@ -16,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NetworkUtils {
     public static final int DATA_MAX_SIZE = 1024;
-    public static final int TOTAL_MAX_SIZE = 1673;
-    public static final int HEADER_SIZE = 649;
+    public static final int TOTAL_MAX_SIZE = 1698;
+    public static final int HEADER_SIZE = 674;
     public static final int PAD = 0;
 
     public static byte[] removePadding(byte[] target, int paddingSize) {
@@ -56,7 +56,7 @@ public class NetworkUtils {
         return padded;
     }
 
-    public static String getSeq() {
+    public static String getIdentify() {
         return CommonUtils.replaceUUID() + System.currentTimeMillis();
     }
 

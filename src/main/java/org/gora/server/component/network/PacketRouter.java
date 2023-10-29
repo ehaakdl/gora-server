@@ -5,9 +5,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.Env;
-import org.gora.server.model.eServiceRouteType;
-import org.gora.server.model.network.NetworkPacket;
-import org.gora.server.model.network.PlayerCoordinate;
+import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
+import org.gora.server.model.network.PlayerCoordinateProtoBuf.PlayerCoordinate;
+import org.gora.server.model.network.eServiceRouteTypeProtoBuf.eServiceRouteType;
 import org.gora.server.service.PlayerCoordinateService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -56,19 +56,12 @@ public class PacketRouter {
                     return;
                 }
 
-                switch(routeType){
-                    case player_coordinate:
-                        PlayerCoordinate playerCoordinate = (PlayerCoordinate) NetworkPacket.getData();
-                        if(playerCoordinate == null){
-                            log.error("[router] convert fail");
-                            return;
-                        }
-                        playerCoordinateService.broadcastPlayerCoordinate(NetworkPacket.getKey(), playerCoordinate);
-                        break;
-                    default:
-                        log.error("[router 큐] 처리할 수 없는 유형에 패킷이 왔습니다.");
-                        return;
-                }
+                // switch(routeType){
+                    
+                //     default:
+                //         log.error("[router 큐] 처리할 수 없는 유형에 패킷이 왔습니다.");
+                //         return;
+                // }
             });
         }
 
