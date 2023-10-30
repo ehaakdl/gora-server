@@ -6,7 +6,7 @@ option java_package = "org.gora.server.model.network";
 option java_outer_classname = "NetworkPakcetProtoBuf";
 
 message NetworkPacket {
-  optional bytes data = 1;
+  required bytes data = 1;
   required eServiceRouteType type = 2;
   required fixed32 dataSize = 3;
   required string identify = 4;
