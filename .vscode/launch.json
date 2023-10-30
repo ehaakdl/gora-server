@@ -31,25 +31,6 @@
         },
         {
             "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "org.gora.server.ServerApplication",
-            "projectName": "server",
-            "vmArgs": [
-                "-Duser.timezone=GMT"
-            ],
-            "env": {
-                "DB_USERNAME": "gora",
-                "DB_PASSWORD": 1234,
-                "DB_HOST": "localhost",
-                "DB_PORT": 3306,
-                "DB_NAME": "gora",
-                "MAX_DEFAULT_QUE_SZ": 1000,
-                "JWT_SECRET_KEY": "a89e2da3-704d-4ff0-a803-c8d8dc57cbf1"
-            }
-        },
-        {
-            "type": "java",
             "name": "TcpClient",
             "request": "launch",
             "mainClass": "example.netty.TcpClient"
