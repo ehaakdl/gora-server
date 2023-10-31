@@ -1,6 +1,7 @@
 package org.gora.server.config;
 
 import org.gora.server.common.CommonUtils;
+import org.gora.server.component.Monitor;
 import org.gora.server.component.network.PacketRouter;
 import org.gora.server.component.network.TcpServer;
 import org.gora.server.component.network.UdpServer;
@@ -19,6 +20,7 @@ public class ApplicationListenerImpl implements ApplicationListener<ContextRefre
     private final PacketRouter packetRouter;
     private final UdpServer udpServer;
     private final TcpServer tcpServer;
+    private final Monitor monitor;
     @Value("${app.udp_server_port}")
     private int udpServerPort;
     @Value("${app.tcp_server_port}")
@@ -27,7 +29,7 @@ public class ApplicationListenerImpl implements ApplicationListener<ContextRefre
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         log.info("start server");
-
+        
         try {
             udpServer.startup(this.udpServerPort);
         } catch (Exception e) {
@@ -50,5 +52,7 @@ public class ApplicationListenerImpl implements ApplicationListener<ContextRefre
 
         packetRouter.run();
         log.info("receiver thread startUp");
+
+        monitor.start();
     }
 }

@@ -14,8 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CommonUtils {
-    private static final long SLEEP_MILLIS = 10;
+    public static final long SLEEP_MILLIS = 10;
  
+    public static long bytesToMegabytes(long bytes) {
+        return bytes / (1024 * 1024);
+    }
+
     public static Object bytesToObject(byte[] bytes) throws IOException, ClassNotFoundException, java.io.IOException {
         try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
              ObjectInputStream ois = new ObjectInputStream(bis)) {
@@ -53,9 +57,9 @@ public final class CommonUtils {
         return result.toString();
     }
 
-    public static void sleep(){
+    public static void sleep(long millisecond){
         try {
-            Thread.sleep(SLEEP_MILLIS);
+            Thread.sleep(millisecond);
         } catch (InterruptedException e) {
             log.error("Thread sleep 에러");
             log.error(CommonUtils.getStackTraceElements(e));

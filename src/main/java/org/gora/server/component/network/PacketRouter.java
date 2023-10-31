@@ -38,7 +38,7 @@ public class PacketRouter {
     @Async
     public void run() {
         while (true) {
-            CommonUtils.sleep();
+            CommonUtils.sleep(CommonUtils.SLEEP_MILLIS);
             routerQue.stream().findFirst().ifPresent(packet -> {
                 System.out.println(count++); 
                 log.info("router que size {}", routerQue.size());
