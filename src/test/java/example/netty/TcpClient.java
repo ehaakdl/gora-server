@@ -54,7 +54,7 @@ public class TcpClient {
             tempMsg.append(uuid);
         }
         
-        int MAX_SEND_PACKET_COUNT = 800;
+        int MAX_SEND_PACKET_COUNT = 2000;
         for (int i = 0; i < MAX_SEND_PACKET_COUNT; i++) {
             // 데이터 분할 생성
             TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
