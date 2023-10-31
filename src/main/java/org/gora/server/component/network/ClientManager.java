@@ -52,16 +52,7 @@ public class ClientManager {
                 .udpRecvBuffer(new ByteArrayOutputStream())
                 .build();
         
-        if(resources.putIfAbsent(resourceKey, ClientResource.builder()
-                .buffer(buffer).connection(connection).build()) != null){
-                    try {
-                        buffer.getTcpRecvBuffer().close();
-                        buffer.getUdpRecvBuffer().close();
-                    } catch (IOException e) {
-                        log.error(CommonUtils.getStackTraceElements(e));
-                    }
-                    
-        }
+        resources.putIfAbsent(resourceKey, ClientResource.builder().buffer(buffer).connection(connection).build());        
     }
 
     // 사이즈에 맞다면 NetworkPacket 클래스 반환
@@ -160,7 +151,7 @@ public class ClientManager {
         return true;
     }
 
-    public void close(String resourceKey, Long userSeq) throws IOException {
+    public void close(String resourceKey, Long userSeq) {
         ClientResource clientResource;
         if(resourceKey != null){
             clientResource  = resources.get(resourceKey);
@@ -181,8 +172,8 @@ public class ClientManager {
 
         ClientNetworkBuffer buffer = clientResource.getBuffer();
         if(buffer != null){
-            buffer.getTcpRecvBuffer().close();
-            buffer.getUdpRecvBuffer().close();
+            buffer.getTcpRecvBuffer().reset();
+            buffer.getUdpRecvBuffer().reset();
         }
 
         ClientConnection clientConnection = clientResource.getConnection();
@@ -192,4 +183,7 @@ public class ClientManager {
             }
         }
     }
+	public int getClientCount() {
+        return resources.size();
+	}
 }

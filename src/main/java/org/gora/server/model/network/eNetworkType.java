@@ -4,6 +4,5 @@ import lombok.Getter;
 
 @Getter
 public enum eNetworkType {
-    tcp, udp
-    
+    tcp, udp    
 }

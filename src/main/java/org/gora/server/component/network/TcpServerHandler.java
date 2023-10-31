@@ -2,8 +2,7 @@ package org.gora.server.component.network;
 
 import java.util.List;
 
-import org.gora.server.component.LoginTokenProvider;
-import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
+import org.gora.server.model.TransportData;
 import org.springframework.stereotype.Component;
 
 import io.netty.buffer.Unpooled;
@@ -18,12 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 @ChannelHandler.Sharable
 @Slf4j
 public class TcpServerHandler extends ChannelInboundHandlerAdapter {
-    private final LoginTokenProvider loginTokenProvider;
-    private final ClientManager clientManager;
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        final List<NetworkPacket> packets = (List<NetworkPacket>) msg;
-        for (NetworkPacket packet : packets) {
+        final List<TransportData> packets = (List<TransportData>) msg;
+        for (TransportData packet : packets) {
             try {
                 PacketRouter.push(packet);
             } catch (IllegalStateException e) {

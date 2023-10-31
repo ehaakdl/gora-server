@@ -1,15 +1,19 @@
 package org.gora.server.component;
 
 import org.gora.server.common.CommonUtils;
+import org.gora.server.common.Env;
+import org.gora.server.component.network.ClientManager;
 import org.gora.server.component.network.PacketRouter;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class Monitor {
-
+    private final ClientManager clientManager;
     @Async
     public void start(){
         while(true) {
@@ -33,9 +37,11 @@ public class Monitor {
             log.info("Free Memory: {}MB", CommonUtils.bytesToMegabytes(freeMemory));
             log.info("Used Memory: {}MB",CommonUtils.bytesToMegabytes(usedMemory));
             log.info("Max Memory: {}MB", CommonUtils.bytesToMegabytes(maxMemory));
-
-            log.info("Router Que Szie: {}", PacketRouter.size());
-        
+            
+            log.info("Router Max Que Szie: {}", System.getenv(Env.MAX_DEFAULT_QUE_SZ));
+            log.info("Router Current Que Size: {}", PacketRouter.size());
+            
+            log.info("Client Size: {}", clientManager.getClientCount());
             CommonUtils.sleep(3000);
         }        
     }

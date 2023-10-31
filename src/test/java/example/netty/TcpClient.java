@@ -1,5 +1,6 @@
 package example.netty;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.UUID;
@@ -12,7 +13,6 @@ import org.gora.server.model.network.eServiceType;
 
 import com.google.protobuf.ByteString;
 
-import io.jsonwebtoken.io.IOException;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -47,14 +47,14 @@ public class TcpClient {
         serverChannel = bootstrap.connect().sync().channel();
     }
     static int sendPacketLog = 0;
-    private void start() throws InterruptedException, IOException, java.io.IOException {
+    private void start() throws InterruptedException, IOException {
         String uuid = UUID.randomUUID().randomUUID().toString();
         StringBuilder tempMsg = new StringBuilder(uuid);
         for (int i = 0; i < 30; i++) {
             tempMsg.append(uuid);
         }
         
-        int MAX_SEND_PACKET_COUNT = 2000;
+        int MAX_SEND_PACKET_COUNT = 2500000;
         for (int i = 0; i < MAX_SEND_PACKET_COUNT; i++) {
             // 데이터 분할 생성
             TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
@@ -73,6 +73,7 @@ public class TcpClient {
                 serverChannel.writeAndFlush(buffer).sync();
             }
             sendPacketLog = sendPacketLog + packets.size();
+            // Thread.sleep(10);
             System.out.println(sendPacketLog); 
         }
 
@@ -82,14 +83,23 @@ public class TcpClient {
         eventLoopGroup.shutdownGracefully();
     }
 
-    public static void main(String[] args) throws Exception {
-        TcpClient client = new TcpClient("127.0.0.1", SERVER_PORT);
-        try {
-            client.connect();
-            client.start();
-        } finally {
-            client.close();
+    public static class ClientThread1 extends Thread{
+        public void start(){
+            TcpClient client = new TcpClient("127.0.0.1", SERVER_PORT);
+                try {
+                    client.connect();
+                    client.start();
+                } catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+                    client.close();
+                }
         }
     }
-
+    public static void main(String[] args) throws Exception {
+        
+        ClientThread1 t1 = new ClientThread1();
+        t1.start();
+        t1.wait();
+    }
 }
