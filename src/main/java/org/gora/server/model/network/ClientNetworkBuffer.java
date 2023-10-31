@@ -8,6 +8,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ClientNetworkBuffer {
-    private ByteArrayOutputStream tcpBuffer;
-    private ByteArrayOutputStream udpBuffer;
+    private ByteArrayOutputStream tcpRecvBuffer;
+    private ByteArrayOutputStream udpRecvBuffer;
 }

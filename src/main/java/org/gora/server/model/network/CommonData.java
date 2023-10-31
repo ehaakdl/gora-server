@@ -7,6 +7,6 @@ import lombok.Getter;
 @Builder
 public class CommonData {
     private Object data;
-    private eServiceRouteTypeProtoBuf.eServiceRouteType type;
+    private eServiceType type;
     private String key;
 }

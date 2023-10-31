@@ -3,8 +3,7 @@ package org.gora.server.component.network;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,15 +15,11 @@ import org.gora.server.model.ClientConnection;
 import org.gora.server.model.network.ClientNetworkBuffer;
 import org.gora.server.model.network.ClientResource;
 import org.gora.server.model.network.NetworkPakcetProtoBuf;
-import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
+import org.gora.server.model.network.eNetworkType;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.integration.IntegrationProperties.RSocket.Client;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.netty.channel.Channel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +34,7 @@ public class ClientManager {
     private UdpServer udpServer;
 
     // key는 채널 아이디(네티는 전체 채널 인스턴스에 대한 고유한 아이디를 가지고있다.)
-    private Map<String, ClientResource> resources = new ConcurrentHashMap<>(
+    private final static Map<String, ClientResource> resources = new ConcurrentHashMap<>(
             Integer.parseInt(System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
 
     // 패킷 수신핸들러가 아닌 다른 진입점에서 채널 아이디를 가져오기 위한 저장소
@@ -48,23 +43,31 @@ public class ClientManager {
             Integer.parseInt(System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
 
     public boolean existsResource(String resourceKey){
-        return this.resources.containsKey(resourceKey);
+        return resources.containsKey(resourceKey);
     }
     public void createResource(String resourceKey, ClientConnection connection) {
 
         ClientNetworkBuffer buffer = ClientNetworkBuffer.builder()
-                .tcpBuffer(new ByteArrayOutputStream())
-                .udpBuffer(new ByteArrayOutputStream())
+                .tcpRecvBuffer(new ByteArrayOutputStream())
+                .udpRecvBuffer(new ByteArrayOutputStream())
                 .build();
         
-        this.resources.putIfAbsent(resourceKey, ClientResource.builder()
-                .buffer(buffer).connection(connection).build());
+        if(resources.putIfAbsent(resourceKey, ClientResource.builder()
+                .buffer(buffer).connection(connection).build()) != null){
+                    try {
+                        buffer.getTcpRecvBuffer().close();
+                        buffer.getUdpRecvBuffer().close();
+                    } catch (IOException e) {
+                        log.error(CommonUtils.getStackTraceElements(e));
+                    }
+                    
+        }
     }
 
     // 사이즈에 맞다면 NetworkPacket 클래스 반환
-    public NetworkPakcetProtoBuf.NetworkPacket assembleClientBuffer(String resourceKey, eNetworkType type,
+    public List<NetworkPakcetProtoBuf.NetworkPacket> assemblePacket(String resourceKey, eNetworkType type,
             byte[] packetBytes)
-            throws IOException, io.jsonwebtoken.io.IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException {
         ClientResource resource = resources.get(resourceKey);
         if (resource == null) {
             throw new RuntimeException();
@@ -73,25 +76,51 @@ public class ClientManager {
         ClientNetworkBuffer buffer = resource.getBuffer();
         if (buffer == null) {
             buffer = ClientNetworkBuffer.builder()
-                    .tcpBuffer(new ByteArrayOutputStream())
-                    .udpBuffer(new ByteArrayOutputStream())
+                    .tcpRecvBuffer(new ByteArrayOutputStream())
+                    .udpRecvBuffer(new ByteArrayOutputStream())
                     .build();
             resource.setBuffer(buffer);
         }
 
-        ByteArrayOutputStream bufferStream = buffer.getTcpBuffer();
-        byte[] result = null;
+        ByteArrayOutputStream recvBuffer;
+        
         if (type == eNetworkType.tcp) {
-            bufferStream = buffer.getTcpBuffer();
+            recvBuffer = buffer.getTcpRecvBuffer();
         } else {
-            bufferStream = buffer.getUdpBuffer();
+            recvBuffer = buffer.getUdpRecvBuffer();
         }
 
-        bufferStream.write(packetBytes);
-        if (bufferStream.size() == NetworkUtils.TOTAL_MAX_SIZE) {
-            result = bufferStream.toByteArray();
-            bufferStream.reset();
-            return (NetworkPacket) CommonUtils.bytesToObject(result);
+        List<NetworkPacket> result = new ArrayList<>();
+        recvBuffer.write(packetBytes);
+        int assembleTotalCount = 0;
+        if (recvBuffer.size() >= NetworkUtils.TOTAL_MAX_SIZE) {
+            int remainRecvByte = recvBuffer.size() % NetworkUtils.TOTAL_MAX_SIZE;
+            assembleTotalCount = recvBuffer.size() / NetworkUtils.TOTAL_MAX_SIZE;
+            
+            // 네트워크 패킷 클래스로 역직렬화
+            byte[] convertBytes = new byte[NetworkUtils.TOTAL_MAX_SIZE];
+            int from = 0;
+            int to;
+            for (int count = 0; count < assembleTotalCount; count++) {   
+                from = count * NetworkUtils.TOTAL_MAX_SIZE;
+                to = (count+1) * NetworkUtils.TOTAL_MAX_SIZE;
+                 
+                convertBytes = Arrays.copyOfRange(recvBuffer.toByteArray(), from, to);
+                result.add((NetworkPacket) CommonUtils.bytesToObject(convertBytes));
+            }
+            
+            // 역직렬화 후 남은 데이터는 추출해서 buffer reset후 다시 buffer에 추가
+            if(remainRecvByte > 0){
+                int endPos = recvBuffer.toByteArray().length - remainRecvByte;
+                byte[] remainBytes = new byte[remainRecvByte];
+                System.arraycopy(recvBuffer.toByteArray(), endPos, remainBytes, 0, remainBytes.length);
+                recvBuffer.reset();
+                recvBuffer.write(remainBytes);
+            }else{
+                recvBuffer.reset();
+            }
+            
+            return result;
         } else {
             return null;
         }
@@ -131,27 +160,36 @@ public class ClientManager {
         return true;
     }
 
-    public boolean close(String resourceKey) {
-        ClientResource clientResource = resoucres.get(resourceKey);
+    public void close(String resourceKey, Long userSeq) throws IOException {
+        ClientResource clientResource;
+        if(resourceKey != null){
+            clientResource  = resources.get(resourceKey);
+        }else if(userSeq != null){
+            resourceKey = userResourceMap.get(userSeq);
+            if(resourceKey == null){
+                return;
+            }
+            clientResource  = resources.get(resourceKey);
+        }else{
+            throw new RuntimeException();
+        }
+
         if (clientResource == null) {
-            log.error("클라이언트 자원 존재 안함");
-            return false;
+                return;
         }
-        resoucres.remove(resourceKey);
+        resources.remove(resourceKey);
 
-        String connectionKey = clientResource.getConnectionKey();
-        ClientConnection clientConnection = connections.get(connectionKey);
-        if (clientConnection == null) {
-            log.error("클라이언트 커넥션 존재 안함");
-            return false;
-        }
-        connections.remove(connectionKey);
-
-        buffers.remove(connectionKey);
-        if (clientConnection.isConnectionTcp()) {
-            clientConnection.getTcpChannel().close();
+        ClientNetworkBuffer buffer = clientResource.getBuffer();
+        if(buffer != null){
+            buffer.getTcpRecvBuffer().close();
+            buffer.getUdpRecvBuffer().close();
         }
 
-        return true;
+        ClientConnection clientConnection = clientResource.getConnection();
+        if (clientConnection != null) {
+            if (clientConnection.isConnectionTcp()) {
+                clientConnection.getTcpChannel().close();
+            }
+        }
     }
 }

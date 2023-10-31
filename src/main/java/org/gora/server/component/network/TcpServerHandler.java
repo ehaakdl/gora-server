@@ -1,5 +1,7 @@
 package org.gora.server.component.network;
 
+import java.util.List;
+
 import org.gora.server.component.LoginTokenProvider;
 import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 import org.springframework.stereotype.Component;
@@ -20,28 +22,14 @@ public class TcpServerHandler extends ChannelInboundHandlerAdapter {
     private final ClientManager clientManager;
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        NetworkPacket networkPacket = (NetworkPacket) msg;
-        // networkPacket.setProtocol(eProtocol.tcp);
-
-        // String key = networkPacket.getKey();
-        // if(!loginTokenProvider.validToken(key)){
-        //     log.warn("잘못된 토큰입니다. {}", key);
-        //     ctx.close();
-        //     return;
-        // }
-
-        // // 첫 연결인 경우 클라이언트 맵에 추가
-        // if (!clientManager.contain(key)) {
-        //     String clientIp = ctx.channel().remoteAddress().toString();
-        //     clientManager.put(clientIp, ClientConnection.createTcp(key, ctx));
-        // }
-
-        // try {
-        //     PacketRouter.push(networkPacket);
-        // } catch (IllegalStateException e) {
-        //     log.warn("패킷 라우터 큐가 꽉 찼습니다. {}", PacketRouter.size());
-        // }
-
+        final List<NetworkPacket> packets = (List<NetworkPacket>) msg;
+        for (NetworkPacket packet : packets) {
+            try {
+                PacketRouter.push(packet);
+            } catch (IllegalStateException e) {
+                log.warn("패킷 라우터 큐가 꽉 찼습니다. {}", PacketRouter.size());
+            }    
+        }
     }
 
     @Override

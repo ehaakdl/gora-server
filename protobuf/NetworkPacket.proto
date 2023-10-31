@@ -1,5 +1,3 @@
-import "eServiceRouteType.proto";
-
 package protobuf;
 
 option java_package = "org.gora.server.model.network";
@@ -7,9 +5,8 @@ option java_outer_classname = "NetworkPakcetProtoBuf";
 
 message NetworkPacket {
   required bytes data = 1;
-  required eServiceRouteType type = 2;
+  required fixed32 type = 2;
   required fixed32 dataSize = 3;
   required string identify = 4;
   required fixed32 assembleOrderIndex = 5;
-  optional string key = 6;
 }

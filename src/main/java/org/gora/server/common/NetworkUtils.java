@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.gora.server.model.network.NetworkPakcetProtoBuf;
-import org.gora.server.model.network.eServiceRouteTypeProtoBuf.eServiceRouteType;
+import org.gora.server.model.network.eServiceType;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.ByteString;
@@ -15,11 +15,11 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class NetworkUtils {
-    public static final int DATA_MAX_SIZE = 1024;
-    public static final int TOTAL_MAX_SIZE = 1698;
-    public static final int HEADER_SIZE = 674;
+    public static final int DATA_MAX_SIZE = 832;
+    public static final int TOTAL_MAX_SIZE = 1500;
+    public static final int HEADER_SIZE = 668;
     public static final int PAD = 0;
-
+    
     public static byte[] removePadding(byte[] target, int paddingSize) {
         if (target.length <= paddingSize) {
             return null;
@@ -60,18 +60,18 @@ public class NetworkUtils {
         return CommonUtils.replaceUUID() + System.currentTimeMillis();
     }
 
-    public static NetworkPakcetProtoBuf.NetworkPacket getEmptyData(eServiceRouteType type, String identify) {
+    public static NetworkPakcetProtoBuf.NetworkPacket getEmptyData(eServiceType type, String identify) {
         byte[] newBytes = addPadding(null, NetworkUtils.DATA_MAX_SIZE);
         return NetworkPakcetProtoBuf.NetworkPacket.newBuilder()
                 .setData(ByteString.copyFrom(newBytes))
                 .setDataSize(0)
-                .setType(type)
+                .setType(type.getType())
                 .setIdentify(identify)
                 .setAssembleOrderIndex(0)
                 .build();
     }
 
-    public static List<NetworkPakcetProtoBuf.NetworkPacket> getSegment(byte[] target, eServiceRouteType type,
+    public static List<NetworkPakcetProtoBuf.NetworkPacket> getSegment(byte[] target, eServiceType type,
             String identify, int startIndex, String key) {
         List<NetworkPakcetProtoBuf.NetworkPacket> result = new ArrayList<>();
         byte[] newBytes;
@@ -108,16 +108,14 @@ public class NetworkUtils {
             }
             newBytes = new byte[NetworkUtils.DATA_MAX_SIZE];
             System.arraycopy(target, srcPos, newBytes, 0, NetworkUtils.DATA_MAX_SIZE);
-            NetworkPakcetProtoBuf.NetworkPacket.Builder packetBuilder = NetworkPakcetProtoBuf.NetworkPacket.newBuilder()
+            NetworkPakcetProtoBuf.NetworkPacket packet = NetworkPakcetProtoBuf.NetworkPacket.newBuilder()
                     .setData(ByteString.copyFrom(newBytes))
                     .setDataSize(dataSize)
-                    .setType(type)
+                    .setType(type.getType())
                     .setIdentify(identify)
-                    .setAssembleOrderIndex(startIndex + index + 1);
-            if(key != null){
-                packetBuilder.setKey(key);
-            }
-            NetworkPakcetProtoBuf.NetworkPacket packet = packetBuilder.build();
+                    .setAssembleOrderIndex(startIndex + index + 1)
+                    .build();
+            
             
             result.add(packet);
             srcPos = srcPos + NetworkUtils.DATA_MAX_SIZE;

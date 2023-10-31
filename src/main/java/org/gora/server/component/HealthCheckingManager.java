@@ -3,12 +3,7 @@ package org.gora.server.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gora.server.common.NetworkUtils;
 import org.gora.server.component.network.ClientManager;
-import org.gora.server.model.ClientConnection;
-import org.gora.server.model.eProtocol;
-import org.gora.server.model.network.NetworkPakcetProtoBuf;
-import org.gora.server.model.network.eServiceRouteTypeProtoBuf.eServiceRouteType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
