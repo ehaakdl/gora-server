@@ -4,6 +4,9 @@ app:
   tcp_server_port: 11200
   max_client: 1
   secret-key: ${JWT_SECRET_KEY}
+  tcp_accept_thread_count: ${TCP_ACCEPT_THREAD_COUNT}
+  tcp_event_thread_count: ${TCP_EVENT_THREAD_COUNT}
+
 
 # spy db log
 decorator:

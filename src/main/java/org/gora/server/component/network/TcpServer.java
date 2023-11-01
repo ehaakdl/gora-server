@@ -20,21 +20,26 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class TcpServer {
+    // 클라이언트 연결을 담당하는 스레드 그룹
     private EventLoopGroup bossLoopGroup;
+    // 클라이언트 패킷 수신을 담당하는 스레드 그룹
     private EventLoopGroup workerGroup;
     private final TcpPiplineInitializer piplineInitializer;
     @Value("${app.max_client}")
     private int maxClient;
+    @Value("${app.tcp_accept_thread_count}")
+    private int acceptThreadCount;
+    @Value("${app.tcp_event_thread_count}")
+    private int eventThreadCount;
 
     @PostConstruct
     public void init() {
-        this.bossLoopGroup = new NioEventLoopGroup();
-        this.workerGroup = new NioEventLoopGroup();
+        this.bossLoopGroup = new NioEventLoopGroup(acceptThreadCount);
+        this.workerGroup = new NioEventLoopGroup(eventThreadCount);
     }
 
     @Async
-    public void startup(int port) throws InterruptedException {
-        ServerBootstrap serverBootstrap = new ServerBootstrap();
+    public void startup(int port) throws InterruptedException {        ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossLoopGroup, workerGroup);
         serverBootstrap.channel(NioServerSocketChannel.class);
         serverBootstrap.localAddress(new InetSocketAddress("127.0.0.1", port));

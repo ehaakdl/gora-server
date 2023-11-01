@@ -42,6 +42,12 @@ public class Monitor {
             log.info("Router Current Que Size: {}", PacketRouter.size());
             
             log.info("Client Size: {}", clientManager.getClientCount());
+
+            int cores = Runtime.getRuntime().availableProcessors();
+            log.info("Available process count: {}", cores);
+            int activeThreadCount = Thread.activeCount();
+            log.info("active thread count: {}", activeThreadCount);
+            
             CommonUtils.sleep(3000);
         }        
     }
