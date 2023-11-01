@@ -31,7 +31,6 @@ public class HealthCheckingManager {
         // ClientConnection clientConnection = clientManager.get(key);
         // NetworkPakcetProtoBuf.NetworkPacket pakcet =
         // NetworkPakcetProtoBuf.NetworkPacket.newBuilder()
-        // .setAssembleOrderIndex(0)
         // .setData(NetworkUtils.getEmptyData(eServiceRouteType.health_check, identify))
         // .setIdentify(key)
         // ;

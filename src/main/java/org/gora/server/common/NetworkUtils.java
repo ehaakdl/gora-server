@@ -61,7 +61,6 @@ public class NetworkUtils {
                 .setDataSize(0)
                 .setType(type.getType())
                 .setIdentify(identify)
-                .setAssembleOrderIndex(0)
                 .build();
     }
 
@@ -105,9 +104,9 @@ public class NetworkUtils {
             NetworkPakcetProtoBuf.NetworkPacket packet = NetworkPakcetProtoBuf.NetworkPacket.newBuilder()
                     .setData(ByteString.copyFrom(newBytes))
                     .setDataSize(dataSize)
+                    .setTotalSize(totalSize)
                     .setType(type.getType())
                     .setIdentify(identify)
-                    .setAssembleOrderIndex(startIndex + index + 1)
                     .build();
             
             

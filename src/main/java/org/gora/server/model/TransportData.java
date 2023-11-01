@@ -9,6 +9,10 @@ import lombok.Getter;
 @Builder
 public class TransportData {
     private String chanelId;
-    private Object packet;
+    private Object data;
     private eServiceType type;
+
+    public static TransportData create(eServiceType type, Object data, String chanelId){
+        return TransportData.builder().chanelId(chanelId).data(data).type(type).build();
+    }
 }

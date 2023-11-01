@@ -44,7 +44,7 @@ public class PacketRouter {
                     return;
                 }
 
-                eServiceType serviceType = eServiceType.convert(packet.getPacket().getType());
+                eServiceType serviceType = packet.getType();
                 if (serviceType == null){
                     return;
                 }

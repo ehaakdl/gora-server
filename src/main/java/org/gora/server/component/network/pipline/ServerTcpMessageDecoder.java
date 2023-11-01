@@ -1,14 +1,11 @@
 package org.gora.server.component.network.pipline;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.gora.server.common.NetworkUtils;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.TransportData;
-import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eServiceType;
 
@@ -30,7 +27,7 @@ public class ServerTcpMessageDecoder extends ByteToMessageDecoder {
         recvMsg.readBytes(recvBytes);
 
         String chanelId = ctx.channel().id().asLongText();
-        List<NetworkPacket> packets;
+        List<TransportData> transportDatas;
         if(!clientManager.existsResource(chanelId)){
             String clientIp = ((InetSocketAddress)ctx.channel().remoteAddress()).getHostName();
             ClientConnection connection = ClientConnection.createTcp(clientIp, ctx);
@@ -39,32 +36,21 @@ public class ServerTcpMessageDecoder extends ByteToMessageDecoder {
         
         // 패킷 조립
         try {
-            packets = clientManager.assemblePacket(chanelId, eNetworkType.tcp, recvBytes);
+            transportDatas = clientManager.assemblePacket(chanelId, eNetworkType.tcp, recvBytes);
         } catch (Exception e) {
             // 무조건 고정된 사이즈로 들어오기 때문에 캐스팅 실패할수가없다.
             log.error("위조된 패킷이 온걸로 추정됩니다.");
             TransportData transportData = TransportData.builder()
             .chanelId(chanelId)
-            .packet(NetworkUtils.getEmptyData(eServiceType.close_client, chanelId))
+            .data(TransportData.create(eServiceType.close_client, null, chanelId))
             .build();
             outMsg.add(transportData);
             return;
         }
 
-        if (packets == null) {
+        if (transportDatas.isEmpty()) {
             return;
         } else {
-            // 서버내 객체로 컨버터
-            List<TransportData> transportDatas = new ArrayList<>();
-            for (NetworkPacket packet : packets) {
-                transportDatas.add(
-                    TransportData.builder()
-                    .chanelId(chanelId)
-                    .packet(packet)
-                    .build()
-                );
-            }
-
             outMsg.add(transportDatas);
         }
     }

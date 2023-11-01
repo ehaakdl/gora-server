@@ -69,15 +69,15 @@ public final class NetworkPakcetProtoBuf {
         getIdentifyBytes();
 
     /**
-     * <code>required fixed32 assembleOrderIndex = 5;</code>
-     * @return Whether the assembleOrderIndex field is set.
+     * <code>required fixed32 totalSize = 6;</code>
+     * @return Whether the totalSize field is set.
      */
-    boolean hasAssembleOrderIndex();
+    boolean hasTotalSize();
     /**
-     * <code>required fixed32 assembleOrderIndex = 5;</code>
-     * @return The assembleOrderIndex.
+     * <code>required fixed32 totalSize = 6;</code>
+     * @return The totalSize.
      */
-    int getAssembleOrderIndex();
+    int getTotalSize();
   }
   /**
    * Protobuf type {@code protobuf.NetworkPacket}
@@ -223,23 +223,23 @@ public final class NetworkPakcetProtoBuf {
       }
     }
 
-    public static final int ASSEMBLEORDERINDEX_FIELD_NUMBER = 5;
-    private int assembleOrderIndex_ = 0;
+    public static final int TOTALSIZE_FIELD_NUMBER = 6;
+    private int totalSize_ = 0;
     /**
-     * <code>required fixed32 assembleOrderIndex = 5;</code>
-     * @return Whether the assembleOrderIndex field is set.
+     * <code>required fixed32 totalSize = 6;</code>
+     * @return Whether the totalSize field is set.
      */
     @java.lang.Override
-    public boolean hasAssembleOrderIndex() {
+    public boolean hasTotalSize() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <code>required fixed32 assembleOrderIndex = 5;</code>
-     * @return The assembleOrderIndex.
+     * <code>required fixed32 totalSize = 6;</code>
+     * @return The totalSize.
      */
     @java.lang.Override
-    public int getAssembleOrderIndex() {
-      return assembleOrderIndex_;
+    public int getTotalSize() {
+      return totalSize_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -265,7 +265,7 @@ public final class NetworkPakcetProtoBuf {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasAssembleOrderIndex()) {
+      if (!hasTotalSize()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -289,7 +289,7 @@ public final class NetworkPakcetProtoBuf {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 4, identify_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
-        output.writeFixed32(5, assembleOrderIndex_);
+        output.writeFixed32(6, totalSize_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -317,7 +317,7 @@ public final class NetworkPakcetProtoBuf {
       }
       if (((bitField0_ & 0x00000010) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeFixed32Size(5, assembleOrderIndex_);
+          .computeFixed32Size(6, totalSize_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -354,10 +354,10 @@ public final class NetworkPakcetProtoBuf {
         if (!getIdentify()
             .equals(other.getIdentify())) return false;
       }
-      if (hasAssembleOrderIndex() != other.hasAssembleOrderIndex()) return false;
-      if (hasAssembleOrderIndex()) {
-        if (getAssembleOrderIndex()
-            != other.getAssembleOrderIndex()) return false;
+      if (hasTotalSize() != other.hasTotalSize()) return false;
+      if (hasTotalSize()) {
+        if (getTotalSize()
+            != other.getTotalSize()) return false;
       }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -386,9 +386,9 @@ public final class NetworkPakcetProtoBuf {
         hash = (37 * hash) + IDENTIFY_FIELD_NUMBER;
         hash = (53 * hash) + getIdentify().hashCode();
       }
-      if (hasAssembleOrderIndex()) {
-        hash = (37 * hash) + ASSEMBLEORDERINDEX_FIELD_NUMBER;
-        hash = (53 * hash) + getAssembleOrderIndex();
+      if (hasTotalSize()) {
+        hash = (37 * hash) + TOTALSIZE_FIELD_NUMBER;
+        hash = (53 * hash) + getTotalSize();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -525,7 +525,7 @@ public final class NetworkPakcetProtoBuf {
         type_ = 0;
         dataSize_ = 0;
         identify_ = "";
-        assembleOrderIndex_ = 0;
+        totalSize_ = 0;
         return this;
       }
 
@@ -577,7 +577,7 @@ public final class NetworkPakcetProtoBuf {
           to_bitField0_ |= 0x00000008;
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
-          result.assembleOrderIndex_ = assembleOrderIndex_;
+          result.totalSize_ = totalSize_;
           to_bitField0_ |= 0x00000010;
         }
         result.bitField0_ |= to_bitField0_;
@@ -641,8 +641,8 @@ public final class NetworkPakcetProtoBuf {
           bitField0_ |= 0x00000008;
           onChanged();
         }
-        if (other.hasAssembleOrderIndex()) {
-          setAssembleOrderIndex(other.getAssembleOrderIndex());
+        if (other.hasTotalSize()) {
+          setTotalSize(other.getTotalSize());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -663,7 +663,7 @@ public final class NetworkPakcetProtoBuf {
         if (!hasIdentify()) {
           return false;
         }
-        if (!hasAssembleOrderIndex()) {
+        if (!hasTotalSize()) {
           return false;
         }
         return true;
@@ -705,11 +705,11 @@ public final class NetworkPakcetProtoBuf {
                 bitField0_ |= 0x00000008;
                 break;
               } // case 34
-              case 45: {
-                assembleOrderIndex_ = input.readFixed32();
+              case 53: {
+                totalSize_ = input.readFixed32();
                 bitField0_ |= 0x00000010;
                 break;
-              } // case 45
+              } // case 53
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -927,42 +927,42 @@ public final class NetworkPakcetProtoBuf {
         return this;
       }
 
-      private int assembleOrderIndex_ ;
+      private int totalSize_ ;
       /**
-       * <code>required fixed32 assembleOrderIndex = 5;</code>
-       * @return Whether the assembleOrderIndex field is set.
+       * <code>required fixed32 totalSize = 6;</code>
+       * @return Whether the totalSize field is set.
        */
       @java.lang.Override
-      public boolean hasAssembleOrderIndex() {
+      public boolean hasTotalSize() {
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
-       * <code>required fixed32 assembleOrderIndex = 5;</code>
-       * @return The assembleOrderIndex.
+       * <code>required fixed32 totalSize = 6;</code>
+       * @return The totalSize.
        */
       @java.lang.Override
-      public int getAssembleOrderIndex() {
-        return assembleOrderIndex_;
+      public int getTotalSize() {
+        return totalSize_;
       }
       /**
-       * <code>required fixed32 assembleOrderIndex = 5;</code>
-       * @param value The assembleOrderIndex to set.
+       * <code>required fixed32 totalSize = 6;</code>
+       * @param value The totalSize to set.
        * @return This builder for chaining.
        */
-      public Builder setAssembleOrderIndex(int value) {
+      public Builder setTotalSize(int value) {
 
-        assembleOrderIndex_ = value;
+        totalSize_ = value;
         bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
       /**
-       * <code>required fixed32 assembleOrderIndex = 5;</code>
+       * <code>required fixed32 totalSize = 6;</code>
        * @return This builder for chaining.
        */
-      public Builder clearAssembleOrderIndex() {
+      public Builder clearTotalSize() {
         bitField0_ = (bitField0_ & ~0x00000010);
-        assembleOrderIndex_ = 0;
+        totalSize_ = 0;
         onChanged();
         return this;
       }
@@ -1044,11 +1044,11 @@ public final class NetworkPakcetProtoBuf {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\023NetworkPacket.proto\022\010protobuf\"k\n\rNetwo" +
+      "\n\023NetworkPacket.proto\022\010protobuf\"b\n\rNetwo" +
       "rkPacket\022\014\n\004data\030\001 \002(\014\022\014\n\004type\030\002 \002(\007\022\020\n\010" +
-      "dataSize\030\003 \002(\007\022\020\n\010identify\030\004 \002(\t\022\032\n\022asse" +
-      "mbleOrderIndex\030\005 \002(\007B6\n\035org.gora.server." +
-      "model.networkB\025NetworkPakcetProtoBuf"
+      "dataSize\030\003 \002(\007\022\020\n\010identify\030\004 \002(\t\022\021\n\ttota" +
+      "lSize\030\006 \002(\007B6\n\035org.gora.server.model.net" +
+      "workB\025NetworkPakcetProtoBuf"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1059,7 +1059,7 @@ public final class NetworkPakcetProtoBuf {
     internal_static_protobuf_NetworkPacket_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_protobuf_NetworkPacket_descriptor,
-        new java.lang.String[] { "Data", "Type", "DataSize", "Identify", "AssembleOrderIndex", });
+        new java.lang.String[] { "Data", "Type", "DataSize", "Identify", "TotalSize", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

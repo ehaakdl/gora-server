@@ -8,5 +8,5 @@ message NetworkPacket {
   required fixed32 type = 2;
   required fixed32 dataSize = 3;
   required string identify = 4;
-  required fixed32 assembleOrderIndex = 5;
+  required fixed32 totalSize = 6;
 }
