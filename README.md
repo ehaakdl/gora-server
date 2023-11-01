@@ -10,6 +10,19 @@
 - udp_client_port: 11112(클라이언트가 listen 하는 포트)
 - tcp_server_port: 11200
 
+##### env
+```
+DB_USERNAME=gora
+DB_PASSWORD=1234
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=gora
+MAX_DEFAULT_QUE_SZ=1000
+JWT_SECRET_KEY=a89e2da3-704d-4ff0-a803-c8d8dc57cbf1
+TCP_ACCEPT_THREAD_COUNT=1
+TCP_ACCEPT_EVENT_COUNT=1
+```
+
 ##### dockerize
 ```
 gradlew build --exclude-task test

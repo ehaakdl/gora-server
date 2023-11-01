@@ -39,7 +39,8 @@ public class TcpServer {
     }
 
     @Async
-    public void startup(int port) throws InterruptedException {        ServerBootstrap serverBootstrap = new ServerBootstrap();
+    public void startup(int port) throws InterruptedException {        
+        ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossLoopGroup, workerGroup);
         serverBootstrap.channel(NioServerSocketChannel.class);
         serverBootstrap.localAddress(new InetSocketAddress("127.0.0.1", port));
