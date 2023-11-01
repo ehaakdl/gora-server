@@ -23,6 +23,7 @@ public class TcpServer {
     // 클라이언트 연결을 담당하는 스레드 그룹
     private EventLoopGroup bossLoopGroup;
     // 클라이언트 패킷 수신을 담당하는 스레드 그룹
+    // 클라이언트들을 나눠서 워커 스레드가 분담한다.
     private EventLoopGroup workerGroup;
     private final TcpPiplineInitializer piplineInitializer;
     @Value("${app.max_client}")
@@ -45,7 +46,7 @@ public class TcpServer {
         serverBootstrap.channel(NioServerSocketChannel.class);
         serverBootstrap.localAddress(new InetSocketAddress("127.0.0.1", port));
         serverBootstrap.childHandler(piplineInitializer)
-                .option(ChannelOption.SO_BACKLOG, maxClient);  //동시 접속 수
+                .option(ChannelOption.SO_BACKLOG, maxClient);  //연결 스레드가 처리중일때 대기열에 사이즈를 지정한다.(동시 접속 수)
         ChannelFuture channelFuture = serverBootstrap.bind().sync();
         channelFuture.channel().closeFuture().sync();
     }

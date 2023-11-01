@@ -6,6 +6,7 @@ app:
   secret-key: ${JWT_SECRET_KEY}
   tcp_accept_thread_count: ${TCP_ACCEPT_THREAD_COUNT}
   tcp_event_thread_count: ${TCP_EVENT_THREAD_COUNT}
+  udp_accept_event_thread_count: ${UDP_ACCEPT_EVENT_THREAD_COUNT}
 
 
 # spy db log

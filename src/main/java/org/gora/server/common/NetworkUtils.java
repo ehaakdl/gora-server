@@ -21,18 +21,12 @@ public class NetworkUtils {
     public static final int PAD = 0;
     
     public static byte[] removePadding(byte[] target, int paddingSize) {
-        if (target.length <= paddingSize) {
+        if(target.length < paddingSize){
+            throw new RuntimeException();
+        } else if (target.length == paddingSize) {
             return null;
         }
         int lastLength = target.length - paddingSize;
-
-        // 패딩 맞는지 확인 루프
-        for (int index = lastLength; index < target.length; index++) {
-            if (target[index] != PAD) {
-                return null;
-            }
-        }
-
         return Arrays.copyOf(target, lastLength);
     }
 

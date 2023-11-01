@@ -1,6 +1,6 @@
 package org.gora.server.model;
 
-import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
+import org.gora.server.model.network.eServiceType;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +9,6 @@ import lombok.Getter;
 @Builder
 public class TransportData {
     private String chanelId;
-    private NetworkPacket packet;
-
+    private Object packet;
+    private eServiceType type;
 }
