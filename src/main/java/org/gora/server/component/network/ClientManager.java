@@ -90,7 +90,7 @@ public class ClientManager {
             }
 
             dataBuffer = dataWrapper.getBuffer();
-            // dataWrapper.setAppendAt(System.currentTimeMillis());
+            dataWrapper.setAppendAt(System.currentTimeMillis());
             // 패딩 제거(실 사이즈와 최대 데이터 크기 하여 패딩 삭제)
             if(dataNonPaddingSize < NetworkUtils.DATA_MAX_SIZE){
                 // 세션 체크용 패킷만 데이터가 비어있을수가 있다. 그외의 서비스 패킷은 다 에러 처리
@@ -108,8 +108,8 @@ public class ClientManager {
                 }else{
                     dataBuffer.write(Arrays.copyOf(data, dataNonPaddingSize));
                     if(dataBuffer.size() == totalSize){
-                        // result.add(TransportData.create(serviceType, CommonUtils.bytesToObject(dataBuffer.toByteArray()), resourceKey));
-                        // clientNetworkBuffer.removeDataWrapper(identify, networkType);
+                        result.add(TransportData.create(serviceType, CommonUtils.bytesToObject(dataBuffer.toByteArray()), resourceKey));
+                        clientNetworkBuffer.removeDataWrapper(identify, networkType);
                     }else if(dataBuffer.size() > totalSize){
                         throw new RuntimeException();
                     }
