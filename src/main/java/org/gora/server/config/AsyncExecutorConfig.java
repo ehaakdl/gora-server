@@ -15,17 +15,18 @@ import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableAsync
-public class ThreadExecutorConfig implements AsyncConfigurer {
+public class AsyncExecutorConfig implements AsyncConfigurer {
     @Bean(name = "executor")
     @Override
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         //기본 Thread 수
-        executor.setCorePoolSize(10);
+        executor.setCorePoolSize(20);
         //최대 Thread 수
-        executor.setMaxPoolSize(10);
+        executor.setMaxPoolSize(20);
         //QUEUE 수
         executor.setQueueCapacity(100);
+
         //Thread Bean Name
         String EXECUTOR_BEAN_NAME = "executor";
         executor.setBeanName(EXECUTOR_BEAN_NAME);
