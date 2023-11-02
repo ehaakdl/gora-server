@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.gora.server.common.CommonUtils;
@@ -45,14 +46,16 @@ public class ClientManager {
     private final static Map<Long, String> userResourceMap = new ConcurrentHashMap<>(
             Integer.parseInt(System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
 
+    public Set<String> getResourceKeys(){
+        return resources.keySet();
+    }
+
     public boolean existsResource(String resourceKey){
         return resources.containsKey(resourceKey);
     }
     public void createResource(String resourceKey, ClientConnection connection) {
-
         ClientNetworkBuffer buffer = ClientNetworkBuffer.create();
-        
-        resources.putIfAbsent(resourceKey, ClientResource.builder().buffer(buffer).connection(connection).build());        
+        resources.putIfAbsent(resourceKey, ClientResource.builder().buffer(buffer).connection(connection).build());
     }
 
     private List<TransportData> assembleData(List<NetworkPacket> packets, String resourceKey, eNetworkType networkType) throws IOException, ClassNotFoundException{
@@ -87,24 +90,26 @@ public class ClientManager {
             }
 
             dataBuffer = dataWrapper.getBuffer();
+            // dataWrapper.setAppendAt(System.currentTimeMillis());
             // 패딩 제거(실 사이즈와 최대 데이터 크기 하여 패딩 삭제)
             if(dataNonPaddingSize < NetworkUtils.DATA_MAX_SIZE){
                 // 세션 체크용 패킷만 데이터가 비어있을수가 있다. 그외의 서비스 패킷은 다 에러 처리
                 if(dataNonPaddingSize == 0){
                     if(serviceType == eServiceType.health_check){
-                    TransportData transportData = TransportData.builder()
-                    .chanelId(resourceKey)
-                    .type(eServiceType.health_check)
-                    .build();
-                    result.add(transportData);
+                        TransportData transportData = TransportData.builder()
+                        .chanelId(resourceKey)
+                        .type(eServiceType.health_check)
+                        .build();
+                        result.add(transportData);
+                        clientNetworkBuffer.removeDataWrapper(identify, networkType);
                     }else{
                         throw new RuntimeException();
                     }
                 }else{
                     dataBuffer.write(Arrays.copyOf(data, dataNonPaddingSize));
                     if(dataBuffer.size() == totalSize){
-                        result.add(TransportData.create(serviceType, CommonUtils.bytesToObject(dataBuffer.toByteArray()), resourceKey));
-                        clientNetworkBuffer.removeDataWrapper(identify, networkType);
+                        // result.add(TransportData.create(serviceType, CommonUtils.bytesToObject(dataBuffer.toByteArray()), resourceKey));
+                        // clientNetworkBuffer.removeDataWrapper(identify, networkType);
                     }else if(dataBuffer.size() > totalSize){
                         throw new RuntimeException();
                     }
@@ -250,4 +255,8 @@ public class ClientManager {
 	public int getClientCount() {
         return resources.size();
 	}
+
+    public ClientResource getResource(String key) {
+        return resources.getOrDefault(key, null);
+    }
 }

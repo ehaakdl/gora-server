@@ -12,11 +12,14 @@ import lombok.Setter;
 public class ClientNetworkDataWrapper {
     private ByteArrayOutputStream buffer;
     private long createdAt;
+    private long appendAt;
     private int totalSize;
     
     public static ClientNetworkDataWrapper create() {
+        long nowAt = System.currentTimeMillis();
         return ClientNetworkDataWrapper.builder()
-        .createdAt(System.currentTimeMillis())
+        .createdAt(nowAt)
+        .appendAt(nowAt)
         .buffer(new ByteArrayOutputStream())
         .build();
     }

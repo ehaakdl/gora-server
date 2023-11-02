@@ -7,6 +7,8 @@ app:
   tcp_accept_thread_count: ${TCP_ACCEPT_THREAD_COUNT}
   tcp_event_thread_count: ${TCP_EVENT_THREAD_COUNT}
   udp_accept_event_thread_count: ${UDP_ACCEPT_EVENT_THREAD_COUNT}
+  clientDataBufferExpireTime: ${CLIENT_DATA_BUFFER_EXPIRE_TIME}
+  clientDataBufferCleanDelay: ${CLIENT_DATA_BUFFER_CLEAN_DELAY}
 
 
 # spy db log

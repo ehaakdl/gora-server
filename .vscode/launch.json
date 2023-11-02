@@ -23,7 +23,9 @@
                 "JWT_SECRET_KEY": "a89e2da3-704d-4ff0-a803-c8d8dc57cbf1",
                 "TCP_ACCEPT_THREAD_COUNT": 1,
                 "TCP_EVENT_THREAD_COUNT": 20,
-                "UDP_ACCEPT_EVENT_THREAD_COUNT": 20
+                "UDP_ACCEPT_EVENT_THREAD_COUNT": 20,
+                "CLIENT_DATA_BUFFER_EXPIRE_TIME": 300000,
+                "CLIENT_DATA_BUFFER_CLEAN_DELAY": 600000
             }
         },
         {

@@ -69,12 +69,12 @@ public final class NetworkPakcetProtoBuf {
         getIdentifyBytes();
 
     /**
-     * <code>required fixed32 totalSize = 6;</code>
+     * <code>required fixed32 totalSize = 5;</code>
      * @return Whether the totalSize field is set.
      */
     boolean hasTotalSize();
     /**
-     * <code>required fixed32 totalSize = 6;</code>
+     * <code>required fixed32 totalSize = 5;</code>
      * @return The totalSize.
      */
     int getTotalSize();
@@ -223,10 +223,10 @@ public final class NetworkPakcetProtoBuf {
       }
     }
 
-    public static final int TOTALSIZE_FIELD_NUMBER = 6;
+    public static final int TOTALSIZE_FIELD_NUMBER = 5;
     private int totalSize_ = 0;
     /**
-     * <code>required fixed32 totalSize = 6;</code>
+     * <code>required fixed32 totalSize = 5;</code>
      * @return Whether the totalSize field is set.
      */
     @java.lang.Override
@@ -234,7 +234,7 @@ public final class NetworkPakcetProtoBuf {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <code>required fixed32 totalSize = 6;</code>
+     * <code>required fixed32 totalSize = 5;</code>
      * @return The totalSize.
      */
     @java.lang.Override
@@ -289,7 +289,7 @@ public final class NetworkPakcetProtoBuf {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 4, identify_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
-        output.writeFixed32(6, totalSize_);
+        output.writeFixed32(5, totalSize_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -317,7 +317,7 @@ public final class NetworkPakcetProtoBuf {
       }
       if (((bitField0_ & 0x00000010) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeFixed32Size(6, totalSize_);
+          .computeFixed32Size(5, totalSize_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -705,11 +705,11 @@ public final class NetworkPakcetProtoBuf {
                 bitField0_ |= 0x00000008;
                 break;
               } // case 34
-              case 53: {
+              case 45: {
                 totalSize_ = input.readFixed32();
                 bitField0_ |= 0x00000010;
                 break;
-              } // case 53
+              } // case 45
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -929,7 +929,7 @@ public final class NetworkPakcetProtoBuf {
 
       private int totalSize_ ;
       /**
-       * <code>required fixed32 totalSize = 6;</code>
+       * <code>required fixed32 totalSize = 5;</code>
        * @return Whether the totalSize field is set.
        */
       @java.lang.Override
@@ -937,7 +937,7 @@ public final class NetworkPakcetProtoBuf {
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
-       * <code>required fixed32 totalSize = 6;</code>
+       * <code>required fixed32 totalSize = 5;</code>
        * @return The totalSize.
        */
       @java.lang.Override
@@ -945,7 +945,7 @@ public final class NetworkPakcetProtoBuf {
         return totalSize_;
       }
       /**
-       * <code>required fixed32 totalSize = 6;</code>
+       * <code>required fixed32 totalSize = 5;</code>
        * @param value The totalSize to set.
        * @return This builder for chaining.
        */
@@ -957,7 +957,7 @@ public final class NetworkPakcetProtoBuf {
         return this;
       }
       /**
-       * <code>required fixed32 totalSize = 6;</code>
+       * <code>required fixed32 totalSize = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearTotalSize() {
@@ -1047,7 +1047,7 @@ public final class NetworkPakcetProtoBuf {
       "\n\023NetworkPacket.proto\022\010protobuf\"b\n\rNetwo" +
       "rkPacket\022\014\n\004data\030\001 \002(\014\022\014\n\004type\030\002 \002(\007\022\020\n\010" +
       "dataSize\030\003 \002(\007\022\020\n\010identify\030\004 \002(\t\022\021\n\ttota" +
-      "lSize\030\006 \002(\007B6\n\035org.gora.server.model.net" +
+      "lSize\030\005 \002(\007B6\n\035org.gora.server.model.net" +
       "workB\025NetworkPakcetProtoBuf"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor

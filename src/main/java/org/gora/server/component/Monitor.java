@@ -4,19 +4,20 @@ import org.gora.server.common.CommonUtils;
 import org.gora.server.common.Env;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.component.network.PacketRouter;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class Monitor {
     private final ClientManager clientManager;
-    @Async
+
+    @Scheduled(fixedDelay = 3000)
     public void start(){
-        while(true) {
             // 런타임 환경 가져오기
             Runtime runtime = Runtime.getRuntime();
 
@@ -47,8 +48,5 @@ public class Monitor {
             log.info("Available process count: {}", cores);
             int activeThreadCount = Thread.activeCount();
             log.info("active thread count: {}", activeThreadCount);
-            
-            CommonUtils.sleep(3000);
-        }        
     }
 }

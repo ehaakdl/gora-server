@@ -63,7 +63,7 @@ public class TcpClient {
             
             // 패킷 분할생성
             List<NetworkPakcetProtoBuf.NetworkPacket> packets = NetworkUtils.getSegment(testBytes,
-                    eServiceType.test, NetworkUtils.getIdentify(), 0, null);
+                    eServiceType.test, NetworkUtils.getIdentify(), null);
             if (packets == null) {
                 System.out.println("에러발생");
                 return;
