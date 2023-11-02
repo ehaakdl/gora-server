@@ -15,9 +15,9 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class NetworkUtils {
-    public static final int DATA_MAX_SIZE = 832;
+    public static final int DATA_MAX_SIZE = 841;
     public static final int TOTAL_MAX_SIZE = 1500;
-    public static final int HEADER_SIZE = 668;
+    public static final int HEADER_SIZE = 659;
     public static final int PAD = 0;
     
     public static byte[] removePadding(byte[] target, int paddingSize) {

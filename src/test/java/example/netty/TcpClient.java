@@ -56,10 +56,12 @@ public class TcpClient {
         
         int MAX_SEND_PACKET_COUNT = 2500000;
         for (int i = 0; i < MAX_SEND_PACKET_COUNT; i++) {
-            // 데이터 분할 생성
+            // 데이터 준비
             TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
                     .setMsg(ByteString.copyFrom(tempMsg.toString().getBytes())).build();
             byte[] testBytes = CommonUtils.objectToBytes(test);
+            
+            // 패킷 분할생성
             List<NetworkPakcetProtoBuf.NetworkPacket> packets = NetworkUtils.getSegment(testBytes,
                     eServiceType.test, NetworkUtils.getIdentify(), 0, null);
             if (packets == null) {
@@ -69,14 +71,17 @@ public class TcpClient {
 
             // 전송
             for (int index = 0; index < packets.size(); index++) {
-                ByteBuf buffer = Unpooled.wrappedBuffer(CommonUtils.objectToBytes(packets.get(index)));
-                serverChannel.writeAndFlush(buffer).sync();
+                byte[] buffer = CommonUtils.objectToBytes(packets.get(index));
+                if(buffer.length != NetworkUtils.TOTAL_MAX_SIZE){
+                    System.out.println("사이즈가 잘못됨");
+                    return;
+                }
+                ByteBuf bytebuf = Unpooled.wrappedBuffer(buffer);
+                serverChannel.writeAndFlush(bytebuf).sync();
             }
             sendPacketLog = sendPacketLog + packets.size();
-            // Thread.sleep(10);
             System.out.println(sendPacketLog); 
         }
-
     }
 
     public void close() {

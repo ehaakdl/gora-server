@@ -89,23 +89,34 @@ public class ClientManager {
             dataBuffer = dataWrapper.getBuffer();
             // 패딩 제거(실 사이즈와 최대 데이터 크기 하여 패딩 삭제)
             if(dataNonPaddingSize < NetworkUtils.DATA_MAX_SIZE){
-                dataBuffer.write(Arrays.copyOf(data, dataNonPaddingSize));
-                if(dataBuffer.size() == totalSize){
-                    result.add(TransportData.create(serviceType, CommonUtils.bytesToObject(dataBuffer.toByteArray()), resourceKey));
-                }else if(dataBuffer.size() > totalSize){
-                    throw new RuntimeException();
-                }
-            }else if(dataNonPaddingSize > NetworkUtils.DATA_MAX_SIZE){
-                throw new RuntimeException();
-            }else{
                 // 세션 체크용 패킷만 데이터가 비어있을수가 있다. 그외의 서비스 패킷은 다 에러 처리
-                if(serviceType == eServiceType.health_check){
+                if(dataNonPaddingSize == 0){
+                    if(serviceType == eServiceType.health_check){
                     TransportData transportData = TransportData.builder()
                     .chanelId(resourceKey)
                     .type(eServiceType.health_check)
                     .build();
                     result.add(transportData);
+                    }else{
+                        throw new RuntimeException();
+                    }
                 }else{
+                    dataBuffer.write(Arrays.copyOf(data, dataNonPaddingSize));
+                    if(dataBuffer.size() == totalSize){
+                        result.add(TransportData.create(serviceType, CommonUtils.bytesToObject(dataBuffer.toByteArray()), resourceKey));
+                        clientNetworkBuffer.removeDataWrapper(identify, networkType);
+                    }else if(dataBuffer.size() > totalSize){
+                        throw new RuntimeException();
+                    }
+                }
+            }else if(dataNonPaddingSize > NetworkUtils.DATA_MAX_SIZE){
+                throw new RuntimeException();
+            }else{
+                dataBuffer.write(Arrays.copyOf(data, dataNonPaddingSize));
+                if(dataBuffer.size() == totalSize){
+                    result.add(TransportData.create(serviceType, CommonUtils.bytesToObject(dataBuffer.toByteArray()), resourceKey));
+                    clientNetworkBuffer.removeDataWrapper(identify, networkType);
+                }else if(dataBuffer.size() > totalSize){
                     throw new RuntimeException();
                 }
             }
@@ -113,7 +124,7 @@ public class ClientManager {
 
         return result;
     }
-
+    
     public List<TransportData> assemblePacket(String resourceKey, eNetworkType networkType,
             byte[] packetBytes)
             throws IOException, ClassNotFoundException {
@@ -166,7 +177,7 @@ public class ClientManager {
             
             return assembleData(packets, resourceKey, networkType);
         } else {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
     }
 
