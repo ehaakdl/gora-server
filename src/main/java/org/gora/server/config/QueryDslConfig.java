@@ -7,7 +7,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Configuration
 public class QueryDslConfig {
 
@@ -16,6 +18,7 @@ public class QueryDslConfig {
 
    @Bean
    public JPAQueryFactory jpaQueryFactory() {
+    log.info("open?? :{}", entityManager.isOpen());
        return new JPAQueryFactory(entityManager);
    }
 }

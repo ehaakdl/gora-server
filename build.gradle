@@ -93,16 +93,21 @@ jib{
 	def envMap = envProp.entrySet().collectEntries { entry ->
     [(entry.key): entry.value]
 	}
-	def cmdEnvArgs = envProp.collect { key, value ->
-    	"-D${key}=${value}"
-	}.join(' ')
-	
+	// def cmdEnvArgs = envProp.collect { key, value ->
+    // "-D${key}=${value}"
+	// }.join(' ')
+    
 	container {
 		creationTime='USE_CURRENT_TIMESTAMP'
 		environment=envMap
-		jvmFlags = ['-Duser.timezone=GMT']
+		jvmFlags = ['-Duser.timezone=GMT',
+         '-Xms1024m',
+          '-Xmx1024m',
+           '-XX:HeapDumpPath=/logs/file.hprof',
+           '-XX:+HeapDumpOnOutOfMemoryError'
+        ]
 		ports = [udpServerPort, udpServerPort, tcpServerPort]
-		entrypoint=['java', cmdEnvArgs, '-jar', rootProject.name + '-' + version + '.jar']
+		entrypoint=['java', '-jar', rootProject.name + '-' + version + '.jar']
 	}
 
 	extraDirectories {

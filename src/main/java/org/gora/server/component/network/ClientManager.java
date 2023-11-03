@@ -84,13 +84,17 @@ public class ClientManager {
             ByteArrayOutputStream dataBuffer;
             if(clientNetworkBuffer.containDataWrapper(identify, networkType)){
                 dataWrapper = clientNetworkBuffer.getDataWrapper(identify, networkType);
+                // 클린 리소스 스레드가 삭제할수도 있기 떄문에 null 체크필요하다.
+                if(dataWrapper == null){
+                    dataWrapper = ClientNetworkDataWrapper.create();
+                    clientNetworkBuffer.putDataWrapper(identify, networkType, dataWrapper);    
+                }
             }else{
                 dataWrapper = ClientNetworkDataWrapper.create();
                 clientNetworkBuffer.putDataWrapper(identify, networkType, dataWrapper);
             }
 
             dataBuffer = dataWrapper.getBuffer();
-            dataWrapper.setAppendAt(System.currentTimeMillis());
             // 패딩 제거(실 사이즈와 최대 데이터 크기 하여 패딩 삭제)
             if(dataNonPaddingSize < NetworkUtils.DATA_MAX_SIZE){
                 // 세션 체크용 패킷만 데이터가 비어있을수가 있다. 그외의 서비스 패킷은 다 에러 처리
@@ -107,6 +111,7 @@ public class ClientManager {
                     }
                 }else{
                     dataBuffer.write(Arrays.copyOf(data, dataNonPaddingSize));
+                    dataWrapper.setAppendAt(System.currentTimeMillis());
                     if(dataBuffer.size() == totalSize){
                         result.add(TransportData.create(serviceType, CommonUtils.bytesToObject(dataBuffer.toByteArray()), resourceKey));
                         clientNetworkBuffer.removeDataWrapper(identify, networkType);
@@ -118,6 +123,7 @@ public class ClientManager {
                 throw new RuntimeException();
             }else{
                 dataBuffer.write(Arrays.copyOf(data, dataNonPaddingSize));
+                dataWrapper.setAppendAt(System.currentTimeMillis());
                 if(dataBuffer.size() == totalSize){
                     result.add(TransportData.create(serviceType, CommonUtils.bytesToObject(dataBuffer.toByteArray()), resourceKey));
                     clientNetworkBuffer.removeDataWrapper(identify, networkType);

@@ -77,6 +77,9 @@ public class TcpClient {
                     return;
                 }
                 ByteBuf bytebuf = Unpooled.wrappedBuffer(buffer);
+                System.out.println(serverChannel.isActive()); 
+                System.out.println(serverChannel.isOpen()); 
+                System.out.println(serverChannel.isWritable()); 
                 serverChannel.writeAndFlush(bytebuf).sync();
             }
             sendPacketLog = sendPacketLog + packets.size();

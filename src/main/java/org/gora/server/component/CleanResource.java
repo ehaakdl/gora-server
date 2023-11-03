@@ -1,5 +1,6 @@
 package org.gora.server.component;
 
+import java.util.List;
 import java.util.Set;
 
 import org.gora.server.component.network.ClientManager;
@@ -20,52 +21,45 @@ public class CleanResource {
     @Value("${app.clientDataBufferExpireTime}")
     private long dataBufferExpireTime;
 
-    private void dataBufferCleanLoop(long nowAt, eNetworkType type, ClientNetworkBuffer networkBuffer){
-        Set<String> datakeySet;
-        if(type == eNetworkType.tcp){
-            datakeySet = networkBuffer.getTcpDataWrapper().keySet();
-        }else{
-            datakeySet = networkBuffer.getUdpDataWrapper().keySet();
+    private void dataBufferCleanLoop(long nowAt, eNetworkType type, ClientNetworkBuffer networkBuffer) {
+        List<String> identifyList;
+        if (type == eNetworkType.tcp) {
+            identifyList = networkBuffer.getTcpIdentifyList();
+        } else {
+            identifyList = networkBuffer.getUdpIdentifyList();
         }
-            while(datakeySet.iterator().hasNext()){
-                if(datakeySet.isEmpty()){
-                    break;
-                }
-                String identify = datakeySet.iterator().next();
-                ClientNetworkDataWrapper dataWrapper;
-                if(type == eNetworkType.tcp){
-                    dataWrapper = networkBuffer.getTcpDataWrapper().getOrDefault(identify, null);
-                }else{
-                    dataWrapper = networkBuffer.getUdpDataWrapper().getOrDefault(identify, null);
-                }
-
-                if(dataWrapper == null){
-                    continue;
-                }
-
-                
-                long expiredAt =  + dataWrapper.getAppendAt() + dataBufferExpireTime;
-                if(nowAt >= expiredAt){
-                    if(type == eNetworkType.tcp){
-                        networkBuffer.getTcpDataWrapper().remove(identify);
-                    }else{
-                        networkBuffer.getUdpDataWrapper().remove(identify);
-                    }
-                    
-                }
-
-            }
-    }
-    
-    @Scheduled(fixedDelayString = "${app.clientDataBufferCleanDelay}")
-    public void clientDataBufferClean(){
         
-       Set<String> keys = clientManager.getResourceKeys();
-       long nowAt = System.currentTimeMillis();
-       while(keys.iterator().hasNext()){
+        for (int index = 0; index < identifyList.size(); index++) {
+            String identify;
+            try {
+                identify = identifyList.get(0);
+                networkBuffer.removeDataWrapper(identify, type);
+            } catch (Exception e) {
+                return;
+            }
+
+            ClientNetworkDataWrapper dataWrapper = networkBuffer.getDataWrapper(identify, type);
+            if (dataWrapper == null) {
+                continue;
+            }
+
+            long expiredAt = +dataWrapper.getAppendAt() + dataBufferExpireTime;
+            if (nowAt >= expiredAt) {
+                networkBuffer.removeDataWrapper(identify, type);
+            }
+
+        }
+    }
+
+    @Scheduled(fixedDelayString = "${app.clientDataBufferCleanDelay}")
+    public void clientDataBufferClean() {
+
+        Set<String> keys = clientManager.getResourceKeys();
+        long nowAt = System.currentTimeMillis();
+        while (keys.iterator().hasNext()) {
             String resourceKey = keys.iterator().next();
             ClientResource clientResource = clientManager.getResource(resourceKey);
-            if(clientResource == null){
+            if (clientResource == null) {
                 continue;
             }
 
@@ -75,8 +69,7 @@ public class CleanResource {
             dataBufferCleanLoop(nowAt, eNetworkType.tcp, networkBuffer);
             // udp data 버퍼 만료 루프
             dataBufferCleanLoop(nowAt, eNetworkType.udp, networkBuffer);
-       }
+        }
     }
-
 
 }
