@@ -46,21 +46,23 @@ public class ClientManager {
     private final static Map<Long, String> userResourceMap = new ConcurrentHashMap<>(
             Integer.parseInt(System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
 
-    public Set<String> getResourceKeys(){
+    public Set<String> getResourceKeys() {
         return resources.keySet();
     }
 
-    public boolean existsResource(String resourceKey){
+    public boolean existsResource(String resourceKey) {
         return resources.containsKey(resourceKey);
     }
+
     public void createResource(String resourceKey, ClientConnection connection) {
         ClientNetworkBuffer buffer = ClientNetworkBuffer.create();
         resources.putIfAbsent(resourceKey, ClientResource.builder().buffer(buffer).connection(connection).build());
     }
 
-    private List<TransportData> assembleData(List<NetworkPacket> packets, String resourceKey, eNetworkType networkType) throws IOException, ClassNotFoundException{
+    private List<TransportData> assembleData(List<NetworkPacket> packets, String resourceKey, eNetworkType networkType)
+            throws IOException, ClassNotFoundException {
         List<TransportData> result = new ArrayList<>();
-        
+
         ClientResource resource = resources.get(resourceKey);
         if (resource == null) {
             throw new RuntimeException();
@@ -82,52 +84,54 @@ public class ClientManager {
             ClientNetworkBuffer clientNetworkBuffer = resource.getBuffer();
             ClientNetworkDataWrapper dataWrapper;
             ByteArrayOutputStream dataBuffer;
-            if(clientNetworkBuffer.containDataWrapper(identify, networkType)){
+            if (clientNetworkBuffer.containDataWrapper(identify, networkType)) {
                 dataWrapper = clientNetworkBuffer.getDataWrapper(identify, networkType);
                 // 클린 리소스 스레드가 삭제할수도 있기 떄문에 null 체크필요하다.
-                if(dataWrapper == null){
+                if (dataWrapper == null) {
                     dataWrapper = ClientNetworkDataWrapper.create();
-                    clientNetworkBuffer.putDataWrapper(identify, networkType, dataWrapper);    
+                    clientNetworkBuffer.putDataWrapper(identify, networkType, dataWrapper);
                 }
-            }else{
+            } else {
                 dataWrapper = ClientNetworkDataWrapper.create();
                 clientNetworkBuffer.putDataWrapper(identify, networkType, dataWrapper);
             }
 
             dataBuffer = dataWrapper.getBuffer();
             // 패딩 제거(실 사이즈와 최대 데이터 크기 하여 패딩 삭제)
-            if(dataNonPaddingSize < NetworkUtils.DATA_MAX_SIZE){
+            if (dataNonPaddingSize < NetworkUtils.DATA_MAX_SIZE) {
                 // 세션 체크용 패킷만 데이터가 비어있을수가 있다. 그외의 서비스 패킷은 다 에러 처리
-                if(dataNonPaddingSize == 0){
-                    if(serviceType == eServiceType.health_check){
+                if (dataNonPaddingSize == 0) {
+                    if (serviceType == eServiceType.health_check) {
                         TransportData transportData = TransportData.builder()
-                        .chanelId(resourceKey)
-                        .type(eServiceType.health_check)
-                        .build();
+                                .chanelId(resourceKey)
+                                .type(eServiceType.health_check)
+                                .build();
                         result.add(transportData);
                         clientNetworkBuffer.removeDataWrapper(identify, networkType);
-                    }else{
+                    } else {
                         throw new RuntimeException();
                     }
-                }else{
+                } else {
                     dataBuffer.write(Arrays.copyOf(data, dataNonPaddingSize));
                     dataWrapper.setAppendAt(System.currentTimeMillis());
-                    if(dataBuffer.size() == totalSize){
-                        result.add(TransportData.create(serviceType, CommonUtils.bytesToObject(dataBuffer.toByteArray()), resourceKey));
+                    if (dataBuffer.size() == totalSize) {
+                        result.add(TransportData.create(serviceType,
+                                CommonUtils.bytesToObject(dataBuffer.toByteArray()), resourceKey));
                         clientNetworkBuffer.removeDataWrapper(identify, networkType);
-                    }else if(dataBuffer.size() > totalSize){
+                    } else if (dataBuffer.size() > totalSize) {
                         throw new RuntimeException();
                     }
                 }
-            }else if(dataNonPaddingSize > NetworkUtils.DATA_MAX_SIZE){
+            } else if (dataNonPaddingSize > NetworkUtils.DATA_MAX_SIZE) {
                 throw new RuntimeException();
-            }else{
+            } else {
                 dataBuffer.write(Arrays.copyOf(data, dataNonPaddingSize));
                 dataWrapper.setAppendAt(System.currentTimeMillis());
-                if(dataBuffer.size() == totalSize){
-                    result.add(TransportData.create(serviceType, CommonUtils.bytesToObject(dataBuffer.toByteArray()), resourceKey));
+                if (dataBuffer.size() == totalSize) {
+                    result.add(TransportData.create(serviceType, CommonUtils.bytesToObject(dataBuffer.toByteArray()),
+                            resourceKey));
                     clientNetworkBuffer.removeDataWrapper(identify, networkType);
-                }else if(dataBuffer.size() > totalSize){
+                } else if (dataBuffer.size() > totalSize) {
                     throw new RuntimeException();
                 }
             }
@@ -135,7 +139,7 @@ public class ClientManager {
 
         return result;
     }
-    
+
     public List<TransportData> assemblePacket(String resourceKey, eNetworkType networkType,
             byte[] packetBytes)
             throws IOException, ClassNotFoundException {
@@ -162,30 +166,30 @@ public class ClientManager {
         if (recvBuffer.size() >= NetworkUtils.TOTAL_MAX_SIZE) {
             int remainRecvByte = recvBuffer.size() % NetworkUtils.TOTAL_MAX_SIZE;
             assembleTotalCount = recvBuffer.size() / NetworkUtils.TOTAL_MAX_SIZE;
-            
+
             // 네트워크 패킷 클래스로 역직렬화
             byte[] convertBytes = new byte[NetworkUtils.TOTAL_MAX_SIZE];
             int from = 0;
             int to;
-            for (int count = 0; count < assembleTotalCount; count++) {   
+            for (int count = 0; count < assembleTotalCount; count++) {
                 from = count * NetworkUtils.TOTAL_MAX_SIZE;
-                to = (count+1) * NetworkUtils.TOTAL_MAX_SIZE;
-                 
+                to = (count + 1) * NetworkUtils.TOTAL_MAX_SIZE;
+
                 convertBytes = Arrays.copyOfRange(recvBuffer.toByteArray(), from, to);
                 packets.add((NetworkPacket) CommonUtils.bytesToObject(convertBytes));
             }
-            
+
             // 역직렬화 후 남은 데이터는 추출해서 buffer reset후 다시 buffer에 추가
-            if(remainRecvByte > 0){
+            if (remainRecvByte > 0) {
                 int endPos = recvBuffer.toByteArray().length - remainRecvByte;
                 byte[] remainBytes = new byte[remainRecvByte];
                 System.arraycopy(recvBuffer.toByteArray(), endPos, remainBytes, 0, remainBytes.length);
                 recvBuffer.reset();
                 recvBuffer.write(remainBytes);
-            }else{
+            } else {
                 recvBuffer.reset();
             }
-            
+
             return assembleData(packets, resourceKey, networkType);
         } else {
             return Collections.emptyList();
@@ -228,25 +232,25 @@ public class ClientManager {
 
     public void close(String resourceKey, Long userSeq) {
         ClientResource clientResource;
-        if(resourceKey != null){
-            clientResource  = resources.get(resourceKey);
-        }else if(userSeq != null){
+        if (resourceKey != null) {
+            clientResource = resources.get(resourceKey);
+        } else if (userSeq != null) {
             resourceKey = userResourceMap.get(userSeq);
-            if(resourceKey == null){
+            if (resourceKey == null) {
                 return;
             }
-            clientResource  = resources.get(resourceKey);
-        }else{
+            clientResource = resources.get(resourceKey);
+        } else {
             throw new RuntimeException();
         }
 
         if (clientResource == null) {
-                return;
+            return;
         }
         resources.remove(resourceKey);
 
         ClientNetworkBuffer buffer = clientResource.getBuffer();
-        if(buffer != null){
+        if (buffer != null) {
             buffer.getTcpRecvBuffer().reset();
             buffer.getUdpRecvBuffer().reset();
         }
@@ -258,9 +262,10 @@ public class ClientManager {
             }
         }
     }
-	public int getClientCount() {
+
+    public int getClientCount() {
         return resources.size();
-	}
+    }
 
     public ClientResource getResource(String key) {
         return resources.getOrDefault(key, null);

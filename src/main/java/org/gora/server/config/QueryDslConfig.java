@@ -18,7 +18,6 @@ public class QueryDslConfig {
 
    @Bean
    public JPAQueryFactory jpaQueryFactory() {
-    log.info("open?? :{}", entityManager.isOpen());
-       return new JPAQueryFactory(entityManager);
+      return new JPAQueryFactory(entityManager);
    }
 }
