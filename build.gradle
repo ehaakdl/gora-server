@@ -81,7 +81,17 @@ dependencies {
 jib{
 	from {
 		image='openjdk:17-ea-slim-buster'
+        // todo 멀티 플랫폼 지원 안되서 임시로 arm64 명시
+        // 다른 아키텍쳐인 경우 이렇게 지정해야함
+        // 기본값은 adm64, linux
+        // platforms {
+        // 	platform {
+        //     	architecture = "arm64"
+        //         os = "linux"
+        //     }
+        // }
 	}
+    allowInsecureRegistries = true
 	to {
 		image=rootProject.name
 		tags=[version]
@@ -93,10 +103,7 @@ jib{
 	def envMap = envProp.entrySet().collectEntries { entry ->
     [(entry.key): entry.value]
 	}
-	// def cmdEnvArgs = envProp.collect { key, value ->
-    // "-D${key}=${value}"
-	// }.join(' ')
-    
+
 	container {
 		creationTime='USE_CURRENT_TIMESTAMP'
 		environment=envMap
