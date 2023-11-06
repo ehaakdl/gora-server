@@ -125,7 +125,6 @@ jib{
             '-XX:+HeapDumpOnOutOfMemoryError',
             '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:'+ remoteDebugPort
         ]
-        volumes=['/logs']
         mainClass = "org.gora.server.ServerApplication"
 		ports = [remoteDebugPort, udpServerPort, udpServerPort, tcpServerPort]
 	}
