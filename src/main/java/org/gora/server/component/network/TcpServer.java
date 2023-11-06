@@ -1,7 +1,5 @@
 package org.gora.server.component.network;
 
-import java.net.InetSocketAddress;
-
 import org.gora.server.component.network.pipline.TcpPiplineInitializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -42,12 +40,13 @@ public class TcpServer {
     @Async
     public void startup(int port) throws InterruptedException {        
         ServerBootstrap serverBootstrap = new ServerBootstrap();
-        serverBootstrap.group(bossLoopGroup, workerGroup);
-        serverBootstrap.channel(NioServerSocketChannel.class);
-        serverBootstrap.localAddress(new InetSocketAddress("127.0.0.1", port));
-        serverBootstrap.childHandler(piplineInitializer)
-                .option(ChannelOption.SO_BACKLOG, maxClient);  //연결 스레드가 처리중일때 대기열에 사이즈를 지정한다.(동시 접속 수)
-        ChannelFuture channelFuture = serverBootstrap.bind().sync();
+        serverBootstrap.group(bossLoopGroup, workerGroup)
+        .channel(NioServerSocketChannel.class)
+        .childHandler(piplineInitializer)
+        .option(ChannelOption.SO_BACKLOG, maxClient)
+        ;
+        
+        ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
         channelFuture.channel().closeFuture().sync();
     }
 
