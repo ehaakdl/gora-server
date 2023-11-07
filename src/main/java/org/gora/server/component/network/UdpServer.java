@@ -20,9 +20,11 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class UdpServer {
     // 연결과 패킷을 읽는 스레드
     private EventLoopGroup bossLoopGroup;
@@ -49,12 +51,14 @@ public class UdpServer {
         recipients.add(channelFuture.channel());
     }
 
-    public boolean send(String ip, int port, byte[] data){
-        recipients.writeAndFlush(new DatagramPacket(
+    public void send(String ip, int port, byte[] data){
+        recipients.write(new DatagramPacket(
                     Unpooled.copiedBuffer(data),
-                    new InetSocketAddress(ip, port)));
-        
-        return true;
+                    new InetSocketAddress(ip, port))).addListener(future -> {
+                        if(!future.isSuccess()){
+                            log.error("udp 송신 실패 (클라이언트 아이피: {})", ip);
+                        }
+                    });
     }
 
     public void shutdown() {

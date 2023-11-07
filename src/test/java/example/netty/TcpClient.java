@@ -2,6 +2,7 @@ package example.netty;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,24 +47,26 @@ public class TcpClient {
 
         serverChannel = bootstrap.connect().sync().channel();
     }
+
     static int sendPacketLog = 0;
+
     private void start() throws InterruptedException, IOException {
         String uuid = UUID.randomUUID().randomUUID().toString();
         StringBuilder tempMsg = new StringBuilder(uuid);
         for (int i = 0; i < 30; i++) {
             tempMsg.append(uuid);
         }
-        
+
         int MAX_SEND_PACKET_COUNT = 2500000;
         for (int i = 0; i < MAX_SEND_PACKET_COUNT; i++) {
             // 데이터 준비
             TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
                     .setMsg(ByteString.copyFrom(tempMsg.toString().getBytes())).build();
             byte[] testBytes = CommonUtils.objectToBytes(test);
-            
+
             // 패킷 분할생성
             List<NetworkPakcetProtoBuf.NetworkPacket> packets = NetworkUtils.getSegment(testBytes,
-                    eServiceType.test, NetworkUtils.getIdentify(), null);
+                    eServiceType.test, NetworkUtils.getIdentify());
             if (packets == null) {
                 System.out.println("에러발생");
                 return;
@@ -72,7 +75,7 @@ public class TcpClient {
             // 전송
             for (int index = 0; index < packets.size(); index++) {
                 byte[] buffer = CommonUtils.objectToBytes(packets.get(index));
-                if(buffer.length != NetworkUtils.TOTAL_MAX_SIZE){
+                if (buffer.length != NetworkUtils.TOTAL_MAX_SIZE) {
                     System.out.println("사이즈가 잘못됨");
                     return;
                 }
@@ -87,23 +90,32 @@ public class TcpClient {
         eventLoopGroup.shutdownGracefully();
     }
 
-    public static class ClientThread1 extends Thread{
-        public void start(){
+    public static class ClientThread1 extends Thread {
+        @Override
+        public void run() {
             TcpClient client = new TcpClient("127.0.0.1", SERVER_PORT);
-                try {
-                    client.connect();
-                    client.start();
-                } catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-                    client.close();
-                }
+            try {
+                client.connect();
+                client.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                client.close();
+            }
         }
     }
+
     public static void main(String[] args) throws Exception {
-        
-        ClientThread1 t1 = new ClientThread1();
-        t1.start();
-        t1.wait();
+        int maxClientCount = 1;
+        List<ClientThread1> clientThreadList = new ArrayList<>();
+        for (int count = 0; count < maxClientCount; count++) {
+            clientThreadList.add(new ClientThread1());
+            clientThreadList.get(count).start();
+            Thread.sleep(2000);
+        }
+
+        for (int count = 0; count < maxClientCount; count++) {
+            clientThreadList.get(count).wait();
+        }
     }
 }

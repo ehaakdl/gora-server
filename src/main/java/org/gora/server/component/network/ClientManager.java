@@ -24,6 +24,9 @@ import org.gora.server.model.network.eServiceType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -196,38 +199,49 @@ public class ClientManager {
         }
     }
 
-    public boolean send(NetworkPacket data) {
-        // ClientConnection clientConnection = clients.get(data.getKey());
-        // if (clientConnection == null) {
-        // log.error("클라이언트 존재 안함");
-        // return false;
-        // }
+    // todo 개선
+    // 비동기/동기 방식으로 전달 가능하게 하기
+    // 비동기 같은 경우 콜백함수 전달하여 사용자가 커스텀 가능하게 만들기
+    // 지금 구조에서는 적당한거 같음 나중에 고도화 작업에 포함
+    public boolean send(
+            eNetworkType networkType, eServiceType serviceType, String identify
+            , int totalSize, byte[] data, String chanelId
+        ) throws IOException {
+        
+        ClientResource resource = resources.getOrDefault(chanelId, null);
+        if (resource == null) {
+            return false;
+        }
 
-        // ByteBuf sendBuf = NetworkPacket.convertByteBuf(data, objectMapper);
-        // if (sendBuf == null) {
-        // log.error("송신 데이터 파싱 실패");
-        // return false;
-        // }
+        if (networkType == eNetworkType.tcp) {
+            if (!resource.getConnection().isConnectionTcp()) {
+                return false;
+            }
+            ChannelHandlerContext handlerContext = resource.getConnection().getTcpChannel();
 
-        // if (data.getProtocol() == eProtocol.tcp) {
-        // if (!clientConnection.isConnectionTcp()) {
-        // log.error("클라이언트와 TCP 연결 안됨");
-        // return false;
-        // }
+            // 패킷 분할생성
+            List<NetworkPacket> packets = NetworkUtils.getSegment(data, serviceType, identify);
+            if (packets == null) {
+                return false;
+            }
+            
+            // 송신
+            for (NetworkPacket packet : packets) {
+                ByteBuf sendBytebuf = Unpooled.wrappedBuffer(CommonUtils.objectToBytes(packet));
+                handlerContext.write(sendBytebuf).addListener(future -> {
+                    if (!future.isSuccess()) {
+                        log.error("tcp 송신 실패");
+                        log.error(CommonUtils.getStackTraceElements(future.cause()));
+                    }
+                });
+            }
 
-        // clientConnection.getTcpChannel().writeAndFlush(sendBuf).addListener(future ->
-        // {
-        // if (!future.isSuccess()) {
-        // log.error("송신 실패");
-        // log.error(CommonUtils.getStackTraceElements(future.cause()));
-        // }
-        // });
-        // } else {
-        // udpServer.send(clientConnection.getClientIp(), udpClientPort,
-        // sendBuf.array());
-        // }
-
-        return true;
+            return true;
+        } else {
+            String clientIp = resource.getConnection().getClientIp();
+            udpServer.send(clientIp, udpClientPort, data);
+            return true;
+        }
     }
 
     public void close(String resourceKey, Long userSeq) {

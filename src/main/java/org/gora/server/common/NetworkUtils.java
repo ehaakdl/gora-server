@@ -65,7 +65,7 @@ public class NetworkUtils {
     }
 
     public static List<NetworkPakcetProtoBuf.NetworkPacket> getSegment(byte[] target, eServiceType type,
-            String identify, String key) {
+            String identify) {
         List<NetworkPakcetProtoBuf.NetworkPacket> result = new ArrayList<>();
         byte[] newBytes;
         if (target == null) {
