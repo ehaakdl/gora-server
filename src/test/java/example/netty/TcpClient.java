@@ -115,7 +115,10 @@ public class TcpClient {
         }
 
         for (int count = 0; count < maxClientCount; count++) {
-            clientThreadList.get(count).wait();
+            // 공유자원 때문에 예외발생
+            synchronized(clientThreadList.get(count)){
+                clientThreadList.get(count).wait();
+            } 
         }
     }
 }
