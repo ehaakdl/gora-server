@@ -90,7 +90,7 @@ public class TcpClient {
         eventLoopGroup.shutdownGracefully();
     }
 
-    public static class ClientThread1 extends Thread {
+    public static class ClientThread extends Thread {
         @Override
         public void run() {
             TcpClient client = new TcpClient("127.0.0.1", SERVER_PORT);
@@ -106,19 +106,19 @@ public class TcpClient {
     }
 
     public static void main(String[] args) throws Exception {
-        int maxClientCount = 1;
-        List<ClientThread1> clientThreadList = new ArrayList<>();
+        int maxClientCount = 100;
+        List<ClientThread> clientThreadList = new ArrayList<>();
         for (int count = 0; count < maxClientCount; count++) {
-            clientThreadList.add(new ClientThread1());
+            clientThreadList.add(new ClientThread());
             clientThreadList.get(count).start();
             Thread.sleep(2000);
         }
 
         for (int count = 0; count < maxClientCount; count++) {
             // 공유자원 때문에 예외발생
-            synchronized(clientThreadList.get(count)){
+            synchronized (clientThreadList.get(count)) {
                 clientThreadList.get(count).wait();
-            } 
+            }
         }
     }
 }
