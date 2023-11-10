@@ -11,17 +11,7 @@
 - tcp_server_port: 11200
 
 ##### env
-```
-DB_USERNAME=gora
-DB_PASSWORD=1234
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=gora
-MAX_DEFAULT_QUE_SZ=1000
-JWT_SECRET_KEY=a89e2da3-704d-4ff0-a803-c8d8dc57cbf1
-TCP_ACCEPT_THREAD_COUNT=1
-TCP_ACCEPT_EVENT_COUNT=1
-```
+.docker 폴더에 환경변수 파일 있음
 
 ##### dockerize
 ```
@@ -30,6 +20,7 @@ gradlew jibDockerBuild
 ```
 ##### protobuf
 ```
+통신 프로토콜 용으로 사용됨
 protoc -I=./protobuf --java_out=./protobuf/out ./protobuf/*.proto
 ```
 
