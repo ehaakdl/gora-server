@@ -1,8 +1,9 @@
 package org.gora.server.component.network;
 
-import java.util.List;
-
+import org.gora.server.common.CommonUtils;
 import org.gora.server.model.TransportData;
+import org.gora.server.model.exception.OverSizedException;
+import org.gora.server.service.CloseClientResource;
 import org.springframework.stereotype.Component;
 
 import io.netty.buffer.Unpooled;
@@ -17,16 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 @ChannelHandler.Sharable
 @Slf4j
 public class TcpServerHandler extends ChannelInboundHandlerAdapter {
+    private final CloseClientResource closeClientResource;
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        final List<TransportData> packets = (List<TransportData>) msg;
-        for (TransportData packet : packets) {
-            try {
-                PacketRouter.push(packet);
-            } catch (IllegalStateException e) {
-                log.warn("패킷 라우터 큐가 꽉 찼습니다. {}", PacketRouter.size());
-            }    
-        }
+        final TransportData packet = (TransportData) msg;
+        PacketRouter.push(packet);
     }
 
     @Override
@@ -36,8 +33,12 @@ public class TcpServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.error("tcp handler error detail: {}",cause.getCause());
-        // ctx.close();
+        log.error("tcp handler error detail: {}", CommonUtils.getStackTraceElements(cause));
+        if (cause instanceof OverSizedException) {
+            log.warn("패킷 라우터 큐가 꽉 찼습니다. {}", PacketRouter.size());
+        } else {
+            closeClientResource.close(ctx.channel().id().asLongText());
+        }
     }
 
     // 종료 이벤트

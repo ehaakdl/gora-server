@@ -6,8 +6,9 @@ import java.util.List;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.TransportData;
+import org.gora.server.model.exception.OverSizedException;
 import org.gora.server.model.network.eNetworkType;
-import org.gora.server.model.network.eServiceType;
+import org.gora.server.service.CloseClientResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 // decoder 역할은 임시로 handler에서 담당
 public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     private ClientManager clientManager;
+    private final CloseClientResource closeClientResource;
 
     // 순환참조로 clientManager 부분은 객체 생성이후에 주입받는다.
     @Autowired
@@ -52,17 +54,13 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
         } catch (Exception e) {
             // 무조건 고정된 사이즈로 들어오기 때문에 캐스팅 실패할수가없다.
             log.error("위조된 패킷이 온걸로 추정됩니다. {}", CommonUtils.getStackTraceElements(e));
-            TransportData transportData = TransportData.builder()
-                    .chanelId(chanelId)
-                    .data(TransportData.create(eServiceType.close_client, null, chanelId))
-                    .build();
-            transportDatas.add(transportData);
+            closeClientResource.close(chanelId);
         }
 
         transportDatas.forEach(transportData -> {
             try {
                 PacketRouter.push(transportData);
-            } catch (IllegalStateException e) {
+            } catch (OverSizedException e) {
                 log.warn("패킷 라우터 큐가 꽉 찼습니다. {}", PacketRouter.size());
             }
         });

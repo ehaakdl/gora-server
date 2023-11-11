@@ -15,12 +15,14 @@ import org.gora.server.common.Env;
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.TransportData;
+import org.gora.server.model.exception.ExpiredPacketException;
 import org.gora.server.model.network.ClientNetworkBuffer;
 import org.gora.server.model.network.ClientNetworkDataWrapper;
 import org.gora.server.model.network.ClientResource;
 import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eServiceType;
+import org.gora.server.service.CloseClientResource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -39,6 +41,7 @@ public class ClientManager {
     @Value("${app.udp_client_port}")
     private int udpClientPort;
     private UdpServer udpServer;
+    private CloseClientResource closeClientResource;
 
     // key는 채널 아이디(네티는 전체 채널 인스턴스에 대한 고유한 아이디를 가지고있다.)
     private final static Map<String, ClientResource> resources = new ConcurrentHashMap<>(
@@ -58,8 +61,7 @@ public class ClientManager {
     }
 
     public void createResource(String resourceKey, ClientConnection connection) {
-        ClientNetworkBuffer buffer = ClientNetworkBuffer.create();
-        resources.putIfAbsent(resourceKey, ClientResource.builder().buffer(buffer).connection(connection).build());
+        resources.putIfAbsent(resourceKey, ClientResource.create(connection));
     }
 
     private List<TransportData> assembleData(List<NetworkPacket> packets, String resourceKey, eNetworkType networkType)
@@ -68,8 +70,9 @@ public class ClientManager {
 
         ClientResource resource = resources.get(resourceKey);
         if (resource == null) {
-            throw new RuntimeException();
+            return Collections.emptyList();
         }
+
         String identify;
         int totalSize;
         byte[] data;
@@ -115,27 +118,31 @@ public class ClientManager {
                         throw new RuntimeException();
                     }
                 } else {
-                    dataBuffer.write(Arrays.copyOf(data, dataNonPaddingSize));
-                    dataWrapper.setAppendAt(System.currentTimeMillis());
-                    if (dataBuffer.size() == totalSize) {
-                        result.add(TransportData.create(serviceType,
-                                CommonUtils.bytesToObject(dataBuffer.toByteArray()), resourceKey));
+                    try {
+                        TransportData transportData = TransportData.convert(dataBuffer, data, dataNonPaddingSize,
+                                dataWrapper,
+                                totalSize, serviceType, identify, networkType, resourceKey, clientNetworkBuffer);
+                        if (transportData != null) {
+                            result.add(transportData);
+                            clientNetworkBuffer.removeDataWrapper(identify, networkType);
+                        }
+                    } catch (ExpiredPacketException e) {
                         clientNetworkBuffer.removeDataWrapper(identify, networkType);
-                    } else if (dataBuffer.size() > totalSize) {
-                        throw new RuntimeException();
                     }
                 }
             } else if (dataNonPaddingSize > NetworkUtils.DATA_MAX_SIZE) {
                 throw new RuntimeException();
             } else {
-                dataBuffer.write(Arrays.copyOf(data, dataNonPaddingSize));
-                dataWrapper.setAppendAt(System.currentTimeMillis());
-                if (dataBuffer.size() == totalSize) {
-                    result.add(TransportData.create(serviceType, CommonUtils.bytesToObject(dataBuffer.toByteArray()),
-                            resourceKey));
+                try {
+                    TransportData transportData = TransportData.convert(dataBuffer, data, dataNonPaddingSize,
+                            dataWrapper,
+                            totalSize, serviceType, identify, networkType, resourceKey, clientNetworkBuffer);
+                    if (transportData != null) {
+                        result.add(transportData);
+                        clientNetworkBuffer.removeDataWrapper(identify, networkType);
+                    }
+                } catch (ExpiredPacketException e) {
                     clientNetworkBuffer.removeDataWrapper(identify, networkType);
-                } else if (dataBuffer.size() > totalSize) {
-                    throw new RuntimeException();
                 }
             }
         }
@@ -177,12 +184,14 @@ public class ClientManager {
             for (int count = 0; count < assembleTotalCount; count++) {
                 from = count * NetworkUtils.TOTAL_MAX_SIZE;
                 to = (count + 1) * NetworkUtils.TOTAL_MAX_SIZE;
-
                 convertBytes = Arrays.copyOfRange(recvBuffer.toByteArray(), from, to);
                 packets.add((NetworkPacket) CommonUtils.bytesToObject(convertBytes));
             }
 
             // 역직렬화 후 남은 데이터는 추출해서 buffer reset후 다시 buffer에 추가
+            // 공유자원인 버퍼 리셋은 무조건 여기서만 해야한다. 다른 스레드에서 리셋을 하면안됨(배열 인덱스 예외 발생함)
+            // 리셋 하더라도 배열 값이 0으로 초기화 되기때문에 여기서만 리셋한다.
+            // 자원 해제는 버퍼를 담는 맵 자체를 삭제하고 버퍼 자체는 건들지 말자.
             if (remainRecvByte > 0) {
                 int endPos = recvBuffer.toByteArray().length - remainRecvByte;
                 byte[] remainBytes = new byte[remainRecvByte];
@@ -204,10 +213,9 @@ public class ClientManager {
     // 비동기 같은 경우 콜백함수 전달하여 사용자가 커스텀 가능하게 만들기
     // 지금 구조에서는 적당한거 같음 나중에 고도화 작업에 포함
     public boolean send(
-            eNetworkType networkType, eServiceType serviceType, String identify
-            , int totalSize, byte[] data, String chanelId
-        ) throws IOException {
-        
+            eNetworkType networkType, eServiceType serviceType, String identify, int totalSize, byte[] data,
+            String chanelId) throws IOException {
+
         ClientResource resource = resources.getOrDefault(chanelId, null);
         if (resource == null) {
             return false;
@@ -224,7 +232,7 @@ public class ClientManager {
             if (packets == null) {
                 return false;
             }
-            
+
             // 송신
             for (NetworkPacket packet : packets) {
                 ByteBuf sendBytebuf = Unpooled.wrappedBuffer(CommonUtils.objectToBytes(packet));
@@ -244,37 +252,33 @@ public class ClientManager {
         }
     }
 
-    public void close(String resourceKey, Long userSeq) {
+    public void close(String resourceKey) {
         ClientResource clientResource;
-        if (resourceKey != null) {
-            clientResource = resources.get(resourceKey);
-        } else if (userSeq != null) {
-            resourceKey = userResourceMap.get(userSeq);
-            if (resourceKey == null) {
-                return;
-            }
-            clientResource = resources.get(resourceKey);
-        } else {
-            throw new RuntimeException();
-        }
-
+        clientResource = resources.get(resourceKey);
         if (clientResource == null) {
             return;
         }
         resources.remove(resourceKey);
 
-        ClientNetworkBuffer buffer = clientResource.getBuffer();
-        if (buffer != null) {
-            buffer.getTcpRecvBuffer().reset();
-            buffer.getUdpRecvBuffer().reset();
+        Long userSeq = clientResource.getUserSeq();
+        if (userSeq != null) {
+            userResourceMap.remove(clientResource.getUserSeq());
         }
 
-        ClientConnection clientConnection = clientResource.getConnection();
-        if (clientConnection != null) {
-            if (clientConnection.isConnectionTcp()) {
-                clientConnection.getTcpChannel().close();
+        ClientConnection tcpConnection = clientResource.getConnection();
+        if (tcpConnection != null) {
+            if (tcpConnection.isConnectionTcp()) {
+                tcpConnection.getTcpChannel().close();
             }
         }
+    }
+
+    public void close(Long userSeq) {
+        String resourceKey = userResourceMap.get(userSeq);
+        if (resourceKey == null) {
+            return;
+        }
+        close(resourceKey);
     }
 
     public int getClientCount() {

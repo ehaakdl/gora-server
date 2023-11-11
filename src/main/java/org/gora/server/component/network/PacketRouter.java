@@ -5,7 +5,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.gora.server.common.Env;
 import org.gora.server.model.TransportData;
+import org.gora.server.model.exception.OverSizedException;
 import org.gora.server.model.network.eServiceType;
+import org.gora.server.service.CloseClientResource;
 import org.gora.server.service.PlayerCoordinateService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -21,19 +23,24 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PacketRouter {
     private final PlayerCoordinateService playerCoordinateService;
-    private final ClientManager clientManager;
+    private final CloseClientResource closeClientResource;
     private static final BlockingQueue<TransportData> routerQue = new LinkedBlockingQueue<>(Integer.parseInt(
             System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
-    
-    // todo queue full 경우 체크하기
-    // 클라이언트에게 대기 메시지 송신
-    // 클라이언트는 일정시간 이후 다시 보냄
+
     public static void push(TransportData data) {
-        routerQue.add(data);
+        try {
+            routerQue.add(data);
+        } catch (IllegalStateException e) {
+            throw new OverSizedException();
+        }
+
     }
-    public static int size(){
+
+    public static int size() {
         return routerQue.size();
     }
+
+    public static boolean test = false;
 
     @Async
     public void run() {
@@ -45,15 +52,16 @@ public class PacketRouter {
                 }
 
                 eServiceType serviceType = packet.getType();
-                if (serviceType == null){
+                if (serviceType == null) {
                     return;
                 }
 
-                switch(serviceType){
+                switch (serviceType) {
                     case test:
-                        break;
-                    case close_client:
-						clientManager.close(packet.getChanelId(), null);
+                        if(test){
+                            closeClientResource.close(packet.getChanelId());
+                            test =false;
+                        }
                         break;
                     default:
                         log.error("[router 큐] 처리할 수 없는 유형에 패킷이 왔습니다.");
