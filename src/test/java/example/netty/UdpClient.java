@@ -62,9 +62,10 @@ public class UdpClient {
             ChannelFuture channelFuture = bootstrapConnetedChannel.connect("127.0.0.1", port).sync();
             Channel clientToServerChanel = channelFuture.channel();
 
-            StringBuilder tempMsg = new StringBuilder(UUID.randomUUID().randomUUID().toString());
+            StringBuilder tempMsg = new StringBuilder(UUID.randomUUID().toString());
             for (int i = 0; i < 30; i++) {
-                tempMsg.append(UUID.randomUUID().randomUUID().toString());
+                UUID.randomUUID();
+                tempMsg.append(UUID.randomUUID().toString());
             }
 
             for (int i = 0; i < 3000000; i++) {
