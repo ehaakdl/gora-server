@@ -90,7 +90,7 @@ public class UdpClient {
                         return;
                     }
                     ByteBuf bytebuf = Unpooled.wrappedBuffer(buffer);
-                    clientToServerChanel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(bytebuf),
+                    clientToServerChanel.writeAndFlush(new DatagramPacket(bytebuf,
                             new InetSocketAddress("localhost", port))).addListeners(future -> {
                                 if (!future.isSuccess()) {
                                     future.cause().printStackTrace();
