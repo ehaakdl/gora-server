@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @ChannelHandler.Sharable
 @Slf4j
-public class TcpServerHandler extends ChannelInboundHandlerAdapter {
+public class TcpInboundHandler extends ChannelInboundHandlerAdapter {
     private final CloseClientResource closeClientResource;
 
     @Override

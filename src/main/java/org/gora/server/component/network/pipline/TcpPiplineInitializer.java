@@ -1,7 +1,7 @@
 package org.gora.server.component.network.pipline;
 
 import org.gora.server.component.network.ClientManager;
-import org.gora.server.component.network.TcpServerHandler;
+import org.gora.server.component.network.TcpInboundHandler;
 import org.gora.server.service.CloseClientResource;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class TcpPiplineInitializer extends ChannelInitializer<SocketChannel> {
-    private final TcpServerHandler handler;
+    private final TcpInboundHandler handler;
     private final ClientManager clientManager;
     private final CloseClientResource closeClientResource;
 
