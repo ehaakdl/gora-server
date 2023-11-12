@@ -1,11 +1,9 @@
 package org.gora.server.component.network.handler.inbound;
 
-import java.net.InetSocketAddress;
 import java.util.List;
 
 import org.gora.server.common.CommonUtils;
 import org.gora.server.component.network.ClientManager;
-import org.gora.server.model.ClientConnection;
 import org.gora.server.model.TransportData;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.service.CloseClientResource;
@@ -30,11 +28,6 @@ public class ServerTcpMessageDecoder extends ByteToMessageDecoder {
 
         String chanelId = ctx.channel().id().asLongText();
         List<TransportData> transportDatas;
-        if (!clientManager.existsResource(chanelId)) {
-            String clientIp = ((InetSocketAddress) ctx.channel().remoteAddress()).getHostName();
-            ClientConnection connection = ClientConnection.createTcp(clientIp, ctx);
-            clientManager.createResource(chanelId, connection);
-        }
 
         // 패킷 조립
         try {

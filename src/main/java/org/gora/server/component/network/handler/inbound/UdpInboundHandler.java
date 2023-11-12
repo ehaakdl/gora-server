@@ -6,7 +6,6 @@ import java.util.List;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.component.network.PacketRouter;
-import org.gora.server.model.ClientConnection;
 import org.gora.server.model.TransportData;
 import org.gora.server.model.exception.OverSizedException;
 import org.gora.server.model.network.eNetworkType;
@@ -41,14 +40,9 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
         byte[] recvBytes = new byte[msg.content().readableBytes()];
         msg.content().readBytes(recvBytes);
-
+        ctx.channel().writeAndFlush("test");
         String chanelId = ctx.channel().id().asLongText();
         List<TransportData> transportDatas = new ArrayList<>();
-        if (!clientManager.existsResource(chanelId)) {
-            String clientIp = msg.recipient().getHostName();
-            ClientConnection connection = ClientConnection.createUdp(clientIp);
-            clientManager.createResource(chanelId, connection);
-        }
 
         // 패킷 조립
         try {
@@ -66,5 +60,6 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
                 log.warn("패킷 라우터 큐가 꽉 찼습니다. {}", PacketRouter.size());
             }
         });
+
     }
 }

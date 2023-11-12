@@ -106,7 +106,7 @@ public class TcpClient {
     }
 
     public static void main(String[] args) throws Exception {
-        int maxClientCount = 100;
+        int maxClientCount = 1;
         List<ClientThread> clientThreadList = new ArrayList<>();
         for (int count = 0; count < maxClientCount; count++) {
             clientThreadList.add(new ClientThread());

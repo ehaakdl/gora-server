@@ -12,10 +12,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UdpPiplineInitializer extends ChannelInitializer<NioDatagramChannel> {
     private final UdpInboundHandler handler;
+
     @Override
     protected void initChannel(NioDatagramChannel ch) {
         ChannelPipeline pipeline = ch.pipeline();
         pipeline.addLast(handler);
     }
 }
-

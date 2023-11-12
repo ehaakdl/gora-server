@@ -28,11 +28,6 @@ public class TcpInboundHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ctx.fireChannelActive();
-    }
-
-    @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         ctx.writeAndFlush(Unpooled.EMPTY_BUFFER);
     }
