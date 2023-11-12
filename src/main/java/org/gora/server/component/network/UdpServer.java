@@ -9,11 +9,15 @@ import org.springframework.stereotype.Component;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.util.concurrent.GlobalEventExecutor;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +37,7 @@ public class UdpServer {
     @PostConstruct
     public void init() {
         this.bossLoopGroup = new NioEventLoopGroup(threadCount);
+        this.recipients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     }
 
     @Async
@@ -40,9 +45,14 @@ public class UdpServer {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(bossLoopGroup)
                 .channel(NioDatagramChannel.class)
+                .option(ChannelOption.AUTO_CLOSE, true)
+                .option(ChannelOption.SO_BROADCAST, true)
                 .handler(piplineInitializer);
+
         ;
-        bootstrap.bind(port).sync();
+        ChannelFuture channelFuture = bootstrap.bind(port).sync();
+        recipients.add(channelFuture.channel());
+
     }
 
     public void send(String ip, int port, byte[] data) {
