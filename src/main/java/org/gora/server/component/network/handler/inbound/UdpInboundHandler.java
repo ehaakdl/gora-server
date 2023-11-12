@@ -1,9 +1,11 @@
-package org.gora.server.component.network;
+package org.gora.server.component.network.handler.inbound;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.gora.server.common.CommonUtils;
+import org.gora.server.component.network.ClientManager;
+import org.gora.server.component.network.PacketRouter;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.TransportData;
 import org.gora.server.model.exception.OverSizedException;

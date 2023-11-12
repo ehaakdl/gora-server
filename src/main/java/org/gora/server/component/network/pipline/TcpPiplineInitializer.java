@@ -1,7 +1,8 @@
 package org.gora.server.component.network.pipline;
 
 import org.gora.server.component.network.ClientManager;
-import org.gora.server.component.network.TcpInboundHandler;
+import org.gora.server.component.network.handler.inbound.ServerTcpMessageDecoder;
+import org.gora.server.component.network.handler.inbound.TcpInboundHandler;
 import org.gora.server.service.CloseClientResource;
 import org.springframework.stereotype.Component;
 

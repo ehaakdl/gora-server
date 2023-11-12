@@ -1,6 +1,6 @@
 package org.gora.server.component.network.pipline;
 
-import org.gora.server.component.network.UdpInboundHandler;
+import org.gora.server.component.network.handler.inbound.UdpInboundHandler;
 import org.springframework.stereotype.Component;
 
 import io.netty.channel.ChannelInitializer;

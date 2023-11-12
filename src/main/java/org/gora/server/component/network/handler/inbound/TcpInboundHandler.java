@@ -1,6 +1,7 @@
-package org.gora.server.component.network;
+package org.gora.server.component.network.handler.inbound;
 
 import org.gora.server.common.CommonUtils;
+import org.gora.server.component.network.PacketRouter;
 import org.gora.server.model.TransportData;
 import org.gora.server.model.exception.OverSizedException;
 import org.gora.server.service.CloseClientResource;
@@ -24,6 +25,11 @@ public class TcpInboundHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         final TransportData packet = (TransportData) msg;
         PacketRouter.push(packet);
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        ctx.fireChannelActive();
     }
 
     @Override

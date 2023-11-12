@@ -1,4 +1,4 @@
-package org.gora.server.component.network.pipline;
+package org.gora.server.component.network.handler.inbound;
 
 import java.net.InetSocketAddress;
 import java.util.List;
