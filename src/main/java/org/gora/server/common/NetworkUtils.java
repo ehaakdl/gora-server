@@ -1,5 +1,6 @@
 package org.gora.server.common;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,9 +20,17 @@ public class NetworkUtils {
     public static final int TOTAL_MAX_SIZE = 1500;
     public static final int HEADER_SIZE = 659;
     public static final int PAD = 0;
-    
+
+    public static String getLocalIpAddress() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static byte[] removePadding(byte[] target, int paddingSize) {
-        if(target.length < paddingSize){
+        if (target.length < paddingSize) {
             throw new RuntimeException();
         } else if (target.length == paddingSize) {
             return null;
@@ -108,8 +117,7 @@ public class NetworkUtils {
                     .setType(type.getType())
                     .setIdentify(identify)
                     .build();
-            
-            
+
             result.add(packet);
             srcPos = srcPos + NetworkUtils.DATA_MAX_SIZE;
         }
