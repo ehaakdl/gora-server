@@ -21,7 +21,8 @@ gradlew build --exclude-task test
 gradlew jibDockerBuild
 ```
 ##### protobuf
-[protoc-25.0-win64.zip](https://github.com/ehaakdl/gora-server/files/13314838/protoc-25.0-win64.zip)
+- 버전: 2
+- [protoc-25.0-win64.zip](https://github.com/ehaakdl/gora-server/files/13314838/protoc-25.0-win64.zip)
 ```
 통신 프로토콜 용으로 사용됨
 protoc -I=./protobuf --java_out=./protobuf/out ./protobuf/*.proto
