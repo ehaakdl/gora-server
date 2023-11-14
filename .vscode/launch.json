@@ -32,7 +32,12 @@
                 "TCP_EVENT_THREAD_COUNT": 1,
                 "UDP_ACCEPT_EVENT_THREAD_COUNT": 1,
                 "CLIENT_DATA_BUFFER_EXPIRE_TIME": 300000,
-                "CLIENT_DATA_BUFFER_CLEAN_DELAY": 600000
+                "CLIENT_DATA_BUFFER_CLEAN_DELAY": 600000,
+                "SERVER_TYPE": "master",
+                "MIN_X": 0,
+                "MAX_X": 10,
+                "MIN_Y": 0,
+                "MAX_Y": 10,
             }
         },
         {

@@ -9,6 +9,11 @@ app:
   udp_accept_event_thread_count: ${UDP_ACCEPT_EVENT_THREAD_COUNT}
   clientDataBufferExpireTime: ${CLIENT_DATA_BUFFER_EXPIRE_TIME}
   clientDataBufferCleanDelay: ${CLIENT_DATA_BUFFER_CLEAN_DELAY}
+  server_type: ${SERVER_TYPE}
+  min_x: ${MIN_X}
+  max_x: ${MAX_X}
+  min_y: ${MIN_Y}
+  max_y: ${MAX_Y}
 
 
 # spy db log

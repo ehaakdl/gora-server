@@ -26,9 +26,9 @@ public class DistributedServerListener implements ApplicationListener<ContextRef
     private Float minXEnv;
     @Value("${app.max_x}")
     private Float maxXEnv;
-    @Value("${app.minY}")
+    @Value("${app.min_y}")
     private Float minYEnv;
-    @Value("${app.maxY}")
+    @Value("${app.max_y}")
     private Float maxYEnv;
 
     @Override
