@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class ApplicationListenerImpl implements ApplicationListener<ContextRefreshedEvent> {
+public class ThreadExecutorListener implements ApplicationListener<ContextRefreshedEvent> {
     private final PacketRouter packetRouter;
     private final UdpServer udpServer;
     private final TcpServer tcpServer;
@@ -38,7 +38,7 @@ public class ApplicationListenerImpl implements ApplicationListener<ContextRefre
             udpServer.shutdown();
             return;
         }
-        log.info("UDP server startUp");
+        
 
         try {
             tcpServer.startup(tcpServerPort);
@@ -48,10 +48,9 @@ public class ApplicationListenerImpl implements ApplicationListener<ContextRefre
             tcpServer.shutdown();
             return;
         }
-        log.info("TCP server startUp");
+        
 
         packetRouter.run();
-        log.info("receiver thread startUp");
 
         monitor.start();
     }
