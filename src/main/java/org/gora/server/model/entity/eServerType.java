@@ -5,7 +5,7 @@ public enum eServerType {
 
     public static eServerType convert(String serverType) {
         for (eServerType value : eServerType.values()) {
-            if (value.toString() == serverType) {
+            if (value.name().equals(serverType)) {
                 return value;
             }
         }
