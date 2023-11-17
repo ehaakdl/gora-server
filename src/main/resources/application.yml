@@ -10,14 +10,6 @@ app:
   clientDataBufferExpireTime: ${CLIENT_DATA_BUFFER_EXPIRE_TIME}
   clientDataBufferCleanDelay: ${CLIENT_DATA_BUFFER_CLEAN_DELAY}
   server_type: ${SERVER_TYPE}
-  slave_1_server_tcp_port: ${SLAVE_1_SERVER_TCP_PORT}
-  slave_1_server_udp_port: ${SLAVE_1_SERVER_UDP_PORT}
-  slave_1_server_ip: ${SLAVE_1_SERVER_IP}
-  slave_server_total_count: ${SLAVE_SERVER_TOTAL_COUNT}
-  min_x: ${MIN_X}
-  max_x: ${MAX_X}
-  min_y: ${MIN_Y}
-  max_y: ${MAX_Y}
 
 
 # spy db log
