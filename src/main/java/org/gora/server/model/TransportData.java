@@ -18,10 +18,10 @@ import lombok.Getter;
 @Builder
 public class TransportData {
     private String chanelId;
-    private Object data;
+    private byte[] data;
     private eServiceType type;
 
-    public static TransportData create(eServiceType type, Object data, String chanelId) {
+    public static TransportData create(eServiceType type, byte[] data, String chanelId) {
         return TransportData.builder().chanelId(chanelId).data(data).type(type).build();
     }
 
@@ -32,7 +32,7 @@ public class TransportData {
         dataWrapper.setAppendAt(System.currentTimeMillis());
         if (dataBuffer.size() == totalSize) {
             try {
-                return TransportData.create(serviceType, CommonUtils.bytesToObject(dataBuffer.toByteArray()),
+                return TransportData.create(serviceType, dataBuffer.toByteArray(),
                         resourceKey);
             } catch (Exception e) {
                 throw new ExpiredPacketException(resourceKey, e);

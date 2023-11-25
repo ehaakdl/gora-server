@@ -4,7 +4,6 @@ import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.UUID;
 
-import org.gora.server.common.CommonUtils;
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.network.NetworkPakcetProtoBuf;
 import org.gora.server.model.network.TestProtoBuf;
@@ -72,7 +71,7 @@ public class UdpClient {
                 // 데이터 준비
                 TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
                         .setMsg(ByteString.copyFrom(tempMsg.toString().getBytes())).build();
-                byte[] testBytes = CommonUtils.objectToBytes(test);
+                byte[] testBytes = test.toByteArray();
 
                 // 패킷 분할생성
                 List<NetworkPakcetProtoBuf.NetworkPacket> packets = NetworkUtils.getSegment(testBytes,
@@ -84,7 +83,7 @@ public class UdpClient {
 
                 // 전송
                 for (int index = 0; index < packets.size(); index++) {
-                    byte[] buffer = CommonUtils.objectToBytes(packets.get(index));
+                    byte[] buffer = packets.get(index).toByteArray();
                     if (buffer.length != NetworkUtils.TOTAL_MAX_SIZE) {
                         System.out.println("사이즈가 잘못됨");
                         return;

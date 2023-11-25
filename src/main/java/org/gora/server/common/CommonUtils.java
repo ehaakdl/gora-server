@@ -1,10 +1,5 @@
 package org.gora.server.common;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.UUID;
 
 import lombok.AccessLevel;
@@ -15,27 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CommonUtils {
     public static final long SLEEP_MILLIS = 10;
- 
+
     public static long bytesToMegabytes(long bytes) {
         return bytes / (1024 * 1024);
     }
 
-    public static Object bytesToObject(byte[] bytes) throws ClassNotFoundException, IOException {
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-             ObjectInputStream ois = new ObjectInputStream(bis)) {
-            return ois.readObject();
-        }
-    }
-    public static byte[] objectToBytes(Object obj) throws IOException {
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-             ObjectOutputStream oos = new ObjectOutputStream(bos)) {
-            oos.writeObject(obj);
-            oos.flush();
-            return bos.toByteArray();
-        }
-    }
-    
-    public static String replaceUUID(){
+    public static String replaceUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
@@ -57,7 +37,7 @@ public final class CommonUtils {
         return result.toString();
     }
 
-    public static void sleep(long millisecond){
+    public static void sleep(long millisecond) {
         try {
             Thread.sleep(millisecond);
         } catch (InterruptedException e) {

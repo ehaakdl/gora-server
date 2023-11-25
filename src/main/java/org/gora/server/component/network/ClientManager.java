@@ -185,7 +185,7 @@ public class ClientManager {
                 from = count * NetworkUtils.TOTAL_MAX_SIZE;
                 to = (count + 1) * NetworkUtils.TOTAL_MAX_SIZE;
                 convertBytes = Arrays.copyOfRange(recvBuffer.toByteArray(), from, to);
-                packets.add((NetworkPacket) CommonUtils.bytesToObject(convertBytes));
+                packets.add(NetworkPacket.parseFrom(convertBytes));
             }
 
             // 역직렬화 후 남은 데이터는 추출해서 buffer reset후 다시 buffer에 추가
@@ -235,7 +235,7 @@ public class ClientManager {
 
             // 송신
             for (NetworkPacket packet : packets) {
-                ByteBuf sendBytebuf = Unpooled.wrappedBuffer(CommonUtils.objectToBytes(packet));
+                ByteBuf sendBytebuf = Unpooled.wrappedBuffer(packet.toByteArray());
                 handlerContext.write(sendBytebuf).addListener(future -> {
                     if (!future.isSuccess()) {
                         log.error("tcp 송신 실패");

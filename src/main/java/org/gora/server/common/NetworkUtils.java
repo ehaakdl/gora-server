@@ -16,9 +16,8 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class NetworkUtils {
-    public static final int DATA_MAX_SIZE = 841;
+    public static final int DATA_MAX_SIZE = 1448;
     public static final int TOTAL_MAX_SIZE = 1500;
-    public static final int HEADER_SIZE = 659;
     public static final int PAD = 0;
 
     public static String getLocalIpAddress() {
@@ -60,7 +59,7 @@ public class NetworkUtils {
     }
 
     public static String getIdentify() {
-        return CommonUtils.replaceUUID() + System.currentTimeMillis();
+        return CommonUtils.replaceUUID();
     }
 
     public static NetworkPakcetProtoBuf.NetworkPacket getEmptyData(eServiceType type, String identify) {
@@ -117,7 +116,7 @@ public class NetworkUtils {
                     .setType(type.getType())
                     .setIdentify(identify)
                     .build();
-
+            System.out.println(identify.length());
             result.add(packet);
             srcPos = srcPos + NetworkUtils.DATA_MAX_SIZE;
         }
