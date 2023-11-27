@@ -5,14 +5,12 @@ import java.net.InetSocketAddress;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.service.CloseClientResource;
-import org.springframework.stereotype.Component;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Component
 public class TcpActiveServerChannelUpdater extends ChannelInboundHandlerAdapter {
     private final ClientManager clientManager;
     private final CloseClientResource closeClientResource;
