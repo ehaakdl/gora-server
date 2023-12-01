@@ -47,7 +47,7 @@ public class ClientManager {
     private final static Map<String, ClientResource> resources = new ConcurrentHashMap<>(
             Integer.parseInt(System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
 
-    // 패킷 수신핸들러가 아닌 다른 진입점에서 채널 아이디를 가져오기 위한 저장소
+    // 유저번호와 채널 아이디매치 저장소
     // key 는 userSeq
     private final static Map<Long, String> userResourceMap = new ConcurrentHashMap<>(
             Integer.parseInt(System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
