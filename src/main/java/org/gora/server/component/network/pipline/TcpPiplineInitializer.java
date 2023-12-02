@@ -1,10 +1,8 @@
 package org.gora.server.component.network.pipline;
 
-import org.gora.server.component.network.ClientManager;
 import org.gora.server.component.network.handler.inbound.ServerTcpMessageDecoder;
 import org.gora.server.component.network.handler.inbound.TcpActiveServerChannelUpdater;
 import org.gora.server.component.network.handler.inbound.TcpInboundHandler;
-import org.gora.server.service.CloseClientResource;
 import org.springframework.stereotype.Component;
 
 import io.netty.channel.ChannelInitializer;
@@ -15,13 +13,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TcpPiplineInitializer extends ChannelInitializer<SocketChannel> {
     private final TcpInboundHandler handler;
-    private final ClientManager clientManager;
-    private final CloseClientResource closeClientResource;
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
-        ch.pipeline().addLast(new TcpActiveServerChannelUpdater(clientManager, closeClientResource));
-        ch.pipeline().addLast(new ServerTcpMessageDecoder(clientManager, closeClientResource));
+        ch.pipeline().addLast(new TcpActiveServerChannelUpdater());
+        ch.pipeline().addLast(new ServerTcpMessageDecoder());
         ch.pipeline().addLast(handler);
     }
 }

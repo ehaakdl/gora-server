@@ -10,10 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class CloseClientResource {
-    private final ClientManager clientManager;
 
-    public void close(String channelId) {
-        clientManager.close(channelId);
+    public static void close(String channelId) {
+        ClientManager.close(channelId);
     }
 
 }

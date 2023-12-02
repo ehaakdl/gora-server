@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.gora.server.common.CommonUtils;
 import org.gora.server.model.exception.ExpiredPacketException;
 import org.gora.server.model.network.ClientNetworkBuffer;
 import org.gora.server.model.network.ClientNetworkDataWrapper;

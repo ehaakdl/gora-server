@@ -12,16 +12,13 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class TcpActiveServerChannelUpdater extends ChannelInboundHandlerAdapter {
-    private final ClientManager clientManager;
-    private final CloseClientResource closeClientResource;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         String channelId = ctx.channel().id().asLongText();
-        if (!clientManager.existsResource(channelId)) {
-            String clientIp = ((InetSocketAddress) ctx.channel().remoteAddress()).getHostName();
-            ClientConnection connection = ClientConnection.createTcp(clientIp, ctx);
-            clientManager.createResource(channelId, connection);
+        if (!ClientManager.existsResource(channelId)) {
+            ClientConnection connection = ClientConnection.createTcp(ctx);
+            ClientManager.createResource(channelId, connection);
         }
 
         ctx.fireChannelActive();
@@ -29,7 +26,7 @@ public class TcpActiveServerChannelUpdater extends ChannelInboundHandlerAdapter 
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        closeClientResource.close(ctx.channel().id().asLongText());
+        CloseClientResource.close(ctx.channel().id().asLongText());
         ctx.fireChannelInactive();
     }
 }

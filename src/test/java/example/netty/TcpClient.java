@@ -55,7 +55,7 @@ public class TcpClient {
         for (int i = 0; i < 30; i++) {
             tempMsg.append(uuid);
         }
-        
+
         tempMsg.delete(0, tempMsg.length());
         tempMsg.append("A");
         int MAX_SEND_PACKET_COUNT = 100000000;
@@ -63,8 +63,7 @@ public class TcpClient {
             // 데이터 준비
             TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
                     .setMsg(ByteString.copyFrom(tempMsg.toString().getBytes())).build();
-            
-                    
+
             byte[] testBytes = test.toByteArray();
 
             // 패킷 분할생성

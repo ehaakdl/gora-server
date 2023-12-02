@@ -17,11 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @ChannelHandler.Sharable
 @RequiredArgsConstructor
 @Slf4j
-// 파이프라인에 decoder 구성을 추가하였으나, decoder클래스를 거치지 않는 문제 발생
-// decoder 역할은 임시로 handler에서 담당
 public class UdpInboundHandler extends SimpleChannelInboundHandler<TransportData> {
-    private final CloseClientResource closeClientResource;
-
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TransportData msg) throws Exception {
         try {
@@ -37,7 +33,7 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<TransportData
         if (cause instanceof OverSizedException) {
             log.warn("패킷 라우터 큐가 꽉 찼습니다. {}", PacketRouter.size());
         } else {
-            closeClientResource.close(ctx.channel().id().asLongText());
+            CloseClientResource.close(ctx.channel().id().asLongText());
         }
     }
 }

@@ -19,8 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 @ChannelHandler.Sharable
 @Slf4j
 public class TcpInboundHandler extends ChannelInboundHandlerAdapter {
-    private final CloseClientResource closeClientResource;
-
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         final TransportData packet = (TransportData) msg;
@@ -38,7 +36,7 @@ public class TcpInboundHandler extends ChannelInboundHandlerAdapter {
         if (cause instanceof OverSizedException) {
             log.warn("패킷 라우터 큐가 꽉 찼습니다. {}", PacketRouter.size());
         } else {
-            closeClientResource.close(ctx.channel().id().asLongText());
+            CloseClientResource.close(ctx.channel().id().asLongText());
         }
     }
 

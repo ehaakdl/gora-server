@@ -21,9 +21,9 @@ public class AsyncExecutorConfig implements AsyncConfigurer {
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         //기본 Thread 수
-        executor.setCorePoolSize(20);
+        executor.setCorePoolSize(2);
         //최대 Thread 수
-        executor.setMaxPoolSize(20);
+        executor.setMaxPoolSize(2);
         //QUEUE 수
         executor.setQueueCapacity(100);
 

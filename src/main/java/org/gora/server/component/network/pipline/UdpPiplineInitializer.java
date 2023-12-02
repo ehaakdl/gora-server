@@ -17,9 +17,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UdpPiplineInitializer extends ChannelInitializer<NioDatagramChannel> {
     private final UdpInboundHandler handler;
-    private final ClientManager clientManager;
-    private final CloseClientResource closeClientResource;
-
     @Override
     protected void initChannel(NioDatagramChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
@@ -27,7 +24,7 @@ public class UdpPiplineInitializer extends ChannelInitializer<NioDatagramChannel
         EventExecutorGroup executor = new DefaultEventExecutorGroup(availableProcessors);
         ;
         pipeline
-                .addLast("ServerUdpMessageDecoder", new ServerUdpMessageDecoder(clientManager, closeClientResource))
+                .addLast("ServerUdpMessageDecoder", new ServerUdpMessageDecoder())
                 .addLast(executor, "UdpInboundHandler", handler);
     }
 }

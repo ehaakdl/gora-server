@@ -8,20 +8,24 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class ClientConnection{
+public class ClientConnection {
     private ChannelHandlerContext tcpChannel;
     private String clientIp;
 
-    public static ClientConnection createTcp(String clientIp, ChannelHandlerContext channel){
-        return new ClientConnection(channel, clientIp);
+    public ClientConnection(ChannelHandlerContext channel) {
+        this.tcpChannel = channel;
     }
 
-    public static ClientConnection createUdp(String clientIp){
+    public static ClientConnection createTcp(ChannelHandlerContext channel) {
+        return new ClientConnection(channel);
+    }
+
+    public static ClientConnection createUdp(String clientIp) {
         return new ClientConnection(null, clientIp);
     }
-    
-    public boolean isConnectionTcp(){
-        if(tcpChannel == null){
+
+    public boolean isConnectionTcp() {
+        if (tcpChannel == null) {
             return false;
         }
 

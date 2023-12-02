@@ -21,9 +21,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
-import io.netty.util.CharsetUtil;
 
 public class UdpClient {
     public void run(int port) throws Exception {
@@ -36,8 +33,6 @@ public class UdpClient {
                     .handler(new ChannelInitializer<Channel>() {
                         @Override
                         public void initChannel(final Channel ch) throws Exception {
-                            ch.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8));
-                            ch.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8));
                             ch.pipeline().addLast(new UdpClientHandler());
                         }
                     });
@@ -53,8 +48,6 @@ public class UdpClient {
                     .handler(new ChannelInitializer<Channel>() {
                         @Override
                         public void initChannel(final Channel ch) throws Exception {
-                            ch.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8));
-                            ch.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8));
                             ch.pipeline().addLast(new UdpClientHandler());
                         }
                     });

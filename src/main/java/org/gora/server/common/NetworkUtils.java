@@ -69,6 +69,7 @@ public class NetworkUtils {
                 .setDataSize(0)
                 .setType(type.getType())
                 .setIdentify(identify)
+                .setTotalSize(newBytes.length)
                 .build();
     }
 
@@ -116,7 +117,7 @@ public class NetworkUtils {
                     .setType(type.getType())
                     .setIdentify(identify)
                     .build();
-            System.out.println(identify.length());
+
             result.add(packet);
             srcPos = srcPos + NetworkUtils.DATA_MAX_SIZE;
         }

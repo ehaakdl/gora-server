@@ -40,8 +40,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ClientManager {
     @Value("${app.udp_client_port}")
     private int udpClientPort;
-    private UdpServer udpServer;
-    private CloseClientResource closeClientResource;
+    private final UdpServer udpServer;
+    private final CloseClientResource closeClientResource;
 
     // key는 채널 아이디(네티는 전체 채널 인스턴스에 대한 고유한 아이디를 가지고있다.)
     private final static Map<String, ClientResource> resources = new ConcurrentHashMap<>(
@@ -56,15 +56,16 @@ public class ClientManager {
         return resources.keySet();
     }
 
-    public boolean existsResource(String resourceKey) {
+    public static boolean existsResource(String resourceKey) {
         return resources.containsKey(resourceKey);
     }
 
-    public void createResource(String resourceKey, ClientConnection connection) {
+    public static void createResource(String resourceKey, ClientConnection connection) {
         resources.putIfAbsent(resourceKey, ClientResource.create(connection));
     }
 
-    private List<TransportData> assembleData(List<NetworkPacket> packets, String resourceKey, eNetworkType networkType)
+    private static List<TransportData> assembleData(List<NetworkPacket> packets, String resourceKey,
+            eNetworkType networkType)
             throws IOException, ClassNotFoundException {
         List<TransportData> result = new ArrayList<>();
 
@@ -150,7 +151,7 @@ public class ClientManager {
         return result;
     }
 
-    public List<TransportData> assemblePacket(String resourceKey, eNetworkType networkType,
+    public static List<TransportData> assemblePacket(String resourceKey, eNetworkType networkType,
             byte[] packetBytes)
             throws IOException, ClassNotFoundException {
         ClientResource resource = resources.get(resourceKey);
@@ -208,12 +209,27 @@ public class ClientManager {
         }
     }
 
+    public eNetworkType getNetworkProtocolTypeByChannelId(String channelId) {
+        ClientResource clientResource = resources.getOrDefault(channelId, null);
+        if (clientResource == null) {
+            return null;
+        }
+
+        if (clientResource.getConnection().isConnectionTcp()) {
+            return eNetworkType.tcp;
+        } else if (clientResource.getConnection().getClientIp() != null) {
+            return eNetworkType.udp;
+        } else {
+            return null;
+        }
+    }
+
     // todo 개선
     // 비동기/동기 방식으로 전달 가능하게 하기
     // 비동기 같은 경우 콜백함수 전달하여 사용자가 커스텀 가능하게 만들기
     // 지금 구조에서는 적당한거 같음 나중에 고도화 작업에 포함
     public boolean send(
-            eNetworkType networkType, eServiceType serviceType, String identify, int totalSize, byte[] data,
+            eNetworkType networkType, eServiceType serviceType, String identify, byte[] data,
             String chanelId) throws IOException {
 
         ClientResource resource = resources.getOrDefault(chanelId, null);
@@ -236,7 +252,7 @@ public class ClientManager {
             // 송신
             for (NetworkPacket packet : packets) {
                 ByteBuf sendBytebuf = Unpooled.wrappedBuffer(packet.toByteArray());
-                handlerContext.write(sendBytebuf).addListener(future -> {
+                handlerContext.writeAndFlush(sendBytebuf).addListener(future -> {
                     if (!future.isSuccess()) {
                         log.error("tcp 송신 실패");
                         log.error(CommonUtils.getStackTraceElements(future.cause()));
@@ -252,7 +268,7 @@ public class ClientManager {
         }
     }
 
-    public void close(String resourceKey) {
+    public static void close(String resourceKey) {
         ClientResource clientResource;
         clientResource = resources.get(resourceKey);
         if (clientResource == null) {

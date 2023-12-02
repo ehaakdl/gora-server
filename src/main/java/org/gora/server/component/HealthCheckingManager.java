@@ -3,7 +3,6 @@ package org.gora.server.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gora.server.component.network.ClientManager;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class HealthCheckingManager {
-    private final ClientManager clientManager;
     private final static List<String> cleanTargetClients = new ArrayList<>();
 
     public void removeCleanTargetClient(String key) {

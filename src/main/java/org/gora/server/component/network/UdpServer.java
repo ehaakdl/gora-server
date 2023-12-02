@@ -56,7 +56,7 @@ public class UdpServer {
     }
 
     public void send(String ip, int port, byte[] data) {
-        recipients.write(new DatagramPacket(
+        recipients.writeAndFlush(new DatagramPacket(
                 Unpooled.copiedBuffer(data),
                 new InetSocketAddress(ip, port))).addListener(future -> {
                     if (!future.isSuccess()) {

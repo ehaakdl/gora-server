@@ -17,8 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class ServerTcpMessageDecoder extends ByteToMessageDecoder {
-    private final ClientManager clientManager;
-    private final CloseClientResource closeClientResource;
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf recvMsg, List<Object> outMsg) throws Exception {
@@ -31,12 +29,12 @@ public class ServerTcpMessageDecoder extends ByteToMessageDecoder {
 
         // 패킷 조립
         try {
-            transportDatas = clientManager.assemblePacket(chanelId, eNetworkType.tcp, recvBytes);
+            transportDatas = ClientManager.assemblePacket(chanelId, eNetworkType.tcp, recvBytes);
         } catch (Exception e) {
             // 무조건 고정된 사이즈로 들어오기 때문에 캐스팅 실패할수가없다.
             log.error("위조된 패킷이 온걸로 추정됩니다. {}", CommonUtils.getStackTraceElements(e));
             log.info("패킷 위조 예상아이디 :{}", chanelId);
-            closeClientResource.close(chanelId);
+            CloseClientResource.close(chanelId);
             return;
         }
 

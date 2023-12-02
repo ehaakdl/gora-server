@@ -1,14 +1,16 @@
 package org.gora.server.component.network;
 
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.gora.server.common.Env;
+import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.TransportData;
 import org.gora.server.model.exception.OverSizedException;
+import org.gora.server.model.network.NetworkPakcetProtoBuf;
+import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eServiceType;
-import org.gora.server.service.CloseClientResource;
-import org.gora.server.service.PlayerCoordinateService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class PacketRouter {
-    private final PlayerCoordinateService playerCoordinateService;
-    private final CloseClientResource closeClientResource;
+    private final ClientManager clientManager;
     private static final BlockingQueue<TransportData> routerQue = new LinkedBlockingQueue<>(Integer.parseInt(
             System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
 
@@ -58,9 +59,23 @@ public class PacketRouter {
 
                 switch (serviceType) {
                     case test:
-                        if(test){
-                            closeClientResource.close(packet.getChanelId());
-                            test =false;
+                    // 임시코드
+                        String identify = NetworkUtils.getIdentify();
+                        eNetworkType protocolType = clientManager
+                                .getNetworkProtocolTypeByChannelId(packet.getChanelId());
+
+                        if (protocolType == null) {
+                            throw new RuntimeException();
+                        }
+
+                        NetworkPakcetProtoBuf.NetworkPacket packet2 = NetworkUtils.getEmptyData(serviceType, identify);
+                        try {
+                            if (!clientManager.send(protocolType, serviceType, identify, packet2.toByteArray(),
+                                    packet.getChanelId())) {
+                                throw new RuntimeException();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                         break;
                     default:
