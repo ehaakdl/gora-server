@@ -1,7 +1,5 @@
 package org.gora.server.component.network.handler.inbound;
 
-import java.net.InetSocketAddress;
-
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.service.CloseClientResource;

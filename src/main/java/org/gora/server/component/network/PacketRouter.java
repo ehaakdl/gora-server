@@ -8,7 +8,7 @@ import org.gora.server.common.Env;
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.TransportData;
 import org.gora.server.model.exception.OverSizedException;
-import org.gora.server.model.network.NetworkPakcetProtoBuf;
+import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eServiceType;
 import org.springframework.scheduling.annotation.Async;
@@ -59,7 +59,7 @@ public class PacketRouter {
 
                 switch (serviceType) {
                     case test:
-                    // 임시코드
+                        // 임시코드
                         String identify = NetworkUtils.getIdentify();
                         eNetworkType protocolType = clientManager
                                 .getNetworkProtocolTypeByChannelId(packet.getChanelId());
@@ -68,7 +68,7 @@ public class PacketRouter {
                             throw new RuntimeException();
                         }
 
-                        NetworkPakcetProtoBuf.NetworkPacket packet2 = NetworkUtils.getEmptyData(serviceType, identify);
+                        NetworkPacket packet2 = NetworkUtils.getEmptyData(serviceType);
                         try {
                             if (!clientManager.send(protocolType, serviceType, identify, packet2.toByteArray(),
                                     packet.getChanelId())) {

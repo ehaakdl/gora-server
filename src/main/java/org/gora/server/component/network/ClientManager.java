@@ -15,9 +15,6 @@ import org.gora.server.common.Env;
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.TransportData;
-import org.gora.server.model.exception.ExpiredPacketException;
-import org.gora.server.model.network.ClientNetworkBuffer;
-import org.gora.server.model.network.ClientNetworkDataWrapper;
 import org.gora.server.model.network.ClientResource;
 import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.eNetworkType;
@@ -74,78 +71,39 @@ public class ClientManager {
             return Collections.emptyList();
         }
 
-        String identify;
-        int totalSize;
         byte[] data;
         eServiceType serviceType;
-        int dataNonPaddingSize;
+        int dataSize;
         NetworkPacket packet;
         for (int index = 0; index < packets.size(); index++) {
             packet = packets.get(index);
-            identify = packet.getIdentify();
-            totalSize = packet.getTotalSize();
             data = packet.getData().toByteArray();
             serviceType = eServiceType.convert(packet.getType());
-            dataNonPaddingSize = packet.getDataSize();
+            dataSize = packet.getDataSize();
 
-            ClientNetworkBuffer clientNetworkBuffer = resource.getBuffer();
-            ClientNetworkDataWrapper dataWrapper;
-            ByteArrayOutputStream dataBuffer;
-            if (clientNetworkBuffer.containDataWrapper(identify, networkType)) {
-                dataWrapper = clientNetworkBuffer.getDataWrapper(identify, networkType);
-                // 클린 리소스 스레드가 삭제할수도 있기 떄문에 null 체크필요하다.
-                if (dataWrapper == null) {
-                    dataWrapper = ClientNetworkDataWrapper.create();
-                    clientNetworkBuffer.putDataWrapper(identify, networkType, dataWrapper);
-                }
-            } else {
-                dataWrapper = ClientNetworkDataWrapper.create();
-                clientNetworkBuffer.putDataWrapper(identify, networkType, dataWrapper);
-            }
-
-            dataBuffer = dataWrapper.getBuffer();
             // 패딩 제거(실 사이즈와 최대 데이터 크기 하여 패딩 삭제)
-            if (dataNonPaddingSize < NetworkUtils.DATA_MAX_SIZE) {
+            TransportData transportData;
+            if (dataSize < NetworkUtils.DATA_MAX_SIZE) {
                 // 세션 체크용 패킷만 데이터가 비어있을수가 있다. 그외의 서비스 패킷은 다 에러 처리
-                if (dataNonPaddingSize == 0) {
+                if (dataSize == 0) {
                     if (serviceType == eServiceType.health_check) {
-                        TransportData transportData = TransportData.builder()
-                                .chanelId(resourceKey)
-                                .type(eServiceType.health_check)
-                                .build();
+                        transportData = TransportData.create(serviceType, null, resourceKey);
                         result.add(transportData);
-                        clientNetworkBuffer.removeDataWrapper(identify, networkType);
                     } else {
                         throw new RuntimeException();
                     }
                 } else {
-                    try {
-                        TransportData transportData = TransportData.convert(dataBuffer, data, dataNonPaddingSize,
-                                dataWrapper,
-                                totalSize, serviceType, identify, networkType, resourceKey, clientNetworkBuffer);
-                        if (transportData != null) {
-                            result.add(transportData);
-                            clientNetworkBuffer.removeDataWrapper(identify, networkType);
-                        }
-                    } catch (ExpiredPacketException e) {
-                        clientNetworkBuffer.removeDataWrapper(identify, networkType);
-                    }
+                    transportData = TransportData.create(serviceType,
+                            NetworkUtils.removePadding(data, NetworkUtils.DATA_MAX_SIZE - dataSize), resourceKey);
                 }
-            } else if (dataNonPaddingSize > NetworkUtils.DATA_MAX_SIZE) {
+            } else if (dataSize > NetworkUtils.DATA_MAX_SIZE) {
                 throw new RuntimeException();
             } else {
-                try {
-                    TransportData transportData = TransportData.convert(dataBuffer, data, dataNonPaddingSize,
-                            dataWrapper,
-                            totalSize, serviceType, identify, networkType, resourceKey, clientNetworkBuffer);
-                    if (transportData != null) {
-                        result.add(transportData);
-                        clientNetworkBuffer.removeDataWrapper(identify, networkType);
-                    }
-                } catch (ExpiredPacketException e) {
-                    clientNetworkBuffer.removeDataWrapper(identify, networkType);
-                }
+                transportData = TransportData.create(serviceType,
+                        data, resourceKey);
             }
+
+            result.add(transportData);
         }
 
         return result;
@@ -159,24 +117,19 @@ public class ClientManager {
             return Collections.emptyList();
         }
 
-        ClientNetworkBuffer buffer = resource.getBuffer();
-        if (buffer == null) {
-            return Collections.emptyList();
-        }
-
-        ByteArrayOutputStream recvBuffer;
+        ByteArrayOutputStream buffer;
         if (networkType == eNetworkType.tcp) {
-            recvBuffer = buffer.getTcpRecvBuffer();
+            buffer = resource.getTcpBuffer();
         } else {
-            recvBuffer = buffer.getUdpRecvBuffer();
+            buffer = resource.getUdpBuffer();
         }
 
         List<NetworkPacket> packets = new ArrayList<>();
-        recvBuffer.write(packetBytes);
+        buffer.write(packetBytes);
         int assembleTotalCount = 0;
-        if (recvBuffer.size() >= NetworkUtils.TOTAL_MAX_SIZE) {
-            int remainRecvByte = recvBuffer.size() % NetworkUtils.TOTAL_MAX_SIZE;
-            assembleTotalCount = recvBuffer.size() / NetworkUtils.TOTAL_MAX_SIZE;
+        if (buffer.size() >= NetworkUtils.TOTAL_MAX_SIZE) {
+            int remainRecvByte = buffer.size() % NetworkUtils.TOTAL_MAX_SIZE;
+            assembleTotalCount = buffer.size() / NetworkUtils.TOTAL_MAX_SIZE;
 
             // 네트워크 패킷 클래스로 역직렬화
             byte[] convertBytes = new byte[NetworkUtils.TOTAL_MAX_SIZE];
@@ -185,22 +138,18 @@ public class ClientManager {
             for (int count = 0; count < assembleTotalCount; count++) {
                 from = count * NetworkUtils.TOTAL_MAX_SIZE;
                 to = (count + 1) * NetworkUtils.TOTAL_MAX_SIZE;
-                convertBytes = Arrays.copyOfRange(recvBuffer.toByteArray(), from, to);
+                convertBytes = Arrays.copyOfRange(buffer.toByteArray(), from, to);
                 packets.add(NetworkPacket.parseFrom(convertBytes));
             }
 
-            // 역직렬화 후 남은 데이터는 추출해서 buffer reset후 다시 buffer에 추가
-            // 공유자원인 버퍼 리셋은 무조건 여기서만 해야한다. 다른 스레드에서 리셋을 하면안됨(배열 인덱스 예외 발생함)
-            // 리셋 하더라도 배열 값이 0으로 초기화 되기때문에 여기서만 리셋한다.
-            // 자원 해제는 버퍼를 담는 맵 자체를 삭제하고 버퍼 자체는 건들지 말자.
             if (remainRecvByte > 0) {
-                int endPos = recvBuffer.toByteArray().length - remainRecvByte;
+                int endPos = buffer.toByteArray().length - remainRecvByte;
                 byte[] remainBytes = new byte[remainRecvByte];
-                System.arraycopy(recvBuffer.toByteArray(), endPos, remainBytes, 0, remainBytes.length);
-                recvBuffer.reset();
-                recvBuffer.write(remainBytes);
+                System.arraycopy(buffer.toByteArray(), endPos, remainBytes, 0, remainBytes.length);
+                buffer.reset();
+                buffer.write(remainBytes);
             } else {
-                recvBuffer.reset();
+                buffer.reset();
             }
 
             return assembleData(packets, resourceKey, networkType);

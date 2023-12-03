@@ -1,9 +1,7 @@
 package org.gora.server.component.network.pipline;
 
-import org.gora.server.component.network.ClientManager;
 import org.gora.server.component.network.handler.inbound.ServerUdpMessageDecoder;
 import org.gora.server.component.network.handler.inbound.UdpInboundHandler;
-import org.gora.server.service.CloseClientResource;
 import org.springframework.stereotype.Component;
 
 import io.netty.channel.ChannelInitializer;
@@ -17,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UdpPiplineInitializer extends ChannelInitializer<NioDatagramChannel> {
     private final UdpInboundHandler handler;
+
     @Override
     protected void initChannel(NioDatagramChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();

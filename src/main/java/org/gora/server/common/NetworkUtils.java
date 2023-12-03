@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class NetworkUtils {
-    public static final int DATA_MAX_SIZE = 1448;
+    public static final int DATA_MAX_SIZE = 1487;
     public static final int TOTAL_MAX_SIZE = 1500;
     public static final int PAD = 0;
 
@@ -62,14 +62,12 @@ public class NetworkUtils {
         return CommonUtils.replaceUUID();
     }
 
-    public static NetworkPakcetProtoBuf.NetworkPacket getEmptyData(eServiceType type, String identify) {
+    public static NetworkPakcetProtoBuf.NetworkPacket getEmptyData(eServiceType type) {
         byte[] newBytes = addPadding(null, NetworkUtils.DATA_MAX_SIZE);
         return NetworkPakcetProtoBuf.NetworkPacket.newBuilder()
                 .setData(ByteString.copyFrom(newBytes))
                 .setDataSize(0)
                 .setType(type.getType())
-                .setIdentify(identify)
-                .setTotalSize(newBytes.length)
                 .build();
     }
 
@@ -113,9 +111,7 @@ public class NetworkUtils {
             NetworkPakcetProtoBuf.NetworkPacket packet = NetworkPakcetProtoBuf.NetworkPacket.newBuilder()
                     .setData(ByteString.copyFrom(newBytes))
                     .setDataSize(dataSize)
-                    .setTotalSize(totalSize)
                     .setType(type.getType())
-                    .setIdentify(identify)
                     .build();
 
             result.add(packet);

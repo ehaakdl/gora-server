@@ -7,6 +7,4 @@ message NetworkPacket {
   required bytes data = 1;
   required fixed32 type = 2;
   required fixed32 dataSize = 3;
-  required string identify = 4;
-  required fixed32 totalSize = 5;
 }
