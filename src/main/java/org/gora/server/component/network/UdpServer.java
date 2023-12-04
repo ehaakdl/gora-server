@@ -3,6 +3,7 @@ package org.gora.server.component.network;
 import java.net.InetSocketAddress;
 
 import org.gora.server.component.network.pipline.UdpPiplineInitializer;
+import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -55,9 +56,9 @@ public class UdpServer {
 
     }
 
-    public void send(String ip, int port, byte[] data) {
+    public void send(String ip, int port, NetworkPacket packet) {
         recipients.writeAndFlush(new DatagramPacket(
-                Unpooled.copiedBuffer(data),
+                Unpooled.copiedBuffer(packet.toByteArray()),
                 new InetSocketAddress(ip, port))).addListener(future -> {
                     if (!future.isSuccess()) {
                         log.error("udp 송신 실패 (클라이언트 아이피: {})", ip);

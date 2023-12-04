@@ -9,10 +9,13 @@ import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.TransportData;
 import org.gora.server.model.exception.OverSizedException;
 import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
+import org.gora.server.model.network.TestProtoBuf.Test;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eServiceType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+
+import com.google.protobuf.ByteString;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +63,6 @@ public class PacketRouter {
                 switch (serviceType) {
                     case test:
                         // 임시코드
-                        String identify = NetworkUtils.getIdentify();
                         eNetworkType protocolType = clientManager
                                 .getNetworkProtocolTypeByChannelId(packet.getChanelId());
 
@@ -68,9 +70,10 @@ public class PacketRouter {
                             throw new RuntimeException();
                         }
 
-                        NetworkPacket packet2 = NetworkUtils.getEmptyData(serviceType);
+                        Test test = Test.newBuilder().setMsg(ByteString.copyFrom("2133".getBytes())).build();
+                        NetworkPacket packet2 = NetworkUtils.getPacket(test.toByteArray(), serviceType);
                         try {
-                            if (!clientManager.send(protocolType, serviceType, identify, packet2.toByteArray(),
+                            if (!clientManager.send(protocolType, serviceType, packet2,
                                     packet.getChanelId())) {
                                 throw new RuntimeException();
                             }

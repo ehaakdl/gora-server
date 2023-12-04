@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.gora.server.common.NetworkUtils;
-import org.gora.server.model.network.NetworkPakcetProtoBuf;
+import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf;
 import org.gora.server.model.network.eServiceType;
 
@@ -56,7 +56,7 @@ public class TcpClient {
             tempMsg.append(uuid);
         }
 
-        int MAX_SEND_PACKET_COUNT = 100000000;
+        int MAX_SEND_PACKET_COUNT = 2;
         for (int i = 0; i < MAX_SEND_PACKET_COUNT; i++) {
             // 데이터 준비
             TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
@@ -65,25 +65,25 @@ public class TcpClient {
             byte[] testBytes = test.toByteArray();
 
             // 패킷 분할생성
-            List<NetworkPakcetProtoBuf.NetworkPacket> packets = NetworkUtils.getSegment(testBytes,
-                    eServiceType.test, NetworkUtils.getIdentify());
-            if (packets == null) {
+            NetworkPacket packet = NetworkUtils.getPacket(testBytes,
+                    eServiceType.test);
+            if (packet == null) {
                 System.out.println("에러발생");
                 return;
             }
 
             // 전송
-            for (int index = 0; index < packets.size(); index++) {
-                byte[] buffer = packets.get(index).toByteArray();
-                if (buffer.length != NetworkUtils.TOTAL_MAX_SIZE) {
-                    System.out.println("사이즈가 잘못됨");
-                    return;
-                }
-                ByteBuf bytebuf = Unpooled.wrappedBuffer(buffer);
-                serverChannel.writeAndFlush(bytebuf).sync();
+
+            byte[] buffer = packet.toByteArray();
+            if (buffer.length != NetworkUtils.TOTAL_MAX_SIZE) {
+                System.out.println("사이즈가 잘못됨");
+                return;
             }
-            sendPacketLog = sendPacketLog + packets.size();
+            ByteBuf bytebuf = Unpooled.wrappedBuffer(buffer);
+            serverChannel.writeAndFlush(bytebuf).sync();
+
         }
+
     }
 
     public void close() {
@@ -97,6 +97,7 @@ public class TcpClient {
             try {
                 client.connect();
                 client.start();
+                Thread.sleep(200000);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {

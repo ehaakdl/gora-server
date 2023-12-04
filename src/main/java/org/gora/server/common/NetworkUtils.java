@@ -1,11 +1,10 @@
 package org.gora.server.common;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.gora.server.model.network.NetworkPakcetProtoBuf;
+import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.eServiceType;
 import org.springframework.stereotype.Component;
 
@@ -71,24 +70,19 @@ public class NetworkUtils {
                 .build();
     }
 
-    public static List<NetworkPakcetProtoBuf.NetworkPacket> getSegment(byte[] target, eServiceType type,
-            String identify) {
-        List<NetworkPakcetProtoBuf.NetworkPacket> result = new ArrayList<>();
-        byte[] newBytes;
+    public static NetworkPacket getPacket(byte[] target, eServiceType type) {
         if (target == null) {
             return null;
         }
 
-        int totalSize = target.length;
+        int dataSize = target.length;
+        if (dataSize >= NetworkUtils.DATA_MAX_SIZE) {
+            throw new RuntimeException();
+        }
+
         int paddingSize;
-        if (totalSize < NetworkUtils.DATA_MAX_SIZE) {
-            paddingSize = NetworkUtils.DATA_MAX_SIZE - totalSize;
-        } else if (totalSize > NetworkUtils.DATA_MAX_SIZE) {
-            if (totalSize % NetworkUtils.DATA_MAX_SIZE > 0) {
-                paddingSize = NetworkUtils.DATA_MAX_SIZE - totalSize % NetworkUtils.DATA_MAX_SIZE;
-            } else {
-                paddingSize = 0;
-            }
+        if (dataSize < NetworkUtils.DATA_MAX_SIZE) {
+            paddingSize = NetworkUtils.DATA_MAX_SIZE - dataSize;
         } else {
             paddingSize = 0;
         }
@@ -97,31 +91,15 @@ public class NetworkUtils {
             target = addPadding(target, paddingSize);
         }
 
-        int segmentCount = target.length / NetworkUtils.DATA_MAX_SIZE;
-        int srcPos = 0;
-
-        int dataSize = NetworkUtils.DATA_MAX_SIZE;
-        for (int index = 0; index < segmentCount; index++) {
-            // 마지막 데이터는 패딩이 붙기 때문에 실제 데이터 사이즈를 구해준다.
-            if (index == segmentCount - 1) {
-                dataSize = NetworkUtils.DATA_MAX_SIZE - paddingSize;
-            }
-            newBytes = new byte[NetworkUtils.DATA_MAX_SIZE];
-            System.arraycopy(target, srcPos, newBytes, 0, NetworkUtils.DATA_MAX_SIZE);
-            NetworkPakcetProtoBuf.NetworkPacket packet = NetworkPakcetProtoBuf.NetworkPacket.newBuilder()
-                    .setData(ByteString.copyFrom(newBytes))
-                    .setDataSize(dataSize)
-                    .setType(type.getType())
-                    .build();
-
-            result.add(packet);
-            srcPos = srcPos + NetworkUtils.DATA_MAX_SIZE;
+        if (target.length != NetworkUtils.DATA_MAX_SIZE) {
+            throw new RuntimeException();
         }
 
-        if (result.isEmpty()) {
-            return null;
-        } else {
-            return result;
-        }
+        return NetworkPakcetProtoBuf.NetworkPacket.newBuilder()
+                .setData(ByteString.copyFrom(target))
+                .setDataSize(dataSize)
+                .setType(type.getType())
+                .build();
+
     }
 }

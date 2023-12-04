@@ -1,11 +1,10 @@
 package example.netty;
 
 import java.net.InetSocketAddress;
-import java.util.List;
 import java.util.UUID;
 
 import org.gora.server.common.NetworkUtils;
-import org.gora.server.model.network.NetworkPakcetProtoBuf;
+import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf;
 import org.gora.server.model.network.eServiceType;
 
@@ -67,33 +66,34 @@ public class UdpClient {
                 byte[] testBytes = test.toByteArray();
 
                 // 패킷 분할생성
-                List<NetworkPakcetProtoBuf.NetworkPacket> packets = NetworkUtils.getSegment(testBytes,
-                        eServiceType.test, NetworkUtils.getIdentify());
-                if (packets == null) {
+                NetworkPacket packet = NetworkUtils.getPacket(testBytes,
+                        eServiceType.test);
+                if (packet == null) {
                     System.out.println("에러발생");
                     return;
                 }
 
                 // 전송
-                for (int index = 0; index < packets.size(); index++) {
-                    byte[] buffer = packets.get(index).toByteArray();
-                    if (buffer.length != NetworkUtils.TOTAL_MAX_SIZE) {
-                        System.out.println("사이즈가 잘못됨");
-                        return;
-                    }
-                    ByteBuf bytebuf = Unpooled.wrappedBuffer(buffer);
-                    clientToServerChanel.writeAndFlush(new DatagramPacket(bytebuf,
-                            new InetSocketAddress("localhost", port))).addListeners(future -> {
-                                if (!future.isSuccess()) {
-                                    future.cause().printStackTrace();
-                                    System.out.println("실패함");
-                                }
-                            });
+                byte[] buffer = packet.toByteArray();
+                if (buffer.length != NetworkUtils.TOTAL_MAX_SIZE) {
+                    System.out.println("사이즈가 잘못됨");
+                    return;
                 }
+                ByteBuf bytebuf = Unpooled.wrappedBuffer(buffer);
+                clientToServerChanel.writeAndFlush(new DatagramPacket(bytebuf,
+                        new InetSocketAddress("localhost", port))).addListeners(future -> {
+                            if (!future.isSuccess()) {
+                                future.cause().printStackTrace();
+                                System.out.println("실패함");
+                            }
+                        });
+
             }
 
             clientToServerChanel.closeFuture();
-        } finally {
+        } finally
+
+        {
             group.shutdownGracefully();
         }
     }

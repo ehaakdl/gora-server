@@ -178,7 +178,7 @@ public class ClientManager {
     // 비동기 같은 경우 콜백함수 전달하여 사용자가 커스텀 가능하게 만들기
     // 지금 구조에서는 적당한거 같음 나중에 고도화 작업에 포함
     public boolean send(
-            eNetworkType networkType, eServiceType serviceType, String identify, byte[] data,
+            eNetworkType networkType, eServiceType serviceType, NetworkPacket packet,
             String chanelId) throws IOException {
 
         ClientResource resource = resources.getOrDefault(chanelId, null);
@@ -192,27 +192,18 @@ public class ClientManager {
             }
             ChannelHandlerContext handlerContext = resource.getConnection().getTcpChannel();
 
-            // 패킷 분할생성
-            List<NetworkPacket> packets = NetworkUtils.getSegment(data, serviceType, identify);
-            if (packets == null) {
-                return false;
-            }
-
-            // 송신
-            for (NetworkPacket packet : packets) {
-                ByteBuf sendBytebuf = Unpooled.wrappedBuffer(packet.toByteArray());
-                handlerContext.writeAndFlush(sendBytebuf).addListener(future -> {
-                    if (!future.isSuccess()) {
-                        log.error("tcp 송신 실패");
-                        log.error(CommonUtils.getStackTraceElements(future.cause()));
-                    }
-                });
-            }
+            ByteBuf sendBytebuf = Unpooled.wrappedBuffer(packet.toByteArray());
+            handlerContext.writeAndFlush(sendBytebuf).addListener(future -> {
+                if (!future.isSuccess()) {
+                    log.error("tcp 송신 실패");
+                    log.error(CommonUtils.getStackTraceElements(future.cause()));
+                }
+            });
 
             return true;
         } else {
             String clientIp = resource.getConnection().getClientIp();
-            udpServer.send(clientIp, udpClientPort, data);
+            udpServer.send(clientIp, udpClientPort, packet);
             return true;
         }
     }
