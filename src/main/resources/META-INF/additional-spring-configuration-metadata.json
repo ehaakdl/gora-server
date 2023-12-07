@@ -48,5 +48,20 @@
     "name": "app.async.core-pool-size",
     "type": "java.lang.String",
     "description": "A description for 'app.async.core-pool-size'"
+  },
+  {
+    "name": "app.clientDataBufferExpireTime",
+    "type": "java.lang.String",
+    "description": "A description for 'app.clientDataBufferExpireTime'"
+  },
+  {
+    "name": "app.clientDataBufferCleanDelay",
+    "type": "java.lang.String",
+    "description": "A description for 'app.clientDataBufferCleanDelay'"
+  },
+  {
+    "name": "app.server_type",
+    "type": "java.lang.String",
+    "description": "A description for 'app.server_type'"
   }
 ]}
