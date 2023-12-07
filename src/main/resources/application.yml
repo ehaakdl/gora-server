@@ -10,6 +10,9 @@ app:
   clientDataBufferExpireTime: ${CLIENT_DATA_BUFFER_EXPIRE_TIME}
   clientDataBufferCleanDelay: ${CLIENT_DATA_BUFFER_CLEAN_DELAY}
   server_type: ${SERVER_TYPE}
+  async:
+    corePoolSize: ${ASYNC_CORE_POOL_SIZE}
+    maxPoolSize: ${ASYNC_MAX_POOL_SIZE}
 
 
 # spy db log

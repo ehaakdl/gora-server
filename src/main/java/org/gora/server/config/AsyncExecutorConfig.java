@@ -5,6 +5,7 @@ import java.util.concurrent.Executor;
 
 import org.gora.server.common.CommonUtils;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -16,14 +17,18 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @EnableAsync
 public class AsyncExecutorConfig implements AsyncConfigurer {
+    @Value("${app.async.corePoolSize}")
+    private int corePoolSize;
+    @Value("${app.async.maxPoolSize}")
+    private int maxPoolSize;
     @Bean(name = "executor")
     @Override
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         //기본 Thread 수
-        executor.setCorePoolSize(2);
+        executor.setCorePoolSize(corePoolSize);
         //최대 Thread 수
-        executor.setMaxPoolSize(2);
+        executor.setMaxPoolSize(maxPoolSize);
         //QUEUE 수
         executor.setQueueCapacity(100);
 
