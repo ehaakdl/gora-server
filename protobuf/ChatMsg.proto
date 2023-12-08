@@ -1,0 +1,17 @@
+package protobuf;
+
+option java_package = "org.gora.server.model.network";
+option java_outer_classname = "ChatProtoBuf";
+
+message MsgInfo {
+  required string to = 2;
+  required string msg = 3;
+  required fixed32 sendType = 4;
+}
+
+message Chat {
+  optional string accessToken = 1;
+  required string identify = 2;
+  required fixed32 totalSize = 3;
+  required bytes data = 4;
+}
