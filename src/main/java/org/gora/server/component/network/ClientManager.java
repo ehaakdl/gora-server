@@ -15,6 +15,7 @@ import org.gora.server.common.Env;
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.ClientConnection;
 import org.gora.server.model.TransportData;
+import org.gora.server.model.eRouteServiceType;
 import org.gora.server.model.network.ClientResource;
 import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.eNetworkType;
@@ -82,24 +83,29 @@ public class ClientManager {
             dataSize = packet.getDataSize();
 
             // 패딩 제거(실 사이즈와 최대 데이터 크기 하여 패딩 삭제)
+            eRouteServiceType routeServiceType = eRouteServiceType.convert(serviceType.getType());
+            if (routeServiceType == null) {
+                throw new RuntimeException();
+            }
+
             TransportData transportData;
             if (dataSize < NetworkUtils.DATA_MAX_SIZE) {
                 // 세션 체크용 패킷만 데이터가 비어있을수가 있다. 그외의 서비스 패킷은 다 에러 처리
                 if (dataSize == 0) {
                     if (serviceType == eServiceType.health_check) {
-                        transportData = TransportData.create(serviceType, null, resourceKey);
+                        transportData = TransportData.create(routeServiceType, null, resourceKey);
                         result.add(transportData);
                     } else {
                         throw new RuntimeException();
                     }
                 } else {
-                    transportData = TransportData.create(serviceType,
+                    transportData = TransportData.create(routeServiceType,
                             NetworkUtils.removePadding(data, NetworkUtils.DATA_MAX_SIZE - dataSize), resourceKey);
                 }
             } else if (dataSize > NetworkUtils.DATA_MAX_SIZE) {
                 throw new RuntimeException();
             } else {
-                transportData = TransportData.create(serviceType,
+                transportData = TransportData.create(routeServiceType,
                         data, resourceKey);
             }
 

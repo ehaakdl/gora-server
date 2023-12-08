@@ -1,7 +1,5 @@
 package org.gora.server.model;
 
-import org.gora.server.model.network.eServiceType;
-
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,9 +8,9 @@ import lombok.Getter;
 public class TransportData {
     private String chanelId;
     private byte[] data;
-    private eServiceType type;
+    private eRouteServiceType type;
 
-    public static TransportData create(eServiceType type, byte[] data, String chanelId) {
+    public static TransportData create(eRouteServiceType type, byte[] data, String chanelId) {
         return TransportData.builder().chanelId(chanelId).data(data).type(type).build();
     }
 }

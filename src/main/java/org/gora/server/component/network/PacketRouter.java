@@ -7,6 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.gora.server.common.Env;
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.TransportData;
+import org.gora.server.model.eRouteServiceType;
 import org.gora.server.model.exception.OverSizedException;
 import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf.Test;
@@ -55,12 +56,12 @@ public class PacketRouter {
                     return;
                 }
 
-                eServiceType serviceType = packet.getType();
-                if (serviceType == null) {
+                eRouteServiceType routeServiceType = packet.getType();
+                if (routeServiceType == null) {
                     return;
                 }
 
-                switch (serviceType) {
+                switch (routeServiceType) {
                     case test:
                         // 임시코드
                         eNetworkType protocolType = clientManager
@@ -69,7 +70,7 @@ public class PacketRouter {
                         if (protocolType == null) {
                             throw new RuntimeException();
                         }
-
+                        eServiceType serviceType = eServiceType.test;
                         Test test = Test.newBuilder().setMsg(ByteString.copyFrom("2133".getBytes())).build();
                         NetworkPacket packet2 = NetworkUtils.getPacket(test.toByteArray(), serviceType);
                         try {
