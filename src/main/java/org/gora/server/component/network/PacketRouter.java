@@ -13,6 +13,7 @@ import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf.Test;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eServiceType;
+import org.gora.server.service.CloseClientResource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -66,10 +67,10 @@ public class PacketRouter {
                         // 임시코드
                         eNetworkType protocolType = clientManager
                                 .getNetworkProtocolTypeByChannelId(packet.getChanelId());
-
                         if (protocolType == null) {
-                            throw new RuntimeException();
+                            return;
                         }
+
                         eServiceType serviceType = eServiceType.test;
                         Test test = Test.newBuilder().setMsg(ByteString.copyFrom("2133".getBytes())).build();
                         NetworkPacket packet2 = NetworkUtils.getPacket(test.toByteArray(), serviceType);
@@ -81,6 +82,9 @@ public class PacketRouter {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        break;
+                    case close_client:
+                        CloseClientResource.close(packet.getChanelId());
                         break;
                     default:
                         log.error("[router 큐] 처리할 수 없는 유형에 패킷이 왔습니다.");

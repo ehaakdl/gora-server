@@ -50,13 +50,14 @@ public class TcpClient {
     static int sendPacketLog = 0;
 
     private void start() throws InterruptedException, IOException {
-        String uuid = UUID.randomUUID().randomUUID().toString();
+        UUID.randomUUID();
+        String uuid = UUID.randomUUID().toString();
         StringBuilder tempMsg = new StringBuilder(uuid);
         for (int i = 0; i < 30; i++) {
             tempMsg.append(uuid);
         }
 
-        int MAX_SEND_PACKET_COUNT = 2;
+        int MAX_SEND_PACKET_COUNT = 20000000;
         for (int i = 0; i < MAX_SEND_PACKET_COUNT; i++) {
             // 데이터 준비
             TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()

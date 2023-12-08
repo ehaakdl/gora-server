@@ -59,7 +59,7 @@ public class UdpClient {
                 tempMsg.append(UUID.randomUUID().toString());
             }
 
-            for (int i = 0; i < 3000000; i++) {
+            for (int i = 0; i < 1; i++) {
                 // 데이터 준비
                 TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
                         .setMsg(ByteString.copyFrom(tempMsg.toString().getBytes())).build();
@@ -89,7 +89,7 @@ public class UdpClient {
                         });
 
             }
-
+            Thread.sleep(30000);
             clientToServerChanel.closeFuture();
         } finally
 

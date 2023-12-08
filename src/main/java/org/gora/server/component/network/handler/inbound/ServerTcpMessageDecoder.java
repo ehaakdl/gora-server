@@ -1,12 +1,13 @@
 package org.gora.server.component.network.handler.inbound;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.gora.server.common.CommonUtils;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.TransportData;
+import org.gora.server.model.eRouteServiceType;
 import org.gora.server.model.network.eNetworkType;
-import org.gora.server.service.CloseClientResource;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -34,8 +35,8 @@ public class ServerTcpMessageDecoder extends ByteToMessageDecoder {
             // 무조건 고정된 사이즈로 들어오기 때문에 캐스팅 실패할수가없다.
             log.error("위조된 패킷이 온걸로 추정됩니다. {}", CommonUtils.getStackTraceElements(e));
             log.info("패킷 위조 예상아이디 :{}", chanelId);
-            CloseClientResource.close(chanelId);
-            return;
+            transportDatas = new ArrayList<>();
+            transportDatas.add(TransportData.create(eRouteServiceType.close_client, null, chanelId));
         }
 
         if (transportDatas.isEmpty()) {
