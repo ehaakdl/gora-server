@@ -4,7 +4,7 @@ import java.net.InetSocketAddress;
 import java.util.UUID;
 
 import org.gora.server.common.NetworkUtils;
-import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
+import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf;
 import org.gora.server.model.network.eServiceType;
 
@@ -22,6 +22,8 @@ import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
 public class UdpClient {
+    private static String channelId;
+
     public void run(int port) throws Exception {
         NioEventLoopGroup group = new NioEventLoopGroup();
         try {
@@ -89,7 +91,7 @@ public class UdpClient {
                         });
 
             }
-            Thread.sleep(30000);
+            Thread.sleep(100000);
             clientToServerChanel.closeFuture();
         } finally
 

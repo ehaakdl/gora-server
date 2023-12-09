@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.gora.server.common.NetworkUtils;
-import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf;
 import org.gora.server.model.network.eServiceType;
+import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket;
 
 import com.google.protobuf.ByteString;
 
@@ -66,7 +66,7 @@ public class TcpClient {
             byte[] testBytes = test.toByteArray();
 
             // 패킷 분할생성
-            NetworkPacket packet = NetworkUtils.getPacket(testBytes,
+            NetworkTcpPacket packet = NetworkUtils.getPacket(testBytes,
                     eServiceType.test);
             if (packet == null) {
                 System.out.println("에러발생");

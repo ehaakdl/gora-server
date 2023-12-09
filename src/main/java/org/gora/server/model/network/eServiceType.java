@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum eServiceType {
-    player_coordinate(1), test(2), health_check(3), chat(4)
+    player_coordinate(1), test(2), health_check(3), chat(4), udp_initial(7)
 
     ;
 

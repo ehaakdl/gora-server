@@ -1,10 +1,22 @@
 package protobuf;
 
 option java_package = "org.gora.server.model.network";
-option java_outer_classname = "NetworkPakcetProtoBuf";
+option java_outer_classname = "NetworkPackcetProtoBuf";
 
-message NetworkPacket {
+message NetworkTcpPacket {
   required bytes data = 1;
   required fixed32 type = 2;
   required fixed32 dataSize = 3;
+}
+
+message NetworkUdpInitialPacket {
+  required fixed32 type = 1;
+  required string channelId = 2;
+}
+
+message NetworkUdpPacket {
+  required bytes data = 1;
+  required fixed32 type = 2;
+  required fixed32 dataSize = 3;
+  required string channelId = 4;
 }

@@ -3,6 +3,7 @@ package org.gora.server.component.network.handler.inbound;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gora.server.common.AesUtils;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.ClientConnection;
@@ -14,10 +15,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.handler.codec.MessageToMessageDecoder;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@RequiredArgsConstructor
 @Slf4j
 public class ServerUdpMessageDecoder extends MessageToMessageDecoder<DatagramPacket> {
 
@@ -30,12 +29,14 @@ public class ServerUdpMessageDecoder extends MessageToMessageDecoder<DatagramPac
         }
         byte[] recvBytes = new byte[in.readableBytes()];
         in.readBytes(recvBytes);
-        String channelId = ctx.channel().id().asLongText();
+        String channelId = CommonUtils.replaceUUID();
         List<TransportData> transportDatas;
+        boolean isFirtstRecv = false;
         if (!ClientManager.existsResource(channelId)) {
             String clientIp = packet.sender().getAddress().getHostAddress();
             ClientConnection connection = ClientConnection.createUdp(clientIp);
             ClientManager.createResource(channelId, connection);
+            isFirtstRecv = true;
         }
         // 패킷 조립
         try {
@@ -46,6 +47,18 @@ public class ServerUdpMessageDecoder extends MessageToMessageDecoder<DatagramPac
             log.info("패킷 위조 예상아이디 :{}", channelId);
             transportDatas = new ArrayList<>(1);
             transportDatas.add(TransportData.create(eRouteServiceType.close_client, null, channelId));
+        }
+
+        if (isFirtstRecv) {
+            String cryptString = AesUtils.encrypt(channelId);
+            log.info(channelId);
+            log.info(cryptString);
+            if (cryptString.length() > 0) {
+                transportDatas.add(0,
+                        TransportData.create(eRouteServiceType.udp_initial, cryptString.getBytes(), channelId));
+            } else {
+                log.error("암호화 실패로 udp 클라이언트 식별값 전달 실패");
+            }
         }
 
         if (transportDatas.isEmpty()) {

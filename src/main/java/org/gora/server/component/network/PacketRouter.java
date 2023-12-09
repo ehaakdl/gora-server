@@ -9,10 +9,11 @@ import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.TransportData;
 import org.gora.server.model.eRouteServiceType;
 import org.gora.server.model.exception.OverSizedException;
-import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
+import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf.Test;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eServiceType;
+import org.gora.server.service.ClientService;
 import org.gora.server.service.CloseClientResource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PacketRouter {
     private final ClientManager clientManager;
+    private final ClientService clientService;
+
     private static final BlockingQueue<TransportData> routerQue = new LinkedBlockingQueue<>(Integer.parseInt(
             System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
 
@@ -82,6 +85,14 @@ public class PacketRouter {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        break;
+                    case chat:
+
+                        break;
+                    case udp_initial:
+                        clientService.initialUdp(packet);
+                        break;
+                    case clean_data_buffer:
                         break;
                     case close_client:
                         CloseClientResource.close(packet.getChanelId());

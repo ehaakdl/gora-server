@@ -3,8 +3,6 @@ package org.gora.server.common;
 import java.net.InetAddress;
 import java.util.Arrays;
 
-import org.gora.server.model.network.NetworkPakcetProtoBuf;
-import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.eServiceType;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +23,10 @@ public class NetworkUtils {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static int getPaddingSize(byte[] target) {
+        return NetworkUtils.DATA_MAX_SIZE - target.length;
     }
 
     public static byte[] removePadding(byte[] target, int paddingSize) {
@@ -61,9 +63,9 @@ public class NetworkUtils {
         return CommonUtils.replaceUUID();
     }
 
-    public static NetworkPakcetProtoBuf.NetworkPacket getEmptyData(eServiceType type) {
+    public static NetworkPacket getEmptyData(eServiceType type) {
         byte[] newBytes = addPadding(null, NetworkUtils.DATA_MAX_SIZE);
-        return NetworkPakcetProtoBuf.NetworkPacket.newBuilder()
+        return NetworkPacket.newBuilder()
                 .setData(ByteString.copyFrom(newBytes))
                 .setDataSize(0)
                 .setType(type.getType())

@@ -13,6 +13,9 @@ app:
   async:
     corePoolSize: ${ASYNC_CORE_POOL_SIZE}
     maxPoolSize: ${ASYNC_MAX_POOL_SIZE}
+  aes:
+    key: ${AES_KEY}
+    iv: ${AES_IV}
 
 
 # spy db log

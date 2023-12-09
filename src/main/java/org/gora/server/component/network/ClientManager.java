@@ -17,7 +17,7 @@ import org.gora.server.model.ClientConnection;
 import org.gora.server.model.TransportData;
 import org.gora.server.model.eRouteServiceType;
 import org.gora.server.model.network.ClientResource;
-import org.gora.server.model.network.NetworkPakcetProtoBuf.NetworkPacket;
+import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eServiceType;
 import org.gora.server.service.CloseClientResource;
