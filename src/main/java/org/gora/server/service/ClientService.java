@@ -20,7 +20,7 @@ public class ClientService {
 
     public void initialUdp(TransportData transportData) {
         eServiceType serviceType = eServiceType.udp_initial;
-        NetworkPacket packet = NetworkUtils.getPacket(transportData.getData(), serviceType);
+        NetworkPacket packet = NetworkUtils.getPacket(transportData.getData(), serviceType, transportData.getChanelId());
         try {
             if (!clientManager.send(eNetworkType.udp, serviceType, packet,
                     transportData.getChanelId())) {

@@ -15,1431 +15,8 @@ public final class NetworkPackcetProtoBuf {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
-  public interface NetworkTcpPacketOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:protobuf.NetworkTcpPacket)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>required bytes data = 1;</code>
-     * @return Whether the data field is set.
-     */
-    boolean hasData();
-    /**
-     * <code>required bytes data = 1;</code>
-     * @return The data.
-     */
-    com.google.protobuf.ByteString getData();
-
-    /**
-     * <code>required fixed32 type = 2;</code>
-     * @return Whether the type field is set.
-     */
-    boolean hasType();
-    /**
-     * <code>required fixed32 type = 2;</code>
-     * @return The type.
-     */
-    int getType();
-
-    /**
-     * <code>required fixed32 dataSize = 3;</code>
-     * @return Whether the dataSize field is set.
-     */
-    boolean hasDataSize();
-    /**
-     * <code>required fixed32 dataSize = 3;</code>
-     * @return The dataSize.
-     */
-    int getDataSize();
-  }
-  /**
-   * Protobuf type {@code protobuf.NetworkTcpPacket}
-   */
-  public static final class NetworkTcpPacket extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:protobuf.NetworkTcpPacket)
-      NetworkTcpPacketOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use NetworkTcpPacket.newBuilder() to construct.
-    private NetworkTcpPacket(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private NetworkTcpPacket() {
-      data_ = com.google.protobuf.ByteString.EMPTY;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new NetworkTcpPacket();
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkTcpPacket_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkTcpPacket_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket.class, org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int DATA_FIELD_NUMBER = 1;
-    private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
-    /**
-     * <code>required bytes data = 1;</code>
-     * @return Whether the data field is set.
-     */
-    @java.lang.Override
-    public boolean hasData() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>required bytes data = 1;</code>
-     * @return The data.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString getData() {
-      return data_;
-    }
-
-    public static final int TYPE_FIELD_NUMBER = 2;
-    private int type_ = 0;
-    /**
-     * <code>required fixed32 type = 2;</code>
-     * @return Whether the type field is set.
-     */
-    @java.lang.Override
-    public boolean hasType() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>required fixed32 type = 2;</code>
-     * @return The type.
-     */
-    @java.lang.Override
-    public int getType() {
-      return type_;
-    }
-
-    public static final int DATASIZE_FIELD_NUMBER = 3;
-    private int dataSize_ = 0;
-    /**
-     * <code>required fixed32 dataSize = 3;</code>
-     * @return Whether the dataSize field is set.
-     */
-    @java.lang.Override
-    public boolean hasDataSize() {
-      return ((bitField0_ & 0x00000004) != 0);
-    }
-    /**
-     * <code>required fixed32 dataSize = 3;</code>
-     * @return The dataSize.
-     */
-    @java.lang.Override
-    public int getDataSize() {
-      return dataSize_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      if (!hasData()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasType()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasDataSize()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) != 0)) {
-        output.writeBytes(1, data_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        output.writeFixed32(2, type_);
-      }
-      if (((bitField0_ & 0x00000004) != 0)) {
-        output.writeFixed32(3, dataSize_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, data_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeFixed32Size(2, type_);
-      }
-      if (((bitField0_ & 0x00000004) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeFixed32Size(3, dataSize_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket)) {
-        return super.equals(obj);
-      }
-      org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket other = (org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket) obj;
-
-      if (hasData() != other.hasData()) return false;
-      if (hasData()) {
-        if (!getData()
-            .equals(other.getData())) return false;
-      }
-      if (hasType() != other.hasType()) return false;
-      if (hasType()) {
-        if (getType()
-            != other.getType()) return false;
-      }
-      if (hasDataSize() != other.hasDataSize()) return false;
-      if (hasDataSize()) {
-        if (getDataSize()
-            != other.getDataSize()) return false;
-      }
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasData()) {
-        hash = (37 * hash) + DATA_FIELD_NUMBER;
-        hash = (53 * hash) + getData().hashCode();
-      }
-      if (hasType()) {
-        hash = (37 * hash) + TYPE_FIELD_NUMBER;
-        hash = (53 * hash) + getType();
-      }
-      if (hasDataSize()) {
-        hash = (37 * hash) + DATASIZE_FIELD_NUMBER;
-        hash = (53 * hash) + getDataSize();
-      }
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code protobuf.NetworkTcpPacket}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:protobuf.NetworkTcpPacket)
-        org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacketOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkTcpPacket_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkTcpPacket_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket.class, org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket.Builder.class);
-      }
-
-      // Construct using org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        data_ = com.google.protobuf.ByteString.EMPTY;
-        type_ = 0;
-        dataSize_ = 0;
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkTcpPacket_descriptor;
-      }
-
-      @java.lang.Override
-      public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket getDefaultInstanceForType() {
-        return org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket build() {
-        org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket buildPartial() {
-        org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket result = new org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket result) {
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.data_ = data_;
-          to_bitField0_ |= 0x00000001;
-        }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.type_ = type_;
-          to_bitField0_ |= 0x00000002;
-        }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.dataSize_ = dataSize_;
-          to_bitField0_ |= 0x00000004;
-        }
-        result.bitField0_ |= to_bitField0_;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket) {
-          return mergeFrom((org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket other) {
-        if (other == org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket.getDefaultInstance()) return this;
-        if (other.hasData()) {
-          setData(other.getData());
-        }
-        if (other.hasType()) {
-          setType(other.getType());
-        }
-        if (other.hasDataSize()) {
-          setDataSize(other.getDataSize());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        if (!hasData()) {
-          return false;
-        }
-        if (!hasType()) {
-          return false;
-        }
-        if (!hasDataSize()) {
-          return false;
-        }
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                data_ = input.readBytes();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              case 21: {
-                type_ = input.readFixed32();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 21
-              case 29: {
-                dataSize_ = input.readFixed32();
-                bitField0_ |= 0x00000004;
-                break;
-              } // case 29
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
-      /**
-       * <code>required bytes data = 1;</code>
-       * @return Whether the data field is set.
-       */
-      @java.lang.Override
-      public boolean hasData() {
-        return ((bitField0_ & 0x00000001) != 0);
-      }
-      /**
-       * <code>required bytes data = 1;</code>
-       * @return The data.
-       */
-      @java.lang.Override
-      public com.google.protobuf.ByteString getData() {
-        return data_;
-      }
-      /**
-       * <code>required bytes data = 1;</code>
-       * @param value The data to set.
-       * @return This builder for chaining.
-       */
-      public Builder setData(com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        data_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required bytes data = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearData() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        data_ = getDefaultInstance().getData();
-        onChanged();
-        return this;
-      }
-
-      private int type_ ;
-      /**
-       * <code>required fixed32 type = 2;</code>
-       * @return Whether the type field is set.
-       */
-      @java.lang.Override
-      public boolean hasType() {
-        return ((bitField0_ & 0x00000002) != 0);
-      }
-      /**
-       * <code>required fixed32 type = 2;</code>
-       * @return The type.
-       */
-      @java.lang.Override
-      public int getType() {
-        return type_;
-      }
-      /**
-       * <code>required fixed32 type = 2;</code>
-       * @param value The type to set.
-       * @return This builder for chaining.
-       */
-      public Builder setType(int value) {
-
-        type_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required fixed32 type = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearType() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        type_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int dataSize_ ;
-      /**
-       * <code>required fixed32 dataSize = 3;</code>
-       * @return Whether the dataSize field is set.
-       */
-      @java.lang.Override
-      public boolean hasDataSize() {
-        return ((bitField0_ & 0x00000004) != 0);
-      }
-      /**
-       * <code>required fixed32 dataSize = 3;</code>
-       * @return The dataSize.
-       */
-      @java.lang.Override
-      public int getDataSize() {
-        return dataSize_;
-      }
-      /**
-       * <code>required fixed32 dataSize = 3;</code>
-       * @param value The dataSize to set.
-       * @return This builder for chaining.
-       */
-      public Builder setDataSize(int value) {
-
-        dataSize_ = value;
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required fixed32 dataSize = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearDataSize() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        dataSize_ = 0;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:protobuf.NetworkTcpPacket)
-    }
-
-    // @@protoc_insertion_point(class_scope:protobuf.NetworkTcpPacket)
-    private static final org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket();
-    }
-
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<NetworkTcpPacket>
-        PARSER = new com.google.protobuf.AbstractParser<NetworkTcpPacket>() {
-      @java.lang.Override
-      public NetworkTcpPacket parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<NetworkTcpPacket> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<NetworkTcpPacket> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface NetworkUdpInitialPacketOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:protobuf.NetworkUdpInitialPacket)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>required fixed32 type = 1;</code>
-     * @return Whether the type field is set.
-     */
-    boolean hasType();
-    /**
-     * <code>required fixed32 type = 1;</code>
-     * @return The type.
-     */
-    int getType();
-
-    /**
-     * <code>required string channelId = 2;</code>
-     * @return Whether the channelId field is set.
-     */
-    boolean hasChannelId();
-    /**
-     * <code>required string channelId = 2;</code>
-     * @return The channelId.
-     */
-    java.lang.String getChannelId();
-    /**
-     * <code>required string channelId = 2;</code>
-     * @return The bytes for channelId.
-     */
-    com.google.protobuf.ByteString
-        getChannelIdBytes();
-  }
-  /**
-   * Protobuf type {@code protobuf.NetworkUdpInitialPacket}
-   */
-  public static final class NetworkUdpInitialPacket extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:protobuf.NetworkUdpInitialPacket)
-      NetworkUdpInitialPacketOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use NetworkUdpInitialPacket.newBuilder() to construct.
-    private NetworkUdpInitialPacket(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private NetworkUdpInitialPacket() {
-      channelId_ = "";
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new NetworkUdpInitialPacket();
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkUdpInitialPacket_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkUdpInitialPacket_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket.class, org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int TYPE_FIELD_NUMBER = 1;
-    private int type_ = 0;
-    /**
-     * <code>required fixed32 type = 1;</code>
-     * @return Whether the type field is set.
-     */
-    @java.lang.Override
-    public boolean hasType() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>required fixed32 type = 1;</code>
-     * @return The type.
-     */
-    @java.lang.Override
-    public int getType() {
-      return type_;
-    }
-
-    public static final int CHANNELID_FIELD_NUMBER = 2;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object channelId_ = "";
-    /**
-     * <code>required string channelId = 2;</code>
-     * @return Whether the channelId field is set.
-     */
-    @java.lang.Override
-    public boolean hasChannelId() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>required string channelId = 2;</code>
-     * @return The channelId.
-     */
-    @java.lang.Override
-    public java.lang.String getChannelId() {
-      java.lang.Object ref = channelId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          channelId_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string channelId = 2;</code>
-     * @return The bytes for channelId.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getChannelIdBytes() {
-      java.lang.Object ref = channelId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        channelId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      if (!hasType()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasChannelId()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) != 0)) {
-        output.writeFixed32(1, type_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, channelId_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeFixed32Size(1, type_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, channelId_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket)) {
-        return super.equals(obj);
-      }
-      org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket other = (org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket) obj;
-
-      if (hasType() != other.hasType()) return false;
-      if (hasType()) {
-        if (getType()
-            != other.getType()) return false;
-      }
-      if (hasChannelId() != other.hasChannelId()) return false;
-      if (hasChannelId()) {
-        if (!getChannelId()
-            .equals(other.getChannelId())) return false;
-      }
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasType()) {
-        hash = (37 * hash) + TYPE_FIELD_NUMBER;
-        hash = (53 * hash) + getType();
-      }
-      if (hasChannelId()) {
-        hash = (37 * hash) + CHANNELID_FIELD_NUMBER;
-        hash = (53 * hash) + getChannelId().hashCode();
-      }
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code protobuf.NetworkUdpInitialPacket}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:protobuf.NetworkUdpInitialPacket)
-        org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacketOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkUdpInitialPacket_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkUdpInitialPacket_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket.class, org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket.Builder.class);
-      }
-
-      // Construct using org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        type_ = 0;
-        channelId_ = "";
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkUdpInitialPacket_descriptor;
-      }
-
-      @java.lang.Override
-      public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket getDefaultInstanceForType() {
-        return org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket build() {
-        org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket buildPartial() {
-        org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket result = new org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket result) {
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.type_ = type_;
-          to_bitField0_ |= 0x00000001;
-        }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.channelId_ = channelId_;
-          to_bitField0_ |= 0x00000002;
-        }
-        result.bitField0_ |= to_bitField0_;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket) {
-          return mergeFrom((org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket other) {
-        if (other == org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket.getDefaultInstance()) return this;
-        if (other.hasType()) {
-          setType(other.getType());
-        }
-        if (other.hasChannelId()) {
-          channelId_ = other.channelId_;
-          bitField0_ |= 0x00000002;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        if (!hasType()) {
-          return false;
-        }
-        if (!hasChannelId()) {
-          return false;
-        }
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 13: {
-                type_ = input.readFixed32();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 13
-              case 18: {
-                channelId_ = input.readBytes();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private int type_ ;
-      /**
-       * <code>required fixed32 type = 1;</code>
-       * @return Whether the type field is set.
-       */
-      @java.lang.Override
-      public boolean hasType() {
-        return ((bitField0_ & 0x00000001) != 0);
-      }
-      /**
-       * <code>required fixed32 type = 1;</code>
-       * @return The type.
-       */
-      @java.lang.Override
-      public int getType() {
-        return type_;
-      }
-      /**
-       * <code>required fixed32 type = 1;</code>
-       * @param value The type to set.
-       * @return This builder for chaining.
-       */
-      public Builder setType(int value) {
-
-        type_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required fixed32 type = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearType() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        type_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object channelId_ = "";
-      /**
-       * <code>required string channelId = 2;</code>
-       * @return Whether the channelId field is set.
-       */
-      public boolean hasChannelId() {
-        return ((bitField0_ & 0x00000002) != 0);
-      }
-      /**
-       * <code>required string channelId = 2;</code>
-       * @return The channelId.
-       */
-      public java.lang.String getChannelId() {
-        java.lang.Object ref = channelId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            channelId_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>required string channelId = 2;</code>
-       * @return The bytes for channelId.
-       */
-      public com.google.protobuf.ByteString
-          getChannelIdBytes() {
-        java.lang.Object ref = channelId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          channelId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string channelId = 2;</code>
-       * @param value The channelId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setChannelId(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        channelId_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string channelId = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearChannelId() {
-        channelId_ = getDefaultInstance().getChannelId();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string channelId = 2;</code>
-       * @param value The bytes for channelId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setChannelIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        channelId_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:protobuf.NetworkUdpInitialPacket)
-    }
-
-    // @@protoc_insertion_point(class_scope:protobuf.NetworkUdpInitialPacket)
-    private static final org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket();
-    }
-
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<NetworkUdpInitialPacket>
-        PARSER = new com.google.protobuf.AbstractParser<NetworkUdpInitialPacket>() {
-      @java.lang.Override
-      public NetworkUdpInitialPacket parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<NetworkUdpInitialPacket> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<NetworkUdpInitialPacket> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpInitialPacket getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface NetworkUdpPacketOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:protobuf.NetworkUdpPacket)
+  public interface NetworkPacketOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:protobuf.NetworkPacket)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -1493,18 +70,18 @@ public final class NetworkPackcetProtoBuf {
         getChannelIdBytes();
   }
   /**
-   * Protobuf type {@code protobuf.NetworkUdpPacket}
+   * Protobuf type {@code protobuf.NetworkPacket}
    */
-  public static final class NetworkUdpPacket extends
+  public static final class NetworkPacket extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:protobuf.NetworkUdpPacket)
-      NetworkUdpPacketOrBuilder {
+      // @@protoc_insertion_point(message_implements:protobuf.NetworkPacket)
+      NetworkPacketOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use NetworkUdpPacket.newBuilder() to construct.
-    private NetworkUdpPacket(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use NetworkPacket.newBuilder() to construct.
+    private NetworkPacket(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private NetworkUdpPacket() {
+    private NetworkPacket() {
       data_ = com.google.protobuf.ByteString.EMPTY;
       channelId_ = "";
     }
@@ -1513,20 +90,20 @@ public final class NetworkPackcetProtoBuf {
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new NetworkUdpPacket();
+      return new NetworkPacket();
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkUdpPacket_descriptor;
+      return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkPacket_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkUdpPacket_fieldAccessorTable
+      return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkPacket_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket.class, org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket.Builder.class);
+              org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket.class, org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket.Builder.class);
     }
 
     private int bitField0_;
@@ -1712,10 +289,10 @@ public final class NetworkPackcetProtoBuf {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket)) {
+      if (!(obj instanceof org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket)) {
         return super.equals(obj);
       }
-      org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket other = (org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket) obj;
+      org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket other = (org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket) obj;
 
       if (hasData() != other.hasData()) return false;
       if (hasData()) {
@@ -1769,44 +346,44 @@ public final class NetworkPackcetProtoBuf {
       return hash;
     }
 
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket parseFrom(
+    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket parseFrom(
+    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket parseFrom(
+    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket parseFrom(
+    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket parseFrom(byte[] data)
+    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket parseFrom(
+    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket parseFrom(java.io.InputStream input)
+    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket parseFrom(
+    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1814,26 +391,26 @@ public final class NetworkPackcetProtoBuf {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket parseDelimitedFrom(java.io.InputStream input)
+    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
 
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket parseDelimitedFrom(
+    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket parseFrom(
+    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket parseFrom(
+    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1846,7 +423,7 @@ public final class NetworkPackcetProtoBuf {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket prototype) {
+    public static Builder newBuilder(org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -1862,26 +439,26 @@ public final class NetworkPackcetProtoBuf {
       return builder;
     }
     /**
-     * Protobuf type {@code protobuf.NetworkUdpPacket}
+     * Protobuf type {@code protobuf.NetworkPacket}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:protobuf.NetworkUdpPacket)
-        org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacketOrBuilder {
+        // @@protoc_insertion_point(builder_implements:protobuf.NetworkPacket)
+        org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacketOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkUdpPacket_descriptor;
+        return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkPacket_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkUdpPacket_fieldAccessorTable
+        return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkPacket_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket.class, org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket.Builder.class);
+                org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket.class, org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket.Builder.class);
       }
 
-      // Construct using org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket.newBuilder()
+      // Construct using org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket.newBuilder()
       private Builder() {
 
       }
@@ -1905,17 +482,17 @@ public final class NetworkPackcetProtoBuf {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkUdpPacket_descriptor;
+        return org.gora.server.model.network.NetworkPackcetProtoBuf.internal_static_protobuf_NetworkPacket_descriptor;
       }
 
       @java.lang.Override
-      public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket getDefaultInstanceForType() {
-        return org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket.getDefaultInstance();
+      public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket getDefaultInstanceForType() {
+        return org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket.getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket build() {
-        org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket result = buildPartial();
+      public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket build() {
+        org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -1923,14 +500,14 @@ public final class NetworkPackcetProtoBuf {
       }
 
       @java.lang.Override
-      public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket buildPartial() {
-        org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket result = new org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket(this);
+      public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket buildPartial() {
+        org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket result = new org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket result) {
+      private void buildPartial0(org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -1986,16 +563,16 @@ public final class NetworkPackcetProtoBuf {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket) {
-          return mergeFrom((org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket)other);
+        if (other instanceof org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket) {
+          return mergeFrom((org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket other) {
-        if (other == org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket.getDefaultInstance()) return this;
+      public Builder mergeFrom(org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket other) {
+        if (other == org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket.getDefaultInstance()) return this;
         if (other.hasData()) {
           setData(other.getData());
         }
@@ -2297,23 +874,23 @@ public final class NetworkPackcetProtoBuf {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:protobuf.NetworkUdpPacket)
+      // @@protoc_insertion_point(builder_scope:protobuf.NetworkPacket)
     }
 
-    // @@protoc_insertion_point(class_scope:protobuf.NetworkUdpPacket)
-    private static final org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:protobuf.NetworkPacket)
+    private static final org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket();
+      DEFAULT_INSTANCE = new org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket();
     }
 
-    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket getDefaultInstance() {
+    public static org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<NetworkUdpPacket>
-        PARSER = new com.google.protobuf.AbstractParser<NetworkUdpPacket>() {
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<NetworkPacket>
+        PARSER = new com.google.protobuf.AbstractParser<NetworkPacket>() {
       @java.lang.Override
-      public NetworkUdpPacket parsePartialFrom(
+      public NetworkPacket parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2332,37 +909,27 @@ public final class NetworkPackcetProtoBuf {
       }
     };
 
-    public static com.google.protobuf.Parser<NetworkUdpPacket> parser() {
+    public static com.google.protobuf.Parser<NetworkPacket> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<NetworkUdpPacket> getParserForType() {
+    public com.google.protobuf.Parser<NetworkPacket> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkUdpPacket getDefaultInstanceForType() {
+    public org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_protobuf_NetworkTcpPacket_descriptor;
+    internal_static_protobuf_NetworkPacket_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_protobuf_NetworkTcpPacket_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_protobuf_NetworkUdpInitialPacket_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_protobuf_NetworkUdpInitialPacket_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_protobuf_NetworkUdpPacket_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_protobuf_NetworkUdpPacket_fieldAccessorTable;
+      internal_static_protobuf_NetworkPacket_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -2372,36 +939,21 @@ public final class NetworkPackcetProtoBuf {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\023NetworkPacket.proto\022\010protobuf\"@\n\020Netwo" +
-      "rkTcpPacket\022\014\n\004data\030\001 \002(\014\022\014\n\004type\030\002 \002(\007\022" +
-      "\020\n\010dataSize\030\003 \002(\007\":\n\027NetworkUdpInitialPa" +
-      "cket\022\014\n\004type\030\001 \002(\007\022\021\n\tchannelId\030\002 \002(\t\"S\n" +
-      "\020NetworkUdpPacket\022\014\n\004data\030\001 \002(\014\022\014\n\004type\030" +
-      "\002 \002(\007\022\020\n\010dataSize\030\003 \002(\007\022\021\n\tchannelId\030\004 \002" +
-      "(\tB7\n\035org.gora.server.model.networkB\026Net" +
-      "workPackcetProtoBuf"
+      "\n\023NetworkPacket.proto\022\010protobuf\"P\n\rNetwo" +
+      "rkPacket\022\014\n\004data\030\001 \002(\014\022\014\n\004type\030\002 \002(\007\022\020\n\010" +
+      "dataSize\030\003 \002(\007\022\021\n\tchannelId\030\004 \002(\tB7\n\035org" +
+      ".gora.server.model.networkB\026NetworkPackc" +
+      "etProtoBuf"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_protobuf_NetworkTcpPacket_descriptor =
+    internal_static_protobuf_NetworkPacket_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_protobuf_NetworkTcpPacket_fieldAccessorTable = new
+    internal_static_protobuf_NetworkPacket_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_protobuf_NetworkTcpPacket_descriptor,
-        new java.lang.String[] { "Data", "Type", "DataSize", });
-    internal_static_protobuf_NetworkUdpInitialPacket_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_protobuf_NetworkUdpInitialPacket_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_protobuf_NetworkUdpInitialPacket_descriptor,
-        new java.lang.String[] { "Type", "ChannelId", });
-    internal_static_protobuf_NetworkUdpPacket_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_protobuf_NetworkUdpPacket_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_protobuf_NetworkUdpPacket_descriptor,
+        internal_static_protobuf_NetworkPacket_descriptor,
         new java.lang.String[] { "Data", "Type", "DataSize", "ChannelId", });
   }
 

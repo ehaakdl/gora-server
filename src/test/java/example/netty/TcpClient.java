@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.gora.server.common.NetworkUtils;
+import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf;
 import org.gora.server.model.network.eServiceType;
-import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkTcpPacket;
 
 import com.google.protobuf.ByteString;
 
@@ -57,7 +57,7 @@ public class TcpClient {
             tempMsg.append(uuid);
         }
 
-        int MAX_SEND_PACKET_COUNT = 20000000;
+        int MAX_SEND_PACKET_COUNT = 1;
         for (int i = 0; i < MAX_SEND_PACKET_COUNT; i++) {
             // 데이터 준비
             TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
@@ -66,8 +66,8 @@ public class TcpClient {
             byte[] testBytes = test.toByteArray();
 
             // 패킷 분할생성
-            NetworkTcpPacket packet = NetworkUtils.getPacket(testBytes,
-                    eServiceType.test);
+            NetworkPacket packet = NetworkUtils.getPacket(testBytes,
+                    eServiceType.test, NetworkUtils.UDP_EMPTY_CHANNEL_ID);
             if (packet == null) {
                 System.out.println("에러발생");
                 return;

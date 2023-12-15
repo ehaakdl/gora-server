@@ -38,6 +38,7 @@ public class ServerUdpMessageDecoder extends MessageToMessageDecoder<DatagramPac
             ClientManager.createResource(channelId, connection);
             isFirtstRecv = true;
         }
+
         // 패킷 조립
         try {
             transportDatas = ClientManager.assemblePacket(channelId, eNetworkType.udp, recvBytes);

@@ -3,6 +3,7 @@ package org.gora.server.common;
 import java.net.InetAddress;
 import java.util.Arrays;
 
+import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.eServiceType;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +14,10 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class NetworkUtils {
-    public static final int DATA_MAX_SIZE = 1487;
+    public static final int DATA_MAX_SIZE = 1453;
     public static final int TOTAL_MAX_SIZE = 1500;
     public static final int PAD = 0;
+    public static final String UDP_EMPTY_CHANNEL_ID = "00000000000000000000000000000000";
 
     public static String getLocalIpAddress() {
         try {
@@ -23,10 +25,6 @@ public class NetworkUtils {
         } catch (Exception e) {
             return null;
         }
-    }
-
-    public static int getPaddingSize(byte[] target) {
-        return NetworkUtils.DATA_MAX_SIZE - target.length;
     }
 
     public static byte[] removePadding(byte[] target, int paddingSize) {
@@ -63,16 +61,17 @@ public class NetworkUtils {
         return CommonUtils.replaceUUID();
     }
 
-    public static NetworkPacket getEmptyData(eServiceType type) {
+    public static NetworkPacket getEmptyData(eServiceType type, String udpChannelId) {
         byte[] newBytes = addPadding(null, NetworkUtils.DATA_MAX_SIZE);
         return NetworkPacket.newBuilder()
                 .setData(ByteString.copyFrom(newBytes))
                 .setDataSize(0)
+                .setChannelId(udpChannelId)
                 .setType(type.getType())
                 .build();
     }
 
-    public static NetworkPacket getPacket(byte[] target, eServiceType type) {
+    public static NetworkPacket getPacket(byte[] target, eServiceType type, String udpChannelId) {
         if (target == null) {
             return null;
         }
@@ -97,8 +96,9 @@ public class NetworkUtils {
             throw new RuntimeException();
         }
 
-        return NetworkPakcetProtoBuf.NetworkPacket.newBuilder()
+        return NetworkPacket.newBuilder()
                 .setData(ByteString.copyFrom(target))
+                .setChannelId(udpChannelId)
                 .setDataSize(dataSize)
                 .setType(type.getType())
                 .build();

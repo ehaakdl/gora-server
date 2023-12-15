@@ -69,7 +69,7 @@ public class UdpClient {
 
                 // 패킷 분할생성
                 NetworkPacket packet = NetworkUtils.getPacket(testBytes,
-                        eServiceType.test);
+                        eServiceType.test, NetworkUtils.UDP_EMPTY_CHANNEL_ID);
                 if (packet == null) {
                     System.out.println("에러발생");
                     return;
