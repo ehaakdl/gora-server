@@ -58,7 +58,7 @@ public class ClientManager {
         return resources.containsKey(resourceKey);
     }
 
-    public static void createResource(String resourceKey, ClientConnection connection) {
+    public static void putResource(String resourceKey, ClientConnection connection) {
         resources.putIfAbsent(resourceKey, ClientResource.create(connection));
     }
 
@@ -92,12 +92,7 @@ public class ClientManager {
             if (dataSize < NetworkUtils.DATA_MAX_SIZE) {
                 // 세션 체크용 패킷만 데이터가 비어있을수가 있다. 그외의 서비스 패킷은 다 에러 처리
                 if (dataSize == 0) {
-                    if (serviceType == eServiceType.health_check) {
-                        transportData = TransportData.create(routeServiceType, null, resourceKey);
-                        result.add(transportData);
-                    } else {
-                        throw new RuntimeException();
-                    }
+                    transportData = TransportData.create(routeServiceType, null, resourceKey);
                 } else {
                     transportData = TransportData.create(routeServiceType,
                             NetworkUtils.removePadding(data, NetworkUtils.DATA_MAX_SIZE - dataSize), resourceKey);
@@ -249,5 +244,9 @@ public class ClientManager {
 
     public ClientResource getResource(String key) {
         return resources.getOrDefault(key, null);
+    }
+
+    public void removeResource(String key) {
+        resources.remove(key);
     }
 }

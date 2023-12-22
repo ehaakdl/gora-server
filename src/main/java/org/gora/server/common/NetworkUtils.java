@@ -14,10 +14,10 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class NetworkUtils {
-    public static final int DATA_MAX_SIZE = 1453;
+    public static final int DATA_MAX_SIZE = 1421;
     public static final int TOTAL_MAX_SIZE = 1500;
     public static final int PAD = 0;
-    public static final String UDP_EMPTY_CHANNEL_ID = "00000000000000000000000000000000";
+    public static final String UDP_EMPTY_CHANNEL_ID = "0000000000000000000000000000000000000000000000000000000000000000";
 
     public static String getLocalIpAddress() {
         try {
@@ -61,6 +61,16 @@ public class NetworkUtils {
         return CommonUtils.replaceUUID();
     }
 
+    public static NetworkPacket getEmptyData(eServiceType type) {
+        byte[] newBytes = addPadding(null, NetworkUtils.DATA_MAX_SIZE);
+        return NetworkPacket.newBuilder()
+                .setData(ByteString.copyFrom(newBytes))
+                .setDataSize(0)
+                .setChannelId(NetworkUtils.UDP_EMPTY_CHANNEL_ID)
+                .setType(type.getType())
+                .build();
+    }
+
     public static NetworkPacket getEmptyData(eServiceType type, String udpChannelId) {
         byte[] newBytes = addPadding(null, NetworkUtils.DATA_MAX_SIZE);
         return NetworkPacket.newBuilder()
@@ -69,6 +79,40 @@ public class NetworkUtils {
                 .setChannelId(udpChannelId)
                 .setType(type.getType())
                 .build();
+    }
+
+    public static NetworkPacket getPacket(byte[] target, eServiceType type) {
+        if (target == null) {
+            return null;
+        }
+
+        int dataSize = target.length;
+        if (dataSize >= NetworkUtils.DATA_MAX_SIZE) {
+            throw new RuntimeException();
+        }
+
+        int paddingSize;
+        if (dataSize < NetworkUtils.DATA_MAX_SIZE) {
+            paddingSize = NetworkUtils.DATA_MAX_SIZE - dataSize;
+        } else {
+            paddingSize = 0;
+        }
+
+        if (paddingSize > 0) {
+            target = addPadding(target, paddingSize);
+        }
+
+        if (target.length != NetworkUtils.DATA_MAX_SIZE) {
+            throw new RuntimeException();
+        }
+
+        return NetworkPacket.newBuilder()
+                .setData(ByteString.copyFrom(target))
+                .setChannelId(NetworkUtils.UDP_EMPTY_CHANNEL_ID)
+                .setDataSize(dataSize)
+                .setType(type.getType())
+                .build();
+
     }
 
     public static NetworkPacket getPacket(byte[] target, eServiceType type, String udpChannelId) {

@@ -16,7 +16,7 @@ public class TcpActiveServerChannelUpdater extends ChannelInboundHandlerAdapter 
         String channelId = ctx.channel().id().asLongText();
         if (!ClientManager.existsResource(channelId)) {
             ClientConnection connection = ClientConnection.createTcp(ctx);
-            ClientManager.createResource(channelId, connection);
+            ClientManager.putResource(channelId, connection);
         }
 
         ctx.fireChannelActive();

@@ -19,7 +19,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,8 +76,7 @@ public class PacketRouter {
 
                         eServiceType serviceType = eServiceType.test;
                         Test test = Test.newBuilder().setMsg(ByteString.copyFrom("2133".getBytes())).build();
-                        NetworkPacket packet2 = NetworkUtils.getPacket(test.toByteArray(), serviceType,
-                                NetworkUtils.UDP_EMPTY_CHANNEL_ID);
+                        NetworkPacket packet2 = NetworkUtils.getPacket(test.toByteArray(), serviceType);
                         try {
                             if (!clientManager.send(protocolType, serviceType, packet2,
                                     packet.getChanelId())) {

@@ -57,7 +57,7 @@ public class TcpClient {
             tempMsg.append(uuid);
         }
 
-        int MAX_SEND_PACKET_COUNT = 1;
+        int MAX_SEND_PACKET_COUNT = 10000;
         for (int i = 0; i < MAX_SEND_PACKET_COUNT; i++) {
             // 데이터 준비
             TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
@@ -67,7 +67,7 @@ public class TcpClient {
 
             // 패킷 분할생성
             NetworkPacket packet = NetworkUtils.getPacket(testBytes,
-                    eServiceType.test, NetworkUtils.UDP_EMPTY_CHANNEL_ID);
+                    eServiceType.test);
             if (packet == null) {
                 System.out.println("에러발생");
                 return;

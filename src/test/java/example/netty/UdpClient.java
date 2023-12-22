@@ -1,8 +1,10 @@
 package example.netty;
 
 import java.net.InetSocketAddress;
+import java.util.Scanner;
 import java.util.UUID;
 
+import org.gora.server.common.AesUtils;
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf;
@@ -22,7 +24,7 @@ import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
 public class UdpClient {
-    private static String channelId;
+    public static String channelId = NetworkUtils.UDP_EMPTY_CHANNEL_ID;
 
     public void run(int port) throws Exception {
         NioEventLoopGroup group = new NioEventLoopGroup();
@@ -61,43 +63,71 @@ public class UdpClient {
                 tempMsg.append(UUID.randomUUID().toString());
             }
 
-            for (int i = 0; i < 1; i++) {
+            // udp 연결 초기화(식별 키 받는 패킷 전송)
+            NetworkPacket packet = NetworkUtils.getEmptyData(
+                    eServiceType.udp_initial);
+            if (packet == null) {
+                System.out.println("에러발생");
+                return;
+            }
+            send(packet, clientToServerChanel, port);
+
+            boolean isUdpInitial = false;
+            while (!isUdpInitial) {
+                if (!channelId.equals(NetworkUtils.UDP_EMPTY_CHANNEL_ID)) {
+                    System.out.println("udp init: " + AesUtils.decrypt(channelId));
+                    isUdpInitial = true;
+                    break;
+                }
+
+                Thread.sleep(1000);
+            }
+
+            for (int i = 0; i < 1000000000; i++) {
+
                 // 데이터 준비
                 TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
                         .setMsg(ByteString.copyFrom(tempMsg.toString().getBytes())).build();
                 byte[] testBytes = test.toByteArray();
 
                 // 패킷 분할생성
-                NetworkPacket packet = NetworkUtils.getPacket(testBytes,
-                        eServiceType.test, NetworkUtils.UDP_EMPTY_CHANNEL_ID);
+                packet = NetworkUtils.getPacket(testBytes,
+                        eServiceType.test, channelId);
                 if (packet == null) {
                     System.out.println("에러발생");
                     return;
                 }
 
                 // 전송
-                byte[] buffer = packet.toByteArray();
-                if (buffer.length != NetworkUtils.TOTAL_MAX_SIZE) {
-                    System.out.println("사이즈가 잘못됨");
-                    return;
-                }
-                ByteBuf bytebuf = Unpooled.wrappedBuffer(buffer);
-                clientToServerChanel.writeAndFlush(new DatagramPacket(bytebuf,
-                        new InetSocketAddress("localhost", port))).addListeners(future -> {
-                            if (!future.isSuccess()) {
-                                future.cause().printStackTrace();
-                                System.out.println("실패함");
-                            }
-                        });
+                send(packet, clientToServerChanel, port);
 
             }
-            Thread.sleep(100000);
+
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("종료하고 싶다면 엔터를");
+            scanner.nextLine();
             clientToServerChanel.closeFuture();
         } finally
 
         {
             group.shutdownGracefully();
         }
+    }
+
+    private void send(NetworkPacket packet, Channel channel, int port) {
+        byte[] buffer = packet.toByteArray();
+        if (buffer.length != NetworkUtils.TOTAL_MAX_SIZE) {
+            System.out.println("사이즈가 잘못됨");
+            return;
+        }
+        ByteBuf bytebuf = Unpooled.wrappedBuffer(buffer);
+        channel.writeAndFlush(new DatagramPacket(bytebuf,
+                new InetSocketAddress("localhost", port))).addListeners(future -> {
+                    if (!future.isSuccess()) {
+                        future.cause().printStackTrace();
+                        System.out.println("실패함");
+                    }
+                });
     }
 
     public static void main(String[] args) throws Exception {
