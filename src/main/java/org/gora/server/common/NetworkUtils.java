@@ -148,4 +148,8 @@ public class NetworkUtils {
                 .build();
 
     }
+
+    public static String generateChannelId(){
+        return CommonUtils.replaceUUID();
+    }
 }

@@ -9,6 +9,7 @@ import org.gora.server.common.NetworkUtils;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.TransportData;
 import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
+import org.gora.server.model.network.UdpInitialDTO;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eRouteServiceType;
 import org.gora.server.model.network.eServiceType;
@@ -36,12 +37,7 @@ public class ServerUdpMessageDecoder extends MessageToMessageDecoder<DatagramPac
         NetworkPacket packet = NetworkPacket.parseFrom(recvBytes);
         String channelId = packet.getChannelId();
         if (packet.getType() == eServiceType.udp_initial.getType()) {
-            channelId = CommonUtils.replaceUUID();
-            String clientIp = datagramPacket.sender().getAddress().getHostAddress();
-            transportDatas = new ArrayList<>(1);
-            transportDatas.add(0,
-                    TransportData.create(eRouteServiceType.udp_initial, clientIp.getBytes(), channelId));
-            out.addAll(transportDatas);
+            out.addAll(initClient(packet, datagramPacket));
             return;
         }
 
@@ -61,5 +57,18 @@ public class ServerUdpMessageDecoder extends MessageToMessageDecoder<DatagramPac
         } else {
             out.addAll(transportDatas);
         }
+    }
+
+    private List<TransportData> initClient(NetworkPacket packet, DatagramPacket datagramPacket) {
+        List<TransportData> result;
+
+        String channelId = NetworkUtils.generateChannelId();
+        String clientIp = datagramPacket.sender().getAddress().getHostAddress();
+        UdpInitialDTO udpInitialDTO = new UdpInitialDTO(clientIp);
+        result = new ArrayList<>(1);
+        result.add(0,
+                TransportData.create(eRouteServiceType.udp_initial, udpInitialDTO, channelId));
+
+        return result;
     }
 }
