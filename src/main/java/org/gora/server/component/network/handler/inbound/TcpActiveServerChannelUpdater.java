@@ -1,7 +1,7 @@
 package org.gora.server.component.network.handler.inbound;
 
 import org.gora.server.component.network.ClientManager;
-import org.gora.server.model.ClientConnection;
+import org.gora.server.model.network.ClientConnection;
 import org.gora.server.service.CloseClientResource;
 
 import io.netty.channel.ChannelHandlerContext;

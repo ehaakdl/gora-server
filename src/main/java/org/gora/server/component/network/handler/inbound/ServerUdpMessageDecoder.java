@@ -8,9 +8,9 @@ import org.gora.server.common.CommonUtils;
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.TransportData;
-import org.gora.server.model.eRouteServiceType;
 import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.eNetworkType;
+import org.gora.server.model.network.eRouteServiceType;
 import org.gora.server.model.network.eServiceType;
 
 import io.netty.buffer.ByteBuf;

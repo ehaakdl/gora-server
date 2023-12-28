@@ -1,5 +1,7 @@
 package org.gora.server.model;
 
+import org.gora.server.model.network.eRouteServiceType;
+
 import lombok.Builder;
 import lombok.Getter;
 

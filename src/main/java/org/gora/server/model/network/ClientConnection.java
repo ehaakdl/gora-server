@@ -1,4 +1,4 @@
-package org.gora.server.model;
+package org.gora.server.model.network;
 
 import io.netty.channel.ChannelHandlerContext;
 import lombok.AllArgsConstructor;

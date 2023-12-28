@@ -1,17 +1,16 @@
 package org.gora.server.component.network;
 
-import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.gora.server.common.Env;
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.TransportData;
-import org.gora.server.model.eRouteServiceType;
 import org.gora.server.model.exception.OverSizedException;
 import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf.Test;
 import org.gora.server.model.network.eNetworkType;
+import org.gora.server.model.network.eRouteServiceType;
 import org.gora.server.model.network.eServiceType;
 import org.gora.server.service.ClientService;
 import org.gora.server.service.CloseClientResource;
@@ -66,25 +65,9 @@ public class PacketRouter {
                 }
 
                 switch (routeServiceType) {
+                    // todo 임시코드 지우기
                     case test:
-                        // 임시코드
-                        eNetworkType protocolType = clientManager
-                                .getNetworkProtocolTypeByChannelId(packet.getChanelId());
-                        if (protocolType == null) {
-                            return;
-                        }
-
-                        eServiceType serviceType = eServiceType.test;
-                        Test test = Test.newBuilder().setMsg(ByteString.copyFrom("2133".getBytes())).build();
-                        NetworkPacket packet2 = NetworkUtils.getPacket(test.toByteArray(), serviceType);
-                        try {
-                            if (!clientManager.send(protocolType, serviceType, packet2,
-                                    packet.getChanelId())) {
-                                throw new RuntimeException();
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        doTestService(packet);
                         break;
                     case chat:
 
@@ -102,6 +85,25 @@ public class PacketRouter {
                         return;
                 }
             });
+        }
+
+    }
+
+    private void doTestService(TransportData packet) {
+        eNetworkType protocolType = clientManager
+                .getNetworkProtocolTypeByChannelId(packet.getChanelId());
+        if (protocolType == null) {
+            return;
+        }
+
+        eServiceType serviceType = eServiceType.test;
+        Test test = Test.newBuilder().setMsg(ByteString.copyFrom("2133".getBytes())).build();
+        NetworkPacket packet2 = NetworkUtils.getPacket(test.toByteArray(), serviceType);
+
+        boolean isSend = clientManager.send(protocolType, serviceType, packet2,
+                packet.getChanelId());
+        if (!isSend) {
+            log.error("udp 클라이언트 식별값 전달 실패");
         }
 
     }

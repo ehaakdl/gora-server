@@ -2,8 +2,6 @@ package org.gora.server.model.network;
 
 import java.io.ByteArrayOutputStream;
 
-import org.gora.server.model.ClientConnection;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

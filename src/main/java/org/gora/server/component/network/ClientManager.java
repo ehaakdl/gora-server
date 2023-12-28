@@ -13,12 +13,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.Env;
 import org.gora.server.common.NetworkUtils;
-import org.gora.server.model.ClientConnection;
 import org.gora.server.model.TransportData;
-import org.gora.server.model.eRouteServiceType;
+import org.gora.server.model.network.ClientConnection;
 import org.gora.server.model.network.ClientResource;
 import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.eNetworkType;
+import org.gora.server.model.network.eRouteServiceType;
 import org.gora.server.model.network.eServiceType;
 import org.gora.server.service.CloseClientResource;
 import org.springframework.beans.factory.annotation.Value;
@@ -180,7 +180,7 @@ public class ClientManager {
     // 지금 구조에서는 적당한거 같음 나중에 고도화 작업에 포함
     public boolean send(
             eNetworkType networkType, eServiceType serviceType, NetworkPacket packet,
-            String chanelId) throws IOException {
+            String chanelId) {
 
         ClientResource resource = resources.getOrDefault(chanelId, null);
         if (resource == null) {
