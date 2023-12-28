@@ -80,6 +80,9 @@ public class ClientManager {
             packet = packets.get(index);
             data = packet.getData().toByteArray();
             serviceType = eServiceType.convert(packet.getType());
+            if(serviceType == null){
+                throw new RuntimeException();
+            }
             dataSize = packet.getDataSize();
 
             // 패딩 제거(실 사이즈와 최대 데이터 크기 하여 패딩 삭제)

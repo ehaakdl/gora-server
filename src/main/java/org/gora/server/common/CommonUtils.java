@@ -1,7 +1,5 @@
 package org.gora.server.common;
 
-import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
 import java.util.UUID;
 
 import lombok.AccessLevel;
@@ -13,24 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 public final class CommonUtils {
     public static final long SLEEP_MILLIS = 10;
 
-    public static Object byteToObject(byte[] target) {
-        try {
-
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(target);
-
-            // ObjectInputStream 연결
-            ObjectInputStream objInputStream = new ObjectInputStream(byteArrayInputStream);
-
-            // 객체 읽기
-            Object result = objInputStream.readObject();
-
-            // 스트림 닫기
-            objInputStream.close();
-            byteArrayInputStream.close();
-            return result;
-        } catch (Exception e) {
-            return null;
-        }
+    public static boolean isInstance(Object target, Class<?> type){
+        return type.isInstance(target);
     }
 
     public static long bytesToMegabytes(long bytes) {

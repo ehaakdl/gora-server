@@ -3,12 +3,14 @@ package org.gora.server.component.network;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.gora.server.common.CommonUtils;
 import org.gora.server.common.Env;
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.TransportData;
 import org.gora.server.model.exception.OverSizedException;
 import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf.Test;
+import org.gora.server.model.network.UdpInitialDTO;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eRouteServiceType;
 import org.gora.server.model.network.eServiceType;
@@ -48,8 +50,6 @@ public class PacketRouter {
         return routerQue.size();
     }
 
-    public static boolean test = false;
-
     @Async
     public void run() {
         while (true) {
@@ -60,7 +60,9 @@ public class PacketRouter {
                 }
 
                 eRouteServiceType routeServiceType = packet.getType();
-                if (routeServiceType == null) {
+
+                if(!isInstance(routeServiceType, packet.getData())){
+                    log.error("잘못된 타입이 router에 들어왔다 {}", packet.getData());
                     return;
                 }
 
@@ -73,6 +75,9 @@ public class PacketRouter {
 
                         break;
                     case udp_initial:
+                        if (!CommonUtils.isInstance(packet.getData(), UdpInitialDTO.class)) {
+
+                        }
                         clientService.initialUdp(packet);
                         break;
                     case clean_data_buffer:
@@ -87,6 +92,27 @@ public class PacketRouter {
             });
         }
 
+    }
+
+    private boolean isInstance(eRouteServiceType type, Object target) {
+        switch (type) {
+            // todo 임시코드 지우기
+            case test:
+                return true;
+            case chat:
+
+                return true;
+            case udp_initial:
+
+                return CommonUtils.isInstance(target, UdpInitialDTO.class);
+            case clean_data_buffer:
+                return true;
+            case close_client:
+                return true;
+
+            default:
+                return false;
+        }
     }
 
     private void doTestService(TransportData packet) {
