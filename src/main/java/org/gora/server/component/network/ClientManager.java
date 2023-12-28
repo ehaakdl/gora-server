@@ -15,14 +15,18 @@ import org.gora.server.common.Env;
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.TransportData;
 import org.gora.server.model.network.ClientConnection;
+import org.gora.server.model.network.ClientDataBuffer;
 import org.gora.server.model.network.ClientResource;
-import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
+import org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket;
+import org.gora.server.model.network.TestProtoBuf.Test;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eRouteServiceType;
 import org.gora.server.model.network.eServiceType;
 import org.gora.server.service.CloseClientResource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -41,7 +45,7 @@ public class ClientManager {
     private final UdpServer udpServer;
     private final CloseClientResource closeClientResource;
 
-    // key는 채널 아이디(네티는 전체 채널 인스턴스에 대한 고유한 아이디를 가지고있다.)
+    // key는 채널 아이디(네티 tcp는 전체 채널 인스턴스에 대한 고유한 아이디를 가지고있다.)
     private final static Map<String, ClientResource> resources = new ConcurrentHashMap<>(
             Integer.parseInt(System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
 
@@ -72,45 +76,83 @@ public class ClientManager {
             return Collections.emptyList();
         }
 
+        Map<String, ClientDataBuffer> dataBufferMap;
+        if (networkType == eNetworkType.tcp) {
+            dataBufferMap = resource.getTcpDataBufferMap();
+        } else {
+            dataBufferMap = resource.getUdpDataBufferMap();
+        }
+
         byte[] data;
         eServiceType serviceType;
         int dataSize;
+        int totalSize;
+        int sequence;
+        String identify;
         NetworkPacket packet;
         for (int index = 0; index < packets.size(); index++) {
             packet = packets.get(index);
             data = packet.getData().toByteArray();
             serviceType = eServiceType.convert(packet.getType());
-            if(serviceType == null){
+            if (serviceType == null) {
                 throw new RuntimeException();
             }
+            sequence = packet.getSequence();
             dataSize = packet.getDataSize();
+            identify = packet.getIdentify();
+            totalSize = packet.getTotalSize();
 
             // 패딩 제거(실 사이즈와 최대 데이터 크기 하여 패딩 삭제)
             eRouteServiceType routeServiceType = eRouteServiceType.convert(serviceType.getType());
             if (routeServiceType == null) {
                 throw new RuntimeException();
             }
-
             TransportData transportData;
-            if (dataSize < NetworkUtils.DATA_MAX_SIZE) {
-                // 세션 체크용 패킷만 데이터가 비어있을수가 있다. 그외의 서비스 패킷은 다 에러 처리
-                if (dataSize == 0) {
-                    transportData = TransportData.create(routeServiceType, null, resourceKey);
-                } else {
-                    transportData = TransportData.create(routeServiceType,
-                            NetworkUtils.removePadding(data, NetworkUtils.DATA_MAX_SIZE - dataSize), resourceKey);
+            ClientDataBuffer dataBufferInfo;
+            ByteArrayOutputStream dataBuffer;
+            data = NetworkUtils.removePadding(data, NetworkUtils.DATA_MAX_SIZE - dataSize);
+            if (dataBufferMap.containsKey(identify)) {
+                dataBufferInfo = dataBufferMap.get(identify);
+                dataBuffer = dataBufferInfo.getBuffer();
+                if (dataBufferInfo.getRecentSequence() + 1 != sequence) {
+                    throw new RuntimeException();
                 }
-            } else if (dataSize > NetworkUtils.DATA_MAX_SIZE) {
-                throw new RuntimeException();
-            } else {
-                transportData = TransportData.create(routeServiceType,
-                        data, resourceKey);
-            }
+                dataBuffer.write(data);
+                dataBufferInfo.setRecentSequence(sequence);
 
-            result.add(transportData);
+                if (dataBuffer.size() > totalSize) {
+                    dataBufferMap.remove(identify);
+                } else if (dataBuffer.size() == totalSize) {
+                    transportData = TransportData.create(routeServiceType,
+                            byteToObject(dataBuffer.toByteArray(), serviceType), resourceKey);
+
+                    result.add(transportData);
+                }
+
+            } else {
+                if (data.length == totalSize) {
+                    transportData = TransportData.create(routeServiceType,
+                            byteToObject(data, serviceType), resourceKey);
+                    result.add(transportData);
+                } else {
+                    dataBufferInfo = new ClientDataBuffer(new ByteArrayOutputStream());
+                    dataBufferInfo.getBuffer().write(data);
+                    dataBufferInfo.setRecentSequence(sequence);
+                    dataBufferMap.put(identify, dataBufferInfo);
+                }
+            }
         }
 
         return result;
+    }
+
+    private static Object byteToObject(byte[] target, eServiceType type) throws InvalidProtocolBufferException {
+        switch (type) {
+            case test:
+                return Test.parseFrom(target);
+            default:
+                return null;
+        }
     }
 
     public static List<TransportData> assemblePacket(String resourceKey, eNetworkType networkType,
@@ -156,7 +198,7 @@ public class ClientManager {
                 buffer.reset();
             }
 
-            return assembleData(packets, resourceKey, networkType);
+            return assembleData(packets, resourceKey,networkType);
         } else {
             return Collections.emptyList();
         }

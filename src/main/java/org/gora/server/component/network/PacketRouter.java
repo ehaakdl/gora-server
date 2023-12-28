@@ -1,5 +1,6 @@
 package org.gora.server.component.network;
 
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -8,7 +9,7 @@ import org.gora.server.common.Env;
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.TransportData;
 import org.gora.server.model.exception.OverSizedException;
-import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
+import org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf.Test;
 import org.gora.server.model.network.UdpInitialDTO;
 import org.gora.server.model.network.eNetworkType;
@@ -61,7 +62,7 @@ public class PacketRouter {
 
                 eRouteServiceType routeServiceType = packet.getType();
 
-                if(!isInstance(routeServiceType, packet.getData())){
+                if (!isInstance(routeServiceType, packet.getData())) {
                     log.error("잘못된 타입이 router에 들어왔다 {}", packet.getData());
                     return;
                 }
@@ -76,7 +77,7 @@ public class PacketRouter {
                         break;
                     case udp_initial:
                         if (!CommonUtils.isInstance(packet.getData(), UdpInitialDTO.class)) {
-
+                            throw new RuntimeException();
                         }
                         clientService.initialUdp(packet);
                         break;
@@ -124,12 +125,16 @@ public class PacketRouter {
 
         eServiceType serviceType = eServiceType.test;
         Test test = Test.newBuilder().setMsg(ByteString.copyFrom("2133".getBytes())).build();
-        NetworkPacket packet2 = NetworkUtils.getPacket(test.toByteArray(), serviceType);
+        byte[] dataBytes = test.toByteArray();
+        List<NetworkPacket> packet2 = NetworkUtils.generateSegmentPacket(dataBytes, serviceType,
+                NetworkUtils.generateIdentify(), dataBytes.length);
 
-        boolean isSend = clientManager.send(protocolType, serviceType, packet2,
-                packet.getChanelId());
-        if (!isSend) {
-            log.error("udp 클라이언트 식별값 전달 실패");
+        for (int i = 0; i < packet2.size(); i++) {
+            boolean isSend = clientManager.send(protocolType, serviceType, packet2.get(i),
+                    packet.getChanelId());
+            if (!isSend) {
+                log.error("udp 클라이언트 식별값 전달 실패");
+            }
         }
 
     }

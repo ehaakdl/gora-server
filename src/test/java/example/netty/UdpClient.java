@@ -1,12 +1,13 @@
 package example.netty;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
 import org.gora.server.common.AesUtils;
 import org.gora.server.common.NetworkUtils;
-import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
+import org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf;
 import org.gora.server.model.network.eServiceType;
 
@@ -83,7 +84,8 @@ public class UdpClient {
                 Thread.sleep(1000);
             }
 
-            for (int i = 0; i < 1000000000; i++) {
+            List<NetworkPacket> packets;
+            for (int i = 0; i < 10; i++) {
 
                 // 데이터 준비
                 TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
@@ -91,15 +93,14 @@ public class UdpClient {
                 byte[] testBytes = test.toByteArray();
 
                 // 패킷 분할생성
-                packet = NetworkUtils.getPacket(testBytes,
-                        eServiceType.test, channelId);
-                if (packet == null) {
-                    System.out.println("에러발생");
-                    return;
-                }
+                packets = NetworkUtils.generateSegmentPacket(testBytes,
+                        eServiceType.test, NetworkUtils.generateIdentify(), testBytes.length, channelId);
 
                 // 전송
-                send(packet, clientToServerChanel, port);
+                for (int j = 0; j < packets.size(); j++) {
+                    packet = packets.get(j);
+                    send(packet, clientToServerChanel, port);
+                }
 
             }
 

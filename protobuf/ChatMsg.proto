@@ -11,7 +11,5 @@ message MsgInfo {
 
 message Chat {
   optional string accessToken = 1;
-  required string identify = 2;
-  required fixed32 totalSize = 3;
   required bytes data = 4;
-}
+} 

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.gora.server.common.NetworkUtils;
-import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
+import org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf;
 import org.gora.server.model.network.eServiceType;
 
@@ -53,37 +53,34 @@ public class TcpClient {
         UUID.randomUUID();
         String uuid = UUID.randomUUID().toString();
         StringBuilder tempMsg = new StringBuilder(uuid);
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 100000; i++) {
             tempMsg.append(uuid);
         }
 
-        int MAX_SEND_PACKET_COUNT = 10000;
-        for (int i = 0; i < MAX_SEND_PACKET_COUNT; i++) {
-            // 데이터 준비
+        int MAX_SEND_PACKET_COUNT = 10;
+        List<NetworkPacket> packets;
+        String identify = NetworkUtils.generateIdentify();
+        // 데이터 준비
             TestProtoBuf.Test test = TestProtoBuf.Test.newBuilder()
                     .setMsg(ByteString.copyFrom(tempMsg.toString().getBytes())).build();
-
-            byte[] testBytes = test.toByteArray();
-
+        byte[] testBytes = test.toByteArray();
+        // for (int i = 0; i < MAX_SEND_PACKET_COUNT; i++) {
+            
             // 패킷 분할생성
-            NetworkPacket packet = NetworkUtils.getPacket(testBytes,
-                    eServiceType.test);
-            if (packet == null) {
-                System.out.println("에러발생");
-                return;
-            }
-
+            packets = NetworkUtils.generateSegmentPacket(testBytes,
+                    eServiceType.test, identify, testBytes.length);
+            System.out.println(packets.size());
             // 전송
-
-            byte[] buffer = packet.toByteArray();
-            if (buffer.length != NetworkUtils.TOTAL_MAX_SIZE) {
-                System.out.println("사이즈가 잘못됨");
-                return;
+            for (int cout = 0; cout < packets.size(); cout++) {
+                byte[] buffer = packets.get(cout).toByteArray();
+                if (buffer.length != NetworkUtils.TOTAL_MAX_SIZE) {
+                    System.out.println("사이즈가 잘못됨");
+                    return;
+                }
+                ByteBuf bytebuf = Unpooled.wrappedBuffer(buffer);
+                serverChannel.writeAndFlush(bytebuf).sync();
             }
-            ByteBuf bytebuf = Unpooled.wrappedBuffer(buffer);
-            serverChannel.writeAndFlush(bytebuf).sync();
-
-        }
+        // }
 
     }
 

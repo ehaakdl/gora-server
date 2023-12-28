@@ -5,7 +5,7 @@ import org.gora.server.common.NetworkUtils;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.TransportData;
 import org.gora.server.model.network.ClientConnection;
-import org.gora.server.model.network.NetworkPackcetProtoBuf.NetworkPacket;
+import org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket;
 import org.gora.server.model.network.UdpInitialDTO;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eServiceType;
