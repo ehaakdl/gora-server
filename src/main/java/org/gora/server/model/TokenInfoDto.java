@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class TokenInfoDto {
+public class TokenInfoDTO {
     private String token;
     private Date expiredAt;
 
