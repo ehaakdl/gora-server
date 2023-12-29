@@ -126,7 +126,7 @@ public class PacketRouter {
         Test test = Test.newBuilder().setMsg(ByteString.copyFrom("2133".getBytes())).build();
         byte[] dataBytes = test.toByteArray();
         List<NetworkPacket> packet2 = NetworkUtils.generateSegmentPacket(dataBytes, serviceType,
-                NetworkUtils.generateIdentify(), dataBytes.length);
+                NetworkUtils.generateIdentify(), dataBytes.length, NetworkUtils.UDP_EMPTY_CHANNEL_ID);
 
         for (int i = 0; i < packet2.size(); i++) {
             boolean isSend = clientManager.send(protocolType, serviceType, packet2.get(i),
