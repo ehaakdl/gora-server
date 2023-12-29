@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket;
 import org.gora.server.model.network.eServiceType;
+import org.gora.server.model.network.protobuf.NetworkPacketProtoBuf.NetworkPacket;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.ByteString;

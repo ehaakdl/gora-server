@@ -5,7 +5,7 @@ import java.util.Date;
 import org.gora.server.model.entity.TokenEntity;
 import org.gora.server.model.entity.UserEntity;
 import org.gora.server.model.entity.eTokenUseDBType;
-import org.gora.server.model.network.PlayerCoordinateProtoBuf;
+import org.gora.server.model.network.protobuf.PlayerCoordinateProtoBuf;
 import org.gora.server.repository.TokenRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

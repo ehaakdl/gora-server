@@ -3,7 +3,7 @@ package org.gora.server.component.network;
 import java.net.InetSocketAddress;
 
 import org.gora.server.component.network.pipline.UdpPiplineInitializer;
-import org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket;
+import org.gora.server.model.network.protobuf.NetworkPacketProtoBuf.NetworkPacket;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;

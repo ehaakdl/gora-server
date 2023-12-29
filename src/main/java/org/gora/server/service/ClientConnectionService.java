@@ -5,10 +5,10 @@ import org.gora.server.common.utils.NetworkUtils;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.network.ClientConnection;
-import org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket;
 import org.gora.server.model.network.UdpInitialDTO;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eServiceType;
+import org.gora.server.model.network.protobuf.NetworkPacketProtoBuf.NetworkPacket;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;

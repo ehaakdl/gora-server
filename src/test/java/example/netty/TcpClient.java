@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.gora.server.common.utils.NetworkUtils;
-import org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket;
-import org.gora.server.model.network.TestProtoBuf;
 import org.gora.server.model.network.eServiceType;
+import org.gora.server.model.network.protobuf.NetworkPacketProtoBuf.NetworkPacket;
+import org.gora.server.model.network.protobuf.TestProtoBuf;
 
 import com.google.protobuf.ByteString;
 
