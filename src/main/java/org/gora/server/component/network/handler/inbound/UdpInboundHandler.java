@@ -2,7 +2,7 @@ package org.gora.server.component.network.handler.inbound;
 
 import org.gora.server.common.CommonUtils;
 import org.gora.server.component.network.PacketRouter;
-import org.gora.server.model.TransportData;
+import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.exception.OverSizedException;
 import org.gora.server.service.CloseClientResource;
 import org.springframework.stereotype.Component;
@@ -17,9 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 @ChannelHandler.Sharable
 @RequiredArgsConstructor
 @Slf4j
-public class UdpInboundHandler extends SimpleChannelInboundHandler<TransportData> {
+public class UdpInboundHandler extends SimpleChannelInboundHandler<PacketRouterDTO> {
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, TransportData msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, PacketRouterDTO msg) throws Exception {
         try {
             PacketRouter.push(msg);
         } catch (OverSizedException e) {

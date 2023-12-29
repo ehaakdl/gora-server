@@ -7,7 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.Env;
 import org.gora.server.common.NetworkUtils;
-import org.gora.server.model.TransportData;
+import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.exception.OverSizedException;
 import org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf.Test;
@@ -35,10 +35,10 @@ public class PacketRouter {
     private final ClientManager clientManager;
     private final ClientService clientService;
 
-    private static final BlockingQueue<TransportData> routerQue = new LinkedBlockingQueue<>(Integer.parseInt(
+    private static final BlockingQueue<PacketRouterDTO> routerQue = new LinkedBlockingQueue<>(Integer.parseInt(
             System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
 
-    public static void push(TransportData data) {
+    public static void push(PacketRouterDTO data) {
         try {
             routerQue.add(data);
         } catch (IllegalStateException e) {
@@ -116,7 +116,7 @@ public class PacketRouter {
         }
     }
 
-    private void doTestService(TransportData packet) {
+    private void doTestService(PacketRouterDTO packet) {
         eNetworkType protocolType = clientManager
                 .getNetworkProtocolTypeByChannelId(packet.getChanelId());
         if (protocolType == null) {

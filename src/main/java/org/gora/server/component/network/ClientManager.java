@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.gora.server.common.CommonUtils;
 import org.gora.server.common.Env;
 import org.gora.server.common.NetworkUtils;
-import org.gora.server.model.TransportData;
+import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.network.ClientConnection;
 import org.gora.server.model.network.ClientDataBuffer;
 import org.gora.server.model.network.ClientResource;
@@ -66,10 +66,10 @@ public class ClientManager {
         resources.putIfAbsent(resourceKey, ClientResource.create(connection));
     }
 
-    private static List<TransportData> assembleData(List<NetworkPacket> packets, String resourceKey,
+    private static List<PacketRouterDTO> assembleData(List<NetworkPacket> packets, String resourceKey,
             eNetworkType networkType)
             throws IOException, ClassNotFoundException {
-        List<TransportData> result = new ArrayList<>();
+        List<PacketRouterDTO> result = new ArrayList<>();
 
         ClientResource resource = resources.get(resourceKey);
         if (resource == null) {
@@ -107,7 +107,7 @@ public class ClientManager {
             if (routeServiceType == null) {
                 throw new RuntimeException();
             }
-            TransportData transportData;
+            PacketRouterDTO packetRouterDTO;
             ClientDataBuffer dataBufferInfo;
             ByteArrayOutputStream dataBuffer;
             data = NetworkUtils.removePadding(data, NetworkUtils.DATA_MAX_SIZE - dataSize);
@@ -123,17 +123,17 @@ public class ClientManager {
                 if (dataBuffer.size() > totalSize) {
                     dataBufferMap.remove(identify);
                 } else if (dataBuffer.size() == totalSize) {
-                    transportData = TransportData.create(routeServiceType,
+                    packetRouterDTO = PacketRouterDTO.create(routeServiceType,
                             byteToObject(dataBuffer.toByteArray(), serviceType), resourceKey);
 
-                    result.add(transportData);
+                    result.add(packetRouterDTO);
                 }
 
             } else {
                 if (data.length == totalSize) {
-                    transportData = TransportData.create(routeServiceType,
+                    packetRouterDTO = PacketRouterDTO.create(routeServiceType,
                             byteToObject(data, serviceType), resourceKey);
-                    result.add(transportData);
+                    result.add(packetRouterDTO);
                 } else {
                     dataBufferInfo = new ClientDataBuffer(new ByteArrayOutputStream());
                     dataBufferInfo.getBuffer().write(data);
@@ -155,7 +155,7 @@ public class ClientManager {
         }
     }
 
-    public static List<TransportData> assemblePacket(String resourceKey, eNetworkType networkType,
+    public static List<PacketRouterDTO> assemblePacket(String resourceKey, eNetworkType networkType,
             byte[] packetBytes)
             throws IOException, ClassNotFoundException {
         ClientResource resource = resources.get(resourceKey);

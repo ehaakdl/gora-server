@@ -2,7 +2,7 @@ package org.gora.server.component.network.handler.inbound;
 
 import org.gora.server.common.CommonUtils;
 import org.gora.server.component.network.PacketRouter;
-import org.gora.server.model.TransportData;
+import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.exception.OverSizedException;
 import org.gora.server.service.CloseClientResource;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TcpInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        final TransportData packet = (TransportData) msg;
+        final PacketRouterDTO packet = (PacketRouterDTO) msg;
         PacketRouter.push(packet);
     }
 

@@ -7,12 +7,12 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class TransportData {
+public class PacketRouterDTO {
     private String chanelId;
     private Object data;
     private final eRouteServiceType type;
 
-    public static TransportData create(eRouteServiceType type, Object data, String chanelId) {
-        return TransportData.builder().chanelId(chanelId).data(data).type(type).build();
+    public static PacketRouterDTO create(eRouteServiceType type, Object data, String chanelId) {
+        return PacketRouterDTO.builder().chanelId(chanelId).data(data).type(type).build();
     }
 }
