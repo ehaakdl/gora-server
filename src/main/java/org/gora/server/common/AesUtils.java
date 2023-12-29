@@ -22,7 +22,7 @@ public class AesUtils {
     // 초기화 벡터
     private static final String aesIv = System.getenv("AES_IV"); // 16byte
 
-    public static String encrypt(String id) {
+    public static String encrypt(String plainText) {
         try {
             String result;
             // 암호화/복호화 기능이 포함된 객체 생성
@@ -40,7 +40,7 @@ public class AesUtils {
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivParamSpec);
 
             // 암호화 실행
-            byte[] encrypted = cipher.doFinal(id.getBytes(StandardCharsets.UTF_8)); // ID 암호화(인코딩 설정)
+            byte[] encrypted = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8)); // ID 암호화(인코딩 설정)
             result = Base64.getEncoder().encodeToString(encrypted); // 암호화 인코딩 후 저장
 
             return result;
@@ -53,7 +53,7 @@ public class AesUtils {
         return "";
     }
 
-    public static String decrypt(String id) {
+    public static String decrypt(String encryptedText) {
         try {
             // 암호화/복호화 기능이 포함된 객체 생성
             Cipher cipher = Cipher.getInstance(algorithms);
@@ -70,7 +70,7 @@ public class AesUtils {
             cipher.init(Cipher.DECRYPT_MODE, keySpec, ivParamSpec);
 
             // 암호 해석
-            byte[] decodedBytes = Base64.getDecoder().decode(id);
+            byte[] decodedBytes = Base64.getDecoder().decode(encryptedText);
             byte[] decrypted = cipher.doFinal(decodedBytes);
 
             return new String(decrypted, StandardCharsets.UTF_8);
