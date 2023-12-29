@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class ClientService {
+public class ClientConnectionService {
     private final ClientManager clientManager;
 
     public void initialUdp(PacketRouterDTO PacketRouterDTO) {

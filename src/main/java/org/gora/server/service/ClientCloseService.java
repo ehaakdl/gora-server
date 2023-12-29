@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class CloseClientResource {
+public class ClientCloseService {
 
     public static void close(String channelId) {
         ClientManager.close(channelId);

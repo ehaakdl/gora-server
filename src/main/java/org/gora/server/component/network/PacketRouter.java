@@ -14,8 +14,8 @@ import org.gora.server.model.network.UdpInitialDTO;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eRouteServiceType;
 import org.gora.server.model.network.eServiceType;
-import org.gora.server.service.ClientService;
-import org.gora.server.service.CloseClientResource;
+import org.gora.server.service.ClientCloseService;
+import org.gora.server.service.ClientConnectionService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PacketRouter {
     private final ClientManager clientManager;
-    private final ClientService clientService;
+    private final ClientConnectionService clientService;
 
     private static final BlockingQueue<PacketRouterDTO> routerQue = new LinkedBlockingQueue<>(Integer.parseInt(
             System.getenv("MAX_DEFAULT_QUE_SZ")));
@@ -83,7 +83,7 @@ public class PacketRouter {
                     case clean_data_buffer:
                         break;
                     case close_client:
-                        CloseClientResource.close(packet.getChanelId());
+                        ClientCloseService.close(packet.getChanelId());
                         break;
                     default:
                         log.error("[router 큐] 처리할 수 없는 유형에 패킷이 왔습니다.");

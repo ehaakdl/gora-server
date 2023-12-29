@@ -21,7 +21,7 @@ import org.gora.server.model.network.TestProtoBuf.Test;
 import org.gora.server.model.network.eNetworkType;
 import org.gora.server.model.network.eRouteServiceType;
 import org.gora.server.model.network.eServiceType;
-import org.gora.server.service.CloseClientResource;
+import org.gora.server.service.ClientCloseService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +42,7 @@ public class ClientManager {
     @Value("${app.udp_client_port}")
     private int udpClientPort;
     private final UdpServer udpServer;
-    private final CloseClientResource closeClientResource;
+    private final ClientCloseService closeClientResource;
 
     // key는 채널 아이디(네티 tcp는 전체 채널 인스턴스에 대한 고유한 아이디를 가지고있다.)
     private final static Map<String, ClientResource> resources = new ConcurrentHashMap<>(

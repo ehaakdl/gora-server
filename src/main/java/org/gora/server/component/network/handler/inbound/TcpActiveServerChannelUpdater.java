@@ -2,7 +2,7 @@ package org.gora.server.component.network.handler.inbound;
 
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.network.ClientConnection;
-import org.gora.server.service.CloseClientResource;
+import org.gora.server.service.ClientCloseService;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -24,7 +24,7 @@ public class TcpActiveServerChannelUpdater extends ChannelInboundHandlerAdapter 
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        CloseClientResource.close(ctx.channel().id().asLongText());
+        ClientCloseService.close(ctx.channel().id().asLongText());
         ctx.fireChannelInactive();
     }
 }

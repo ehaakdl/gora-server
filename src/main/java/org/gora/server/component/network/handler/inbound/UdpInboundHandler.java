@@ -4,7 +4,7 @@ import org.gora.server.common.utils.CommonUtils;
 import org.gora.server.component.network.PacketRouter;
 import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.exception.OverSizedException;
-import org.gora.server.service.CloseClientResource;
+import org.gora.server.service.ClientCloseService;
 import org.springframework.stereotype.Component;
 
 import io.netty.channel.ChannelHandler;
@@ -33,7 +33,7 @@ public class UdpInboundHandler extends SimpleChannelInboundHandler<PacketRouterD
         if (cause instanceof OverSizedException) {
             log.warn("패킷 라우터 큐가 꽉 찼습니다. {}", PacketRouter.size());
         } else {
-            CloseClientResource.close(ctx.channel().id().asLongText());
+            ClientCloseService.close(ctx.channel().id().asLongText());
         }
     }
 }
