@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 수신된 패킷을 라우트
+ * 수신된 패킷을 적절한 서비스로 라우팅 해주는 역할
  */
 @Slf4j
 @Component
