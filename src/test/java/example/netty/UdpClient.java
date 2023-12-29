@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
-import org.gora.server.common.AesUtils;
-import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket;
+import org.gora.server.common.utils.AesUtils;
+import org.gora.server.common.utils.NetworkUtils;
 import org.gora.server.model.network.TestProtoBuf;
 import org.gora.server.model.network.eServiceType;
 

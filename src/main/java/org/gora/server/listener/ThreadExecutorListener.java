@@ -1,6 +1,6 @@
 package org.gora.server.listener;
 
-import org.gora.server.common.CommonUtils;
+import org.gora.server.common.utils.CommonUtils;
 import org.gora.server.component.Monitor;
 import org.gora.server.component.network.PacketRouter;
 import org.gora.server.component.network.TcpServer;

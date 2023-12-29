@@ -2,7 +2,7 @@ package org.gora.server.model.entity;
 
 import java.util.Date;
 
-import org.gora.server.common.NetworkUtils;
+import org.gora.server.common.utils.NetworkUtils;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;

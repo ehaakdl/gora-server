@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.gora.server.common.CommonUtils;
-import org.gora.server.common.NetworkUtils;
+import org.gora.server.common.utils.CommonUtils;
+import org.gora.server.common.utils.NetworkUtils;
 import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.exception.OverSizedException;
 import org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket;

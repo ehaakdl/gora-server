@@ -1,6 +1,6 @@
 package org.gora.server.component.network.handler.inbound;
 
-import org.gora.server.common.CommonUtils;
+import org.gora.server.common.utils.CommonUtils;
 import org.gora.server.component.network.PacketRouter;
 import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.exception.OverSizedException;

@@ -1,7 +1,7 @@
 package org.gora.server.service;
 
-import org.gora.server.common.AesUtils;
-import org.gora.server.common.NetworkUtils;
+import org.gora.server.common.utils.AesUtils;
+import org.gora.server.common.utils.NetworkUtils;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.network.ClientConnection;

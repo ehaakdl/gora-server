@@ -3,7 +3,7 @@ package org.gora.server.component.network.handler.inbound;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gora.server.common.CommonUtils;
+import org.gora.server.common.utils.CommonUtils;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.network.eNetworkType;

@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.gora.server.common.CommonUtils;
-import org.gora.server.common.NetworkUtils;
+import org.gora.server.common.utils.CommonUtils;
+import org.gora.server.common.utils.NetworkUtils;
 import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.network.ClientConnection;
 import org.gora.server.model.network.ClientDataBuffer;

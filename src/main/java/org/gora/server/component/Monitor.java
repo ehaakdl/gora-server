@@ -1,6 +1,6 @@
 package org.gora.server.component;
 
-import org.gora.server.common.CommonUtils;
+import org.gora.server.common.utils.CommonUtils;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.component.network.PacketRouter;
 import org.springframework.scheduling.annotation.Scheduled;

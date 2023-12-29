@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.gora.server.common.NetworkUtils;
+import org.gora.server.common.utils.NetworkUtils;
 import org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket;
 import org.gora.server.model.network.TestProtoBuf.Test;
 import org.gora.server.model.network.eServiceType;

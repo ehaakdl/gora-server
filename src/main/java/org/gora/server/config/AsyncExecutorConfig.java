@@ -3,7 +3,7 @@ package org.gora.server.config;
 import java.lang.reflect.Method;
 import java.util.concurrent.Executor;
 
-import org.gora.server.common.CommonUtils;
+import org.gora.server.common.utils.CommonUtils;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

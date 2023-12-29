@@ -3,9 +3,9 @@ package org.gora.server.component.network.handler.inbound;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gora.server.common.AesUtils;
-import org.gora.server.common.CommonUtils;
-import org.gora.server.common.NetworkUtils;
+import org.gora.server.common.utils.AesUtils;
+import org.gora.server.common.utils.CommonUtils;
+import org.gora.server.common.utils.NetworkUtils;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.network.NetworkPacketProtoBuf.NetworkPacket;
