@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.gora.server.common.CommonUtils;
-import org.gora.server.common.Env;
 import org.gora.server.common.NetworkUtils;
 import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.network.ClientConnection;
@@ -47,12 +46,12 @@ public class ClientManager {
 
     // key는 채널 아이디(네티 tcp는 전체 채널 인스턴스에 대한 고유한 아이디를 가지고있다.)
     private final static Map<String, ClientResource> resources = new ConcurrentHashMap<>(
-            Integer.parseInt(System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
+            Integer.parseInt(System.getenv("MAX_DEFAULT_QUE_SZ")));
 
     // 유저번호와 채널 아이디매치 저장소
     // key 는 userSeq
     private final static Map<Long, String> userResourceMap = new ConcurrentHashMap<>(
-            Integer.parseInt(System.getenv(Env.MAX_DEFAULT_QUE_SZ)));
+            Integer.parseInt(System.getenv("MAX_DEFAULT_QUE_SZ")));
 
     public Set<String> getResourceKeys() {
         return resources.keySet();

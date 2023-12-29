@@ -1,7 +1,6 @@
 package org.gora.server.component;
 
 import org.gora.server.common.CommonUtils;
-import org.gora.server.common.Env;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.component.network.PacketRouter;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -39,7 +38,7 @@ public class Monitor {
         log.info("Used Memory: {}MB", CommonUtils.bytesToMegabytes(usedMemory));
         log.info("Max Memory: {}MB", CommonUtils.bytesToMegabytes(maxMemory));
 
-        log.info("Router Max Que Szie: {}", System.getenv(Env.MAX_DEFAULT_QUE_SZ));
+        log.info("Router Max Que Szie: {}", System.getenv("MAX_DEFAULT_QUE_SZ"));
         log.info("Router Current Que Size: {}", PacketRouter.size());
 
         log.info("Client Size: {}", clientManager.getClientCount());
