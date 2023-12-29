@@ -39,24 +39,27 @@ public class NetworkUtils {
         return Arrays.copyOf(target, lastLength);
     }
 
+    public static byte[] addPadding(int blockSize) {
+        byte[] result = new byte[blockSize];
+        for (int index = 0; index < result.length; index++) {
+            result[index] = PAD;
+        }
+
+        return result;
+    }
+
     public static byte[] addPadding(byte[] original, int blockSize) {
-        byte[] padded;
         if (original == null) {
-            padded = new byte[blockSize];
-            for (int index = 0; index < padded.length; index++) {
-                padded[index] = PAD;
-            }
-
-            return padded;
+            throw new RuntimeException();
         }
 
-        int padLength = blockSize;
-        padded = new byte[original.length + padLength];
-        System.arraycopy(original, 0, padded, 0, original.length);
-        for (int i = original.length; i < padded.length; i++) {
-            padded[i] = PAD;
+        byte[] reuslt = new byte[blockSize + original.length];
+        System.arraycopy(original, 0, reuslt, 0, original.length);
+        for (int i = original.length; i < reuslt.length; i++) {
+            reuslt[i] = PAD;
         }
-        return padded;
+
+        return reuslt;
     }
 
     public static String generateIdentify() {
@@ -64,7 +67,7 @@ public class NetworkUtils {
     }
 
     public static NetworkPacket getEmptyData(eServiceType type) {
-        byte[] newBytes = addPadding(null, NetworkUtils.DATA_MAX_SIZE);
+        byte[] newBytes = addPadding(NetworkUtils.DATA_MAX_SIZE);
         return NetworkPacket.newBuilder()
                 .setData(ByteString.copyFrom(newBytes))
                 .setSequence(0)
@@ -77,7 +80,7 @@ public class NetworkUtils {
     }
 
     public static NetworkPacket getEmptyData(eServiceType type, String udpChannelId) {
-        byte[] newBytes = addPadding(null, NetworkUtils.DATA_MAX_SIZE);
+        byte[] newBytes = addPadding(NetworkUtils.DATA_MAX_SIZE);
         return NetworkPacket.newBuilder()
                 .setData(ByteString.copyFrom(newBytes))
                 .setSequence(0)
