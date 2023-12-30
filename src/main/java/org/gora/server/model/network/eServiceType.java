@@ -6,15 +6,16 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum eServiceType {
-    player_coordinate(1), test(2), health_check(3), chat(4), udp_initial(7)
-
-    ;
+    player_coordinate(1, true),
+    test(2, true),
+    health_check(3, true), chat(4, true), close_client(5, false), clean_data_buffer(6, false), udp_initial(7, true);
 
     private final int type;
+    private final boolean isNetworkPacketUseType;
 
-    public static eServiceType convert(int type) {
-        for (eServiceType value : values()) {
-            if (value.getType() == type) {
+    public static eServiceType convertNetworkPacketServiceType(int type) {
+        for (eServiceType value : eServiceType.values()) {
+            if (value.type == type && value.isNetworkPacketUseType) {
                 return value;
             }
         }

@@ -30,7 +30,9 @@ public class NetworkUtils {
     }
 
     public static byte[] removePadding(byte[] target, int paddingSize) {
-        if (target.length < paddingSize) {
+        if (paddingSize <= 0) {
+            return target;
+        } else if (target.length < paddingSize) {
             throw new RuntimeException();
         } else if (target.length == paddingSize) {
             return target;
@@ -111,7 +113,11 @@ public class NetworkUtils {
         if (totalSize < NetworkUtils.DATA_MAX_SIZE) {
             paddingSize = NetworkUtils.DATA_MAX_SIZE - totalSize;
         } else {
-            paddingSize = totalSize % NetworkUtils.DATA_MAX_SIZE;
+            if (totalSize % NetworkUtils.DATA_MAX_SIZE > 0) {
+                paddingSize = NetworkUtils.DATA_MAX_SIZE - totalSize % NetworkUtils.DATA_MAX_SIZE;
+            } else {
+                paddingSize = totalSize % NetworkUtils.DATA_MAX_SIZE;
+            }
         }
 
         return paddingSize;

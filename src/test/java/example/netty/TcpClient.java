@@ -48,6 +48,7 @@ public class TcpClient {
     }
 
     static int sendPacketLog = 0;
+    static int size;
 
     private void start() throws InterruptedException, IOException {
         UUID.randomUUID();
@@ -69,7 +70,13 @@ public class TcpClient {
         // 패킷 분할생성
         packets = NetworkUtils.generateSegmentPacket(testBytes,
                 eServiceType.test, identify, testBytes.length, NetworkUtils.UDP_EMPTY_CHANNEL_ID);
-        System.out.println(packets.size());
+        byte[] data;
+        for (int i = 0; i < packets.size(); i++) {
+            data = NetworkUtils.removePadding(packets.get(i).getData().toByteArray(),
+                    NetworkUtils.DATA_MAX_SIZE - packets.get(i).getDataSize());
+            size += data.length;
+        }
+
         // 전송
         for (int cout = 0; cout < packets.size(); cout++) {
             byte[] buffer = packets.get(cout).toByteArray();

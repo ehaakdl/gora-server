@@ -17,7 +17,6 @@ import org.gora.server.model.network.ClientConnection;
 import org.gora.server.model.network.ClientDataBuffer;
 import org.gora.server.model.network.ClientResource;
 import org.gora.server.model.network.eNetworkType;
-import org.gora.server.model.network.eRouteServiceType;
 import org.gora.server.model.network.eServiceType;
 import org.gora.server.model.network.protobuf.NetworkPacketProtoBuf.NetworkPacket;
 import org.gora.server.model.network.protobuf.TestProtoBuf.Test;
@@ -92,7 +91,7 @@ public class ClientManager {
         for (int index = 0; index < packets.size(); index++) {
             packet = packets.get(index);
             data = packet.getData().toByteArray();
-            serviceType = eServiceType.convert(packet.getType());
+            serviceType = eServiceType.convertNetworkPacketServiceType(packet.getType());
             if (serviceType == null) {
                 throw new RuntimeException();
             }
@@ -101,15 +100,14 @@ public class ClientManager {
             identify = packet.getIdentify();
             totalSize = packet.getTotalSize();
 
-            // 패딩 제거(실 사이즈와 최대 데이터 크기 하여 패딩 삭제)
-            eRouteServiceType routeServiceType = eRouteServiceType.convert(serviceType.getType());
-            if (routeServiceType == null) {
-                throw new RuntimeException();
-            }
             PacketRouterDTO packetRouterDTO;
             ClientDataBuffer dataBufferInfo;
             ByteArrayOutputStream dataBuffer;
+            // 패딩 제거(실 사이즈와 최대 데이터 크기 하여 패딩 삭제)
             data = NetworkUtils.removePadding(data, NetworkUtils.DATA_MAX_SIZE - dataSize);
+            if (data.length != dataSize) {
+                throw new RuntimeException();
+            }
             if (dataBufferMap.containsKey(identify)) {
                 dataBufferInfo = dataBufferMap.get(identify);
                 dataBuffer = dataBufferInfo.getBuffer();
@@ -122,7 +120,7 @@ public class ClientManager {
                 if (dataBuffer.size() > totalSize) {
                     dataBufferMap.remove(identify);
                 } else if (dataBuffer.size() == totalSize) {
-                    packetRouterDTO = PacketRouterDTO.create(routeServiceType,
+                    packetRouterDTO = PacketRouterDTO.create(serviceType,
                             byteToObject(dataBuffer.toByteArray(), serviceType), resourceKey);
 
                     result.add(packetRouterDTO);
@@ -130,7 +128,7 @@ public class ClientManager {
 
             } else {
                 if (data.length == totalSize) {
-                    packetRouterDTO = PacketRouterDTO.create(routeServiceType,
+                    packetRouterDTO = PacketRouterDTO.create(serviceType,
                             byteToObject(data, serviceType), resourceKey);
                     result.add(packetRouterDTO);
                 } else {
@@ -197,7 +195,7 @@ public class ClientManager {
                 buffer.reset();
             }
 
-            return assembleData(packets, resourceKey,networkType);
+            return assembleData(packets, resourceKey, networkType);
         } else {
             return Collections.emptyList();
         }

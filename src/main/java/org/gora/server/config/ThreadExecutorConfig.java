@@ -1,4 +1,4 @@
-package org.gora.server.listener;
+package org.gora.server.config;
 
 import org.gora.server.common.utils.CommonUtils;
 import org.gora.server.component.Monitor;
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class ThreadExecutorListener implements ApplicationListener<ContextRefreshedEvent> {
+public class ThreadExecutorConfig implements ApplicationListener<ContextRefreshedEvent> {
     private final PacketRouter packetRouter;
     private final UdpServer udpServer;
     private final TcpServer tcpServer;
@@ -29,7 +29,7 @@ public class ThreadExecutorListener implements ApplicationListener<ContextRefres
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         log.info("start server");
-        
+
         try {
             udpServer.startup(this.udpServerPort);
         } catch (Exception e) {
@@ -38,17 +38,16 @@ public class ThreadExecutorListener implements ApplicationListener<ContextRefres
             udpServer.shutdown();
             return;
         }
-        
 
         try {
             tcpServer.startup(tcpServerPort);
         } catch (InterruptedException e) {
             log.error("tcp server fail start");
             log.error(CommonUtils.getStackTraceElements(e));
+            udpServer.shutdown();
             tcpServer.shutdown();
             return;
         }
-        
 
         packetRouter.run();
 

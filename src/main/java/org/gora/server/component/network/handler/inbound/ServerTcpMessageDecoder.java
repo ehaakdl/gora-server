@@ -7,7 +7,7 @@ import org.gora.server.common.utils.CommonUtils;
 import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.network.eNetworkType;
-import org.gora.server.model.network.eRouteServiceType;
+import org.gora.server.model.network.eServiceType;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -36,7 +36,7 @@ public class ServerTcpMessageDecoder extends ByteToMessageDecoder {
             log.error("위조된 패킷이 온걸로 추정됩니다. {}", CommonUtils.getStackTraceElements(e));
             log.info("패킷 위조 예상아이디 :{}", chanelId);
             PacketRouterDTOs = new ArrayList<>();
-            PacketRouterDTOs.add(PacketRouterDTO.create(eRouteServiceType.close_client, null, chanelId));
+            PacketRouterDTOs.add(PacketRouterDTO.create(eServiceType.close_client, null, chanelId));
         }
 
         if (PacketRouterDTOs.isEmpty()) {

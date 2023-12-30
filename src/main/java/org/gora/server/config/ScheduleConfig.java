@@ -12,14 +12,14 @@ public class ScheduleConfig implements SchedulingConfigurer {
 
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        // Thread Pool 설정
-		ThreadPoolTaskScheduler threadPool = new ThreadPoolTaskScheduler();  
- 
-        // Thread 개수 설정
+		// Thread Pool 설정
+		ThreadPoolTaskScheduler threadPool = new ThreadPoolTaskScheduler();
+
+		// Thread 개수 설정
 		int availableProcessorCount = Runtime.getRuntime().availableProcessors();
 		threadPool.setPoolSize(availableProcessorCount);
 		threadPool.initialize();
-        
+
 		taskRegistrar.setTaskScheduler(threadPool);
 	}
 }

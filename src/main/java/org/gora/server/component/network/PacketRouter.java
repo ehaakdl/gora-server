@@ -10,7 +10,6 @@ import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.exception.OverSizedException;
 import org.gora.server.model.network.UdpInitialDTO;
 import org.gora.server.model.network.eNetworkType;
-import org.gora.server.model.network.eRouteServiceType;
 import org.gora.server.model.network.eServiceType;
 import org.gora.server.model.network.protobuf.NetworkPacketProtoBuf.NetworkPacket;
 import org.gora.server.model.network.protobuf.TestProtoBuf.Test;
@@ -59,14 +58,14 @@ public class PacketRouter {
                     return;
                 }
 
-                eRouteServiceType routeServiceType = packet.getType();
+                eServiceType serviceType = packet.getType();
 
-                if (!isInstance(routeServiceType, packet.getData())) {
+                if (!isInstance(serviceType, packet.getData())) {
                     log.error("잘못된 타입이 router에 들어왔다 {}", packet.getData());
                     return;
                 }
 
-                switch (routeServiceType) {
+                switch (serviceType) {
                     // todo 임시코드 지우기
                     case test:
                         doTestService(packet);
@@ -83,7 +82,7 @@ public class PacketRouter {
                     case clean_data_buffer:
                         break;
                     case close_client:
-                        ClientCloseService.close(packet.getChanelId());
+                        ClientCloseService.close(packet.getChannelId());
                         break;
                     default:
                         log.error("[router 큐] 처리할 수 없는 유형에 패킷이 왔습니다.");
@@ -94,7 +93,7 @@ public class PacketRouter {
 
     }
 
-    private boolean isInstance(eRouteServiceType type, Object target) {
+    private boolean isInstance(eServiceType type, Object target) {
         switch (type) {
             // todo 임시코드 지우기
             case test:
@@ -117,7 +116,7 @@ public class PacketRouter {
 
     private void doTestService(PacketRouterDTO packet) {
         eNetworkType protocolType = clientManager
-                .getNetworkProtocolTypeByChannelId(packet.getChanelId());
+                .getNetworkProtocolTypeByChannelId(packet.getChannelId());
         if (protocolType == null) {
             return;
         }
@@ -130,7 +129,7 @@ public class PacketRouter {
 
         for (int i = 0; i < packet2.size(); i++) {
             boolean isSend = clientManager.send(protocolType, serviceType, packet2.get(i),
-                    packet.getChanelId());
+                    packet.getChannelId());
             if (!isSend) {
                 log.error("udp 클라이언트 식별값 전달 실패");
             }

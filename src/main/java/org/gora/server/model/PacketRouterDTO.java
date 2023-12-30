@@ -1,6 +1,6 @@
 package org.gora.server.model;
 
-import org.gora.server.model.network.eRouteServiceType;
+import org.gora.server.model.network.eServiceType;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,11 +8,11 @@ import lombok.Getter;
 @Getter
 @Builder
 public class PacketRouterDTO {
-    private String chanelId;
+    private String channelId;
     private Object data;
-    private final eRouteServiceType type;
+    private final eServiceType type;
 
-    public static PacketRouterDTO create(eRouteServiceType type, Object data, String chanelId) {
-        return PacketRouterDTO.builder().chanelId(chanelId).data(data).type(type).build();
+    public static PacketRouterDTO create(eServiceType type, Object data, String chanelId) {
+        return PacketRouterDTO.builder().channelId(chanelId).data(data).type(type).build();
     }
 }

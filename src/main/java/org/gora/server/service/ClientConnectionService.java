@@ -21,25 +21,22 @@ public class ClientConnectionService {
     private final ClientManager clientManager;
 
     public void initialUdp(PacketRouterDTO PacketRouterDTO) {
-
-        log.info(PacketRouterDTO.getChanelId());
-
         if (!(PacketRouterDTO.getData() instanceof UdpInitialDTO)) {
             log.error("udp init 실패 - 잘못된 데이터가 들어왔습니다.");
             return;
         }
 
-        UdpInitialDTO udpInitialDTO = (UdpInitialDTO) PacketRouterDTO.getData();
-        clientManager.putResource(PacketRouterDTO.getChanelId(),
-                ClientConnection.createUdp(udpInitialDTO.getClientIp()));
+        final UdpInitialDTO udpInitialDTO = (UdpInitialDTO) PacketRouterDTO.getData();
+        final String channelId = PacketRouterDTO.getChannelId();
+        final String clientIp = udpInitialDTO.getClientIp();
+        final ClientConnection clientConnection = ClientConnection.createUdp(clientIp);
+        clientManager.putResource(channelId, clientConnection);
 
-        String encryptedChannelId = AesUtils.encrypt(PacketRouterDTO.getChanelId());
-
+        final String encryptedChannelId = AesUtils.encrypt(channelId);
         NetworkPacket packet = NetworkUtils.getEmptyData(eServiceType.udp_initial,
                 encryptedChannelId);
 
-        boolean isSend = clientManager.send(eNetworkType.udp, eServiceType.udp_initial, packet,
-                PacketRouterDTO.getChanelId());
+        boolean isSend = clientManager.send(eNetworkType.udp, eServiceType.udp_initial, packet, channelId);
         if (!isSend) {
             log.error("udp 클라이언트 식별값 전달 실패");
         }

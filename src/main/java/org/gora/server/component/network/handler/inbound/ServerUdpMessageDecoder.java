@@ -10,7 +10,6 @@ import org.gora.server.component.network.ClientManager;
 import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.network.UdpInitialDTO;
 import org.gora.server.model.network.eNetworkType;
-import org.gora.server.model.network.eRouteServiceType;
 import org.gora.server.model.network.eServiceType;
 import org.gora.server.model.network.protobuf.NetworkPacketProtoBuf.NetworkPacket;
 
@@ -27,11 +26,10 @@ public class ServerUdpMessageDecoder extends MessageToMessageDecoder<DatagramPac
     protected void decode(ChannelHandlerContext ctx, DatagramPacket datagramPacket, List<Object> out) throws Exception {
         ByteBuf in = datagramPacket.content();
         int readableBytes = in.readableBytes();
-        
+
         if (isNotValidPacketSize(readableBytes)) {
             return;
         }
-
 
         byte[] recvBytes = new byte[in.readableBytes()];
         in.readBytes(recvBytes);
@@ -52,7 +50,7 @@ public class ServerUdpMessageDecoder extends MessageToMessageDecoder<DatagramPac
             log.error("위조된 패킷이 온걸로 추정됩니다. {}", CommonUtils.getStackTraceElements(e));
             log.info("패킷 위조 예상아이디 :{}", channelId);
             PacketRouterDTOs = new ArrayList<>(1);
-            PacketRouterDTOs.add(PacketRouterDTO.create(eRouteServiceType.close_client, null, channelId));
+            PacketRouterDTOs.add(PacketRouterDTO.create(eServiceType.close_client, null, channelId));
         }
 
         if (PacketRouterDTOs.isEmpty()) {
@@ -74,7 +72,7 @@ public class ServerUdpMessageDecoder extends MessageToMessageDecoder<DatagramPac
         UdpInitialDTO udpInitialDTO = new UdpInitialDTO(clientIp);
         result = new ArrayList<>(1);
         result.add(0,
-                PacketRouterDTO.create(eRouteServiceType.udp_initial, udpInitialDTO, channelId));
+                PacketRouterDTO.create(eServiceType.udp_initial, udpInitialDTO, channelId));
 
         return result;
     }

@@ -31,7 +31,7 @@ public class UdpClientHandler extends SimpleChannelInboundHandler<DatagramPacket
             to = (count + 1) * NetworkUtils.TOTAL_MAX_SIZE;
             convertBytes = Arrays.copyOfRange(recv.toByteArray(), from, to);
             NetworkPacket packet = NetworkPacket.parseFrom(convertBytes);
-            eServiceType serviceType = eServiceType.convert(packet.getType());
+            eServiceType serviceType = eServiceType.convertNetworkPacketServiceType(packet.getType());
             byte[] refineDataByte = NetworkUtils.removePadding(packet.getData().toByteArray(),
                     NetworkUtils.DATA_MAX_SIZE - packet.getDataSize());
             if (serviceType == eServiceType.udp_initial) {
