@@ -12,12 +12,10 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class TcpPiplineInitializer extends ChannelInitializer<SocketChannel> {
-    private final TcpInboundHandler handler;
-
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline().addLast(new TcpActiveServerChannelUpdater());
         ch.pipeline().addLast(new ServerTcpMessageDecoder());
-        ch.pipeline().addLast(handler);
+        ch.pipeline().addLast(new TcpInboundHandler());
     }
 }

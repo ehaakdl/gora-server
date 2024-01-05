@@ -5,17 +5,13 @@ import org.gora.server.component.network.PacketRouter;
 import org.gora.server.model.PacketRouterDTO;
 import org.gora.server.model.exception.OverSizedException;
 import org.gora.server.service.ClientCloseService;
-import org.springframework.stereotype.Component;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Component
-@RequiredArgsConstructor
 @ChannelHandler.Sharable
 @Slf4j
 public class TcpInboundHandler extends ChannelInboundHandlerAdapter {
