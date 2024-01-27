@@ -104,9 +104,10 @@ public class UdpClient {
 
             }
 
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("종료하고 싶다면 엔터를");
-            scanner.nextLine();
+            try (Scanner scanner = new Scanner(System.in)) {
+                System.out.println("종료하고 싶다면 엔터를");
+                scanner.nextLine();
+            }
             clientToServerChanel.closeFuture();
         } finally
 
