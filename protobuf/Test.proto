@@ -1,9 +1,0 @@
-// syntax = "proto3";
-package protobuf;
-
-option java_package = "org.gora.server.model.network";
-option java_outer_classname = "TestProtoBuf";
-
-message Test {
-  optional bytes msg = 1;
-}
