@@ -5,7 +5,7 @@
 - java(17)
 - Spring boot(3.1.4)
 
-##### Port list
+##### Port list
 - udp_server_port: 11111(서버가 listen 하는 포트)
 - udp_client_port: 11112(클라이언트가 listen 하는 포트)
 - tcp_server_port: 11200
