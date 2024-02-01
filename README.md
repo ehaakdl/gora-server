@@ -20,13 +20,6 @@
 gradlew build --exclude-task test
 gradlew jibDockerBuild
 ```
-##### protobuf
-- 버전: 2
-- [protoc-25.0-win64.zip](https://github.com/ehaakdl/gora-server/files/13314838/protoc-25.0-win64.zip)
-```
-통신 프로토콜 용으로 사용됨
-protoc -I=./protobuf --java_out=./protobuf/out ./protobuf/*.proto
-```
 
 ##### 실행방법
 ```.docker/app-example.env 파일에 담긴 환경변수를 실행할때 추가해준다.(vscode 사용시 기본으로 셋팅되어있다.)```
