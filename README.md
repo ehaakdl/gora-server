@@ -33,5 +33,6 @@ protoc -I=./protobuf --java_out=./protobuf/out ./protobuf/*.proto
 <img width="728" alt="image" src="https://github.com/ehaakdl/gora-server/assets/6407466/45153458-3a8d-482d-b0ab-0e75c62a1c7c">
 
 
-##### 구조
-![Server Architecture](https://github.com/ehaakdl/gora-server/assets/6407466/51e55d46-7e3a-43a2-b165-320af1c7971e)
+##### 전체 구조
+![Server Architecture drawio](https://github.com/ehaakdl/gora-server/assets/6407466/ef301484-3ab3-4d2f-be50-2ba6635ba595)
+
