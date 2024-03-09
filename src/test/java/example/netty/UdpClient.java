@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
-import org.gora.server.common.utils.AesUtils;
-import org.gora.server.common.utils.NetworkUtils;
-import org.gora.server.model.network.eServiceType;
-import org.gora.server.model.network.protobuf.NetworkPacketProtoBuf.NetworkPacket;
-import org.gora.server.model.network.protobuf.TestProtoBuf;
+import com.gora.server.common.utils.AesUtils;
+import com.gora.server.common.utils.NetworkUtils;
+import com.gora.server.model.network.eServiceType;
+import com.gora.server.model.network.protobuf.NetworkPacketProtoBuf.NetworkPacket;
+import com.gora.server.model.network.protobuf.TestProtoBuf;
 
 import com.google.protobuf.ByteString;
 

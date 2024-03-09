@@ -9,24 +9,22 @@ buildscript{
 }
 
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.1.4'
-    id 'io.spring.dependency-management' version '1.1.0'
-    id 'com.google.cloud.tools.jib' version '3.4.0'
+    id 'com.google.cloud.tools.jib' version '3.4.1'
 }
 
-group = 'org.gora'
+group = 'com.gora'
 version = '1.0.0'
+def projectName = 'server'
 
 def yaml = new Yaml()
-def applicationYaml = yaml.load(new FileReader(project.rootProject.file('src/main/resources/application.yml')))
+def applicationYaml = yaml.load(new FileReader(project.rootProject.file('gora-server/src/main/resources/application.yml')))
 def udpServerPort = applicationYaml['app']['udp_server_port'].toString()
 def udpClientPort = applicationYaml['app']['udp_client_port'].toString()
 def tcpServerPort = applicationYaml['app']['tcp_server_port'].toString()
 
 bootJar{
-    archivesBaseName = rootProject.name
-    archiveFileName = rootProject.name + '-' + version + '.jar'
+    archivesBaseName = projectName
+    archiveFileName = projectName + '-' + version + '.jar'
     archiveVersion = version
 }
 
@@ -48,8 +46,6 @@ repositories {
 dependencies {
     implementation project(':gora-common')
 
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 
 
@@ -85,7 +81,7 @@ jib{
 	}
 
 	to {
-		image=rootProject.name
+		image=projectName
 		tags=[version]
 	}
 
@@ -117,7 +113,7 @@ jib{
             '-XX:+HeapDumpOnOutOfMemoryError',
             '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:'+ remoteDebugPort
         ]
-        mainClass = "org.gora.server.ServerApplication"
+        mainClass = "com.gora.server.ServerApplication"
 		ports = [remoteDebugPort, udpServerPort, udpServerPort, tcpServerPort]
 	}
 }
