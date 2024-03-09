@@ -1,8 +1,0 @@
-{
-    "java.compile.nullAnalysis.mode": "automatic",
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "files.eol": "\n",
-    "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit"
-    },
-}

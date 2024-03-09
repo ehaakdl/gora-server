@@ -46,6 +46,8 @@ repositories {
 }
 
 dependencies {
+    implementation project(':gora-common')
+
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
@@ -64,16 +66,6 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     implementation 'io.netty:netty-all:4.1.93.Final'
 
-    //	querydsl
-	implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
-	implementation "com.querydsl:querydsl-apt:5.0.0:jakarta"
-	implementation "com.querydsl:querydsl-core:5.0.0"
-
-	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
-	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
-	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
